@@ -2,6 +2,7 @@
 import { checkCommand, fetchCommand } from "./commands/check.js";
 import { conformanceRunCommand } from "./commands/conformance.js";
 import { doctorCommand } from "./commands/doctor.js";
+import { enterpriseExportAuditCommand, enterpriseReportCommand } from "./commands/enterprise.js";
 import { initCommand } from "./commands/init.js";
 import { explainPolicyCommand, initPolicyCommand, lintPolicyCommand, printPolicyCommand, validatePolicyCommand } from "./commands/policy.js";
 import {
@@ -50,6 +51,8 @@ async function main() {
   if (command === "init") return initCommand();
   if (command === "conformance" && subcommand === "run") return conformanceRunCommand(Boolean(options.json));
   if (command === "doctor") return doctorCommand(options);
+  if (command === "enterprise" && subcommand === "report") return enterpriseReportCommand(options);
+  if (command === "enterprise" && subcommand === "export-audit" && target) return enterpriseExportAuditCommand(target, options);
   if (command === "policy" && subcommand === "init") return initPolicyCommand(options);
   if (command === "policy" && subcommand === "validate" && target) return validatePolicyCommand(target, Boolean(options.json));
   if (command === "policy" && subcommand === "lint" && target) return lintPolicyCommand(target, Boolean(options.json));
@@ -108,6 +111,8 @@ Commands:
   oaa init
   oaa conformance run [--json]
   oaa doctor [--payments] [--policy agent-access.json] [--ledger .oaa/receipts.jsonl] [--json]
+  oaa enterprise report [--policy agent-access.json] [--mandates agent-mandates.json] [--ledger .oaa/receipts.jsonl] [--json]
+  oaa enterprise export-audit .oaa/receipts.jsonl [--format otel|cef] [--redact] [--strict]
   oaa policy init [--template publisher|paid-api|mcp-tool|docs-site|research-friendly] [--origin https://example.com] [--output agent-access.json] [--force]
   oaa policy validate ./agent-access.json [--json]
   oaa policy lint ./agent-access.json [--json]

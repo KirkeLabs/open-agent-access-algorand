@@ -20,7 +20,8 @@
       "@open-agent-access/hono": ["./packages/hono/src/index.ts"],
       "@open-agent-access/payments-algorand-x402": ["./packages/payments-algorand-x402/src/index.ts"],
       "@open-agent-access/mandates": ["./packages/mandates/src/index.ts"],
-      "@open-agent-access/mcp": ["./packages/mcp/src/index.ts"]
+      "@open-agent-access/mcp": ["./packages/mcp/src/index.ts"],
+      "@open-agent-access/enterprise": ["./packages/enterprise/src/index.ts"]
     }
   },
   "include": [

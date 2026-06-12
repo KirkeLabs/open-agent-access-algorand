@@ -48,6 +48,13 @@ import { withAgentAccessCloudflare } from "../packages/cloudflare/src/index.js";
 import { runConformanceSuite } from "../packages/conformance/src/index.js";
 import { evaluateMandate, validateMandateDocument, type MandateDocument } from "../packages/mandates/src/index.js";
 import { createAgentAccessMcpToolGuard, McpToolAuthorizationError } from "../packages/mcp/src/index.js";
+import {
+  assessEnterpriseAccessRisk,
+  createEnterpriseControlReport,
+  createEvidenceBundleDigest,
+  receiptToCefEvent,
+  receiptToOpenTelemetrySpan
+} from "../packages/enterprise/src/index.js";
 
 type Test = { name: string; fn: () => Promise<void> | void };
 const tests: Test[] = [];
@@ -268,6 +275,106 @@ test("MCP guard enforces policy and mandate before tool calls", async () => {
     url: "https://evil.example/mcp/tools/docs.search",
     now: new Date("2026-06-12T00:00:00.000Z")
   }), McpToolAuthorizationError);
+});
+
+test("enterprise controls score posture and export audit evidence", async () => {
+  const enterprisePolicy: AgentAccessPolicy = {
+    ...policy,
+    site: {
+      name: "Enterprise",
+      origin: "https://example.com",
+      securityContact: "mailto:security@example.com"
+    },
+    defaults: {
+      decision: "deny",
+      respectRobotsTxt: true,
+      requireAgentIdentity: true,
+      requirePurpose: true,
+      requireReceipt: true
+    },
+    reviewUrl: "https://example.com/review",
+    expiresAt: "2099-01-01T00:00:00.000Z",
+    rules: [
+      {
+        id: "docs",
+        match: { methods: ["GET"], paths: ["/docs/**"] },
+        decision: "allow",
+        purposes: ["research"],
+        uses: ["read"],
+        deniedUses: ["ai-train"],
+        rateLimit: { requests: 60, window: "1m" },
+        loadPolicy: { emergencyStop: "https://example.com/.well-known/agent-stop" }
+      },
+      {
+        id: "paid",
+        match: { methods: ["GET"], paths: ["/paid/**"] },
+        decision: "charge",
+        purposes: ["research"],
+        uses: ["ai-input"],
+        deniedUses: ["ai-train"],
+        price: { amount: "0.005", currency: "USD" },
+        payment: { type: "x402", settlement: "algorand", network: "testnet" },
+        receipt: { required: true },
+        rateLimit: { requests: 30, window: "1m" },
+        loadPolicy: { emergencyStop: "https://example.com/.well-known/agent-stop" }
+      }
+    ]
+  };
+  const report = createEnterpriseControlReport({
+    policy: enterprisePolicy,
+    mandateDocument,
+    now: new Date("2026-06-12T00:00:00.000Z")
+  });
+  assert.equal(report.ok, true);
+  assert.ok(report.score >= 90);
+
+  const weak = createEnterpriseControlReport({
+    policy: {
+      ...enterprisePolicy,
+      defaults: { decision: "allow" },
+      rules: [{ id: "paid", decision: "charge" }]
+    },
+    now: new Date("2026-06-12T00:00:00.000Z")
+  });
+  assert.equal(weak.ok, false);
+  assert.ok(weak.findings.some((finding) => finding.id === "OAA-ENT-001"));
+
+  const risk = assessEnterpriseAccessRisk({
+    decision: "charge",
+    method: "POST",
+    use: "ai-input",
+    paymentRequired: true,
+    dataSensitivity: "restricted",
+    budget: { amount: "2", currency: "USD" }
+  });
+  assert.equal(risk.level, "critical");
+  assert.ok(risk.recommendedControls.includes("idempotency_key"));
+
+  const receipt = attachEventTrailToReceipt({
+    receiptVersion: "0.1",
+    receiptType: "agent_access",
+    role: "agent",
+    traceId: "enterprise-trace",
+    receiptId: "enterprise-receipt",
+    timestamp: "2026-06-12T00:00:00.000Z",
+    method: "GET",
+    url: "https://example.com/paid/report",
+    origin: "https://example.com",
+    agent: { id: "did:web:agent.example", principal: "user:steve@example.com" },
+    policy: { policyHash: "policy-hash", ruleId: "paid", decision: "charge" },
+    payment: { required: true, settlement: "algorand", settlementSuccess: true, payer: "payer" },
+    receiptHash: "receipt-hash"
+  }, [
+    createAccessEvent({ traceId: "enterprise-trace", type: "payment_settled", payment: { transactionId: "tx" } })
+  ]);
+  const span = receiptToOpenTelemetrySpan(receipt, { redact: true });
+  assert.equal(span.name, "oaa.agent_access");
+  assert.equal(span.attributes["oaa.policy.decision"], "charge");
+  assert.ok(receiptToCefEvent(receipt, { redact: true }).startsWith("CEF:0|Open Agent Access|OAA|0.1|agent_access"));
+  const digest = createEvidenceBundleDigest({ policy: enterprisePolicy, mandateDocument, receipts: [receipt] });
+  assert.equal(digest.receiptCount, 1);
+  assert.equal(digest.eventCount, 1);
+  assert.ok(digest.bundleHash);
 });
 
 test("policy lint catches unsafe operational gaps", () => {

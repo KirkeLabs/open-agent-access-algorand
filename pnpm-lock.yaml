@@ -87,6 +87,12 @@ importers:
       '@open-agent-access/core':
         specifier: workspace:*
         version: link:../core
+      '@open-agent-access/enterprise':
+        specifier: workspace:*
+        version: link:../enterprise
+      '@open-agent-access/mandates':
+        specifier: workspace:*
+        version: link:../mandates
       '@open-agent-access/payments-algorand-x402':
         specifier: workspace:*
         version: link:../payments-algorand-x402
@@ -114,6 +120,15 @@ importers:
       zod:
         specifier: ^3.24.1
         version: 3.25.76
+
+  packages/enterprise:
+    dependencies:
+      '@open-agent-access/core':
+        specifier: workspace:*
+        version: link:../core
+      '@open-agent-access/mandates':
+        specifier: workspace:*
+        version: link:../mandates
 
   packages/express:
     dependencies:

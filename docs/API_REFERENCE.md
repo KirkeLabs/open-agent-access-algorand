@@ -36,6 +36,21 @@
 - `McpToolAuthorizationError`: thrown by wrapped handlers when policy or mandate
   checks fail.
 
+## `@open-agent-access/enterprise`
+
+- `createEnterpriseControlReport(input)`: scores policy, mandate, and receipt
+  posture against enterprise controls.
+- `assessEnterpriseAccessRisk(input)`: classifies an access attempt as low,
+  medium, high, or critical risk.
+- `receiptToOpenTelemetrySpan(receipt, options)`: exports receipt evidence as an
+  OpenTelemetry-style span object.
+- `receiptToCefEvent(receipt, options)`: exports receipt evidence as a CEF/SIEM
+  event line.
+- `redactEnterpriseAuditRecord(record, options)`: redacts PII-sensitive fields
+  while keeping stable correlation hashes.
+- `createEvidenceBundleDigest(input)`: creates a compact digest over policy,
+  mandates, receipts, and events.
+
 ## `@open-agent-access/hono`
 
 - `agentAccessMiddleware(options)`: Hono middleware for policy enforcement,
@@ -57,6 +72,8 @@
 ```sh
 oaa doctor
 oaa conformance run
+oaa enterprise report --policy agent-access.json --mandates agent-mandates.json --ledger .oaa/receipts.jsonl
+oaa enterprise export-audit .oaa/receipts.jsonl --format otel --redact
 oaa policy init --template publisher --origin https://example.com
 oaa policy validate ./agent-access.json
 oaa policy lint ./agent-access.json

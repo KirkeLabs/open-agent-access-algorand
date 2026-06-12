@@ -6,6 +6,7 @@ Initial developer preview:
 
 - policy discovery and JSON Schema
 - mandate graph validation and `/.well-known/agent-mandates.json` schema
+- enterprise control reports, access risk scoring, evidence digests, and audit exports
 - TypeScript agent preflight client
 - Hono middleware
 - MCP tool-boundary guard

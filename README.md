@@ -148,6 +148,7 @@ Premium fetches show payment-required metadata and do not pay unless `--pay` or
 | Cloudflare Workers | `@open-agent-access/cloudflare` | Supported |
 | Mandate graphs | `@open-agent-access/mandates` | Supported |
 | MCP tool guard | `@open-agent-access/mcp` | Supported |
+| Enterprise controls | `@open-agent-access/enterprise`, `oaa enterprise report` | Supported |
 | Redis replay store | `@open-agent-access/storage-redis` | Supported |
 | Postgres replay store | `@open-agent-access/storage-postgres` | Supported |
 | Algorand x402 TestNet | `@open-agent-access/payments-algorand-x402` | Adapter and fixtures supported |
@@ -169,6 +170,18 @@ pnpm oaa receipts digest .oaa/receipts.jsonl
 pnpm oaa receipts inspect .oaa/receipts.jsonl
 pnpm oaa receipts reconcile .oaa/receipts.jsonl .oaa/site-receipts.jsonl
 ```
+
+## Enterprise Readiness
+
+```sh
+pnpm oaa enterprise report --policy agent-access.json --mandates agent-mandates.json --ledger .oaa/receipts.jsonl
+pnpm oaa enterprise export-audit .oaa/receipts.jsonl --format otel --redact
+pnpm oaa enterprise export-audit .oaa/receipts.jsonl --format cef --redact --strict
+```
+
+The enterprise report scores fail-closed defaults, required identity/purpose,
+receipt posture, paid-access controls, rate/load controls, policy expiry,
+mandate revocation, and audit evidence.
 
 ## Safety Principles
 
@@ -199,6 +212,7 @@ authors, and protocol reviewers are welcome. Good starting labels include
 - [Header Registry](docs/HEADER_REGISTRY.md)
 - [Mandates](docs/MANDATES.md)
 - [Trust Passports](docs/TRUST_PASSPORT.md)
+- [Enterprise Readiness](docs/ENTERPRISE_READINESS.md)
 - [Architecture Decision Records](docs/ADRS.md)
 - [Production Deployment](docs/PRODUCTION_DEPLOYMENT.md)
 - [Confidence Checklist](docs/CONFIDENCE_CHECKLIST.md)

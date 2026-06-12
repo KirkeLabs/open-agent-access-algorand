@@ -15,6 +15,8 @@
     "requirePurpose": true,
     "requireReceipt": true
   },
+  "expiresAt": "2027-06-12T00:00:00.000Z",
+  "reviewUrl": "http://localhost:4024/review",
   "rules": [
     {
       "id": "public-claims",
@@ -31,6 +33,12 @@
         "window": "1m",
         "burst": 10,
         "respectRetryAfter": true
+      },
+      "loadPolicy": {
+        "maxRps": 1,
+        "preferredWindows": ["02:00-05:00 Europe/London"],
+        "preferBulkEndpoint": false,
+        "emergencyStop": "http://localhost:4024/.well-known/agent-stop"
       },
       "attribution": {
         "required": true,
@@ -53,6 +61,7 @@
       "decision": "human_only",
       "purposes": ["due-diligence"],
       "uses": ["read"],
+      "deniedUses": ["ai-train"],
       "reviewUrl": "http://localhost:4024/review"
     }
   ]

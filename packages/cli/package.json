@@ -28,6 +28,8 @@
   "dependencies": {
     "@open-agent-access/conformance": "workspace:*",
     "@open-agent-access/core": "workspace:*",
+    "@open-agent-access/enterprise": "workspace:*",
+    "@open-agent-access/mandates": "workspace:*",
     "@open-agent-access/payments-algorand-x402": "workspace:*"
   }
 }
