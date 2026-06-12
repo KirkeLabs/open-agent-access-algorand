@@ -41,3 +41,23 @@ The package also exports deterministic fixtures for tests:
 Never commit mnemonics, private keys, or seed phrases. For production, use wallet
 integration, KMS, smart-wallet delegation, Liquid Auth, or another secure signing
 flow. Mnemonic env loading is for local TestNet development only.
+
+## TestNet Readiness Check
+
+```sh
+pnpm oaa x402 testnet-check --json
+```
+
+The check validates Algorand x402 config shape, `AVM_MNEMONIC` presence without
+printing it, `AVM_ADDRESS`, `USDC_TESTNET_ASA_ID`, `FACILITATOR_URL`, and x402
+runtime package loading where dependencies are installed.
+
+Live facilitator reachability is opt-in:
+
+```sh
+OAA_LIVE_X402_TESTS=true pnpm oaa x402 testnet-check --live
+```
+
+The command does not submit a payment by itself. Settlement tests should be run
+only with explicit TestNet funds, a bounded budget, and throwaway development
+credentials.

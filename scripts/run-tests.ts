@@ -36,6 +36,7 @@ import {
   createAlgorandX402SettlementFixture,
   createMalformedAlgorandX402SettlementFixture,
   parseAlgorandX402SettlementHeaders,
+  runAlgorandX402TestnetCheck,
   validateAlgorandX402Config,
   wrapFetchWithAlgorandX402Payment
 } from "../packages/payments-algorand-x402/src/index.js";
@@ -719,6 +720,45 @@ test("Algorand x402 adapter guardrails and metadata", async () => {
   assert.equal(createAlgorandX402PaymentRequiredFixture().status, 402);
   assert.equal(parseAlgorandX402SettlementHeaders(createAlgorandX402SettlementFixture({ transactionId: "fixture-tx" })).transactionId, "fixture-tx");
   assert.equal(parseAlgorandX402SettlementHeaders(createMalformedAlgorandX402SettlementFixture()).settlementSuccess, true);
+});
+
+test("Algorand x402 TestNet readiness is explicit and secret-safe", async () => {
+  const readiness = await runAlgorandX402TestnetCheck({
+    env: {
+      AVM_MNEMONIC: "test mnemonic must not appear",
+      AVM_ADDRESS: "TESTADDR",
+      USDC_TESTNET_ASA_ID: "123",
+      FACILITATOR_URL: "https://facilitator.example"
+    }
+  });
+  assert.equal(readiness.checks.find((check) => check.name === "AVM_MNEMONIC")?.detail.includes("test mnemonic"), false);
+  assert.equal(readiness.checks.find((check) => check.name === "FACILITATOR_URL")?.ok, true);
+
+  const gated = await runAlgorandX402TestnetCheck({
+    live: true,
+    env: {
+      AVM_MNEMONIC: "secret",
+      AVM_ADDRESS: "TESTADDR",
+      USDC_TESTNET_ASA_ID: "123",
+      FACILITATOR_URL: "https://facilitator.example"
+    }
+  });
+  assert.equal(gated.live, false);
+  assert.equal(gated.checks.find((check) => check.name === "live-gate")?.ok, false);
+
+  const live = await runAlgorandX402TestnetCheck({
+    live: true,
+    env: {
+      OAA_LIVE_X402_TESTS: "true",
+      AVM_MNEMONIC: "secret",
+      AVM_ADDRESS: "TESTADDR",
+      USDC_TESTNET_ASA_ID: "123",
+      FACILITATOR_URL: "https://facilitator.example"
+    },
+    fetch: async () => new Response(null, { status: 204 })
+  });
+  assert.equal(live.live, true);
+  assert.equal(live.checks.find((check) => check.name === "facilitator-reachable")?.ok, true);
 });
 
 test("Express and Fastify adapters enforce policies", async () => {

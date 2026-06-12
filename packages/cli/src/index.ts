@@ -17,6 +17,7 @@ import {
   verifyReceiptsCommand,
   verifyReceiptSignaturesCommand
 } from "./commands/receipts.js";
+import { x402TestnetCheckCommand } from "./commands/x402.js";
 
 type Parsed = { positionals: string[]; options: Record<string, string | boolean> };
 
@@ -57,6 +58,7 @@ async function main() {
   if (command === "enterprise" && subcommand === "export-audit" && target) return enterpriseExportAuditCommand(target, options);
   if (command === "evidence" && subcommand === "bundle") return evidenceBundleCommand(options);
   if (command === "evidence" && subcommand === "verify" && target) return evidenceVerifyCommand(target, options);
+  if (command === "x402" && subcommand === "testnet-check") return x402TestnetCheckCommand(options);
   if (command === "identity" && subcommand === "keygen") return identityKeygenCommand(options);
   if (command === "identity" && subcommand === "sign-request") return identitySignRequestCommand(options);
   if (command === "identity" && subcommand === "verify-request") return identityVerifyRequestCommand(options);
@@ -123,6 +125,7 @@ Commands:
   oaa enterprise export-audit .oaa/receipts.jsonl [--format otel|cef] [--redact] [--strict]
   oaa evidence bundle [--policy agent-access.json] [--mandates agent-mandates.json] [--ledger .oaa/receipts.jsonl] [--output oaa-evidence-bundle.json]
   oaa evidence verify oaa-evidence-bundle.json [--json]
+  oaa x402 testnet-check [--live] [--json]
   oaa identity keygen [--public-key .oaa/agent-public.pem] [--private-key .oaa/agent-private.pem]
   oaa identity sign-request --private-key .oaa/agent-private.pem --key-id did:web:agent.example#key-1 --agent-id did:web:agent.example --url URL --purpose research --use read
   oaa identity verify-request --trusted-keys trusted-agent-keys.json --key-id KEY --signature SIG --created ISO --agent-id AGENT --url URL --purpose research --use read --trace-id TRACE

@@ -9,6 +9,7 @@ Initial developer preview:
 - enterprise control reports, access risk scoring, evidence digests, and audit exports
 - immutable evidence bundle manifests and create-only storage abstraction
 - OPA/Rego and Cedar-style policy-as-code export
+- Algorand x402 TestNet readiness and live-gated facilitator check
 - verifiable agent identity helpers and optional signed-header enforcement
 - TypeScript agent preflight client
 - Hono middleware

@@ -106,6 +106,7 @@ oaa evidence bundle --policy agent-access.json --mandates agent-mandates.json --
 oaa evidence verify oaa-evidence-bundle.json
 oaa identity keygen
 oaa policy export agent-access.json --format opa --output /tmp/oaa-opa
+oaa x402 testnet-check --json
 oaa identity sign-request --private-key .oaa/agent-private.pem --key-id did:web:agent.example#key-1 --agent-id did:web:agent.example --url URL --purpose research --use read
 oaa policy init --template publisher --origin https://example.com
 oaa policy validate ./agent-access.json
