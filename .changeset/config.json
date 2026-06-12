@@ -21,7 +21,8 @@
       "@open-agent-access/identity",
       "@open-agent-access/evidence",
       "@open-agent-access/policy-as-code",
-      "@open-agent-access/compliance"
+      "@open-agent-access/compliance",
+      "@open-agent-access/incident"
     ]
   ],
   "access": "public",

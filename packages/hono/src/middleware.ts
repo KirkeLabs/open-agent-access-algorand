@@ -15,6 +15,7 @@ import {
   type ReceiptRecord
 } from "@open-agent-access/core";
 import { verifyAgentAccessHeaders, type TrustedAgentKey } from "@open-agent-access/identity";
+import { evaluateStopSignal, validateAgentStopSignal } from "@open-agent-access/incident";
 import { parseAlgorandX402SettlementHeaders } from "@open-agent-access/payments-algorand-x402";
 import { buildDecisionHeaders, decisionStatus } from "./response.js";
 import { createMemoryReplayStore, type ReplayStore } from "./replay.js";
@@ -30,6 +31,7 @@ export interface AgentAccessMiddlewareOptions {
   };
   replayStore?: ReplayStore;
   requireIdempotencyKeyForPaid?: boolean;
+  emergencyStopPath?: string;
   agentIdentity?: {
     required?: boolean;
     trustedKeys?: TrustedAgentKey[];
@@ -114,6 +116,25 @@ export function agentAccessMiddleware(options: AgentAccessMiddlewareOptions): Mi
       budget: parsed?.budget,
       agent: parsed?.agent
     });
+    if (options.emergencyStopPath) {
+      const stopText = await readFile(options.emergencyStopPath, "utf8").catch(() => undefined);
+      if (stopText) {
+        const stop = evaluateStopSignal(validateAgentStopSignal(JSON.parse(stopText)), {
+          agentId: parsed?.agent.id,
+          purpose: parsed?.purpose,
+          use: parsed?.use,
+          ruleId: decision.rule?.id,
+          path: requestUrl.pathname
+        });
+        if (stop.stopped) {
+          c.header("AA-Decision", "throttle");
+          c.header("AA-Trace-ID", traceId);
+          c.header("AA-Emergency-Stop", "true");
+          if (stop.retryAfter) c.header("Retry-After", String(stop.retryAfter));
+          return c.json({ error: "agent_access_stopped", reason: stop.reason, contact: stop.contact, traceId }, 503);
+        }
+      }
+    }
 
     const rateResult = decision.rateLimit
       ? limiter.check(`${parsed?.agent.id ?? requestUrl.hostname}:${decision.rule?.id ?? "default"}`, decision.rateLimit)

@@ -6,6 +6,7 @@ import { doctorCommand } from "./commands/doctor.js";
 import { enterpriseExportAuditCommand, enterpriseReportCommand } from "./commands/enterprise.js";
 import { evidenceBundleCommand, evidenceVerifyCommand } from "./commands/evidence.js";
 import { identityKeygenCommand, identitySignRequestCommand, identityVerifyRequestCommand } from "./commands/identity.js";
+import { incidentCheckCommand, incidentStopCommand } from "./commands/incident.js";
 import { initCommand } from "./commands/init.js";
 import { explainPolicyCommand, exportPolicyCommand, initPolicyCommand, lintPolicyCommand, printPolicyCommand, validatePolicyCommand } from "./commands/policy.js";
 import {
@@ -64,6 +65,8 @@ async function main() {
   if (command === "identity" && subcommand === "keygen") return identityKeygenCommand(options);
   if (command === "identity" && subcommand === "sign-request") return identitySignRequestCommand(options);
   if (command === "identity" && subcommand === "verify-request") return identityVerifyRequestCommand(options);
+  if (command === "incident" && subcommand === "stop") return incidentStopCommand(options);
+  if (command === "incident" && subcommand === "check" && target) return incidentCheckCommand(target, options);
   if (command === "policy" && subcommand === "init") return initPolicyCommand(options);
   if (command === "policy" && subcommand === "validate" && target) return validatePolicyCommand(target, Boolean(options.json));
   if (command === "policy" && subcommand === "lint" && target) return lintPolicyCommand(target, Boolean(options.json));
@@ -132,6 +135,8 @@ Commands:
   oaa identity keygen [--public-key .oaa/agent-public.pem] [--private-key .oaa/agent-private.pem]
   oaa identity sign-request --private-key .oaa/agent-private.pem --key-id did:web:agent.example#key-1 --agent-id did:web:agent.example --url URL --purpose research --use read
   oaa identity verify-request --trusted-keys trusted-agent-keys.json --key-id KEY --signature SIG --created ISO --agent-id AGENT --url URL --purpose research --use read --trace-id TRACE
+  oaa incident stop [--output agent-stop.json] [--reason incident_response] [--paths /premium/**] [--retry-after 300]
+  oaa incident check agent-stop.json [--agent-id AGENT] [--purpose research] [--use read] [--rule-id RULE] [--path /premium/report]
   oaa policy init [--template publisher|paid-api|mcp-tool|docs-site|research-friendly] [--origin https://example.com] [--output agent-access.json] [--force]
   oaa policy validate ./agent-access.json [--json]
   oaa policy lint ./agent-access.json [--json]

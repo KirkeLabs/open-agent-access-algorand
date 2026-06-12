@@ -25,7 +25,8 @@
       "@open-agent-access/identity": ["./packages/identity/src/index.ts"],
       "@open-agent-access/evidence": ["./packages/evidence/src/index.ts"],
       "@open-agent-access/policy-as-code": ["./packages/policy-as-code/src/index.ts"],
-      "@open-agent-access/compliance": ["./packages/compliance/src/index.ts"]
+      "@open-agent-access/compliance": ["./packages/compliance/src/index.ts"],
+      "@open-agent-access/incident": ["./packages/incident/src/index.ts"]
     }
   },
   "include": [

@@ -85,6 +85,14 @@
 - `getComplianceMapping(framework)`: evidence mapping for one framework.
 - `getAllComplianceMappings()`: evidence mappings for every supported framework.
 
+## `@open-agent-access/incident`
+
+- `createAgentStopSignal(input)`: creates a machine-readable emergency stop
+  signal.
+- `validateAgentStopSignal(input)`: validates an `agent-stop` document.
+- `evaluateStopSignal(signal, input)`: checks whether a request is stopped by
+  signal scope, expiry, and active state.
+
 ## `@open-agent-access/hono`
 
 - `agentAccessMiddleware(options)`: Hono middleware for policy enforcement,
@@ -114,6 +122,8 @@ oaa identity keygen
 oaa policy export agent-access.json --format opa --output /tmp/oaa-opa
 oaa x402 testnet-check --json
 oaa compliance map --framework all --json
+oaa incident stop --output agent-stop.json --reason incident_response --paths '/premium/**'
+oaa incident check agent-stop.json --path /premium/report --purpose research
 oaa identity sign-request --private-key .oaa/agent-private.pem --key-id did:web:agent.example#key-1 --agent-id did:web:agent.example --url URL --purpose research --use read
 oaa policy init --template publisher --origin https://example.com
 oaa policy validate ./agent-access.json

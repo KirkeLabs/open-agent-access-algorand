@@ -11,6 +11,7 @@ Initial developer preview:
 - OPA/Rego and Cedar-style policy-as-code export
 - Algorand x402 TestNet readiness and live-gated facilitator check
 - compliance evidence mappings for NIST AI RMF, EU AI Act themes, SOC 2, ISO 27001, and NIS2 themes
+- machine-readable incident stop signals and optional Hono emergency-stop enforcement
 - verifiable agent identity helpers and optional signed-header enforcement
 - TypeScript agent preflight client
 - Hono middleware

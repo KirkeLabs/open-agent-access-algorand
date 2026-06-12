@@ -33,6 +33,7 @@ Security-sensitive defaults:
 - evidence bundle writes are designed for create-only storage; overwrites should
   fail
 - Hono middleware can require signed agent identity before policy decisions run
+- Hono middleware can enforce active emergency stop signals before route work
 - middleware rate limits before route work
 - paid route fulfilment uses replay checks and in-memory idempotency locks
 - 402 responses include a resource binding hash derived from method, URL, policy

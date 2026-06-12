@@ -99,6 +99,9 @@ importers:
       '@open-agent-access/identity':
         specifier: workspace:*
         version: link:../identity
+      '@open-agent-access/incident':
+        specifier: workspace:*
+        version: link:../incident
       '@open-agent-access/mandates':
         specifier: workspace:*
         version: link:../mandates
@@ -177,6 +180,9 @@ importers:
       '@open-agent-access/identity':
         specifier: workspace:*
         version: link:../identity
+      '@open-agent-access/incident':
+        specifier: workspace:*
+        version: link:../incident
       '@open-agent-access/payments-algorand-x402':
         specifier: workspace:*
         version: link:../payments-algorand-x402
@@ -189,6 +195,15 @@ importers:
       '@open-agent-access/core':
         specifier: workspace:*
         version: link:../core
+
+  packages/incident:
+    dependencies:
+      '@open-agent-access/core':
+        specifier: workspace:*
+        version: link:../core
+      zod:
+        specifier: ^3.24.1
+        version: 3.25.76
 
   packages/mandates:
     dependencies:

@@ -11,6 +11,7 @@ The enterprise package and CLI cover five operational needs:
 - immutable evidence bundle manifests
 - OPA/Rego and Cedar-style policy-as-code export
 - compliance evidence mappings
+- incident stop and revocation workflows
 - privacy-safe audit redaction
 - OpenTelemetry-style span export
 - CEF/SIEM export
@@ -29,6 +30,7 @@ pnpm oaa evidence bundle --policy agent-access.json --mandates agent-mandates.js
 pnpm oaa policy export agent-access.json --format opa --output /tmp/oaa-opa
 pnpm oaa x402 testnet-check --json
 pnpm oaa compliance map --framework all --json
+pnpm oaa incident stop --output agent-stop.json --reason incident_response --paths '/premium/**'
 pnpm oaa identity keygen
 ```
 

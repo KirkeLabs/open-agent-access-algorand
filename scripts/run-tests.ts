@@ -49,6 +49,7 @@ import { withAgentAccessCloudflare } from "../packages/cloudflare/src/index.js";
 import { runConformanceSuite } from "../packages/conformance/src/index.js";
 import { getAllComplianceMappings, getComplianceMapping, listComplianceFrameworks } from "../packages/compliance/src/index.js";
 import { createAgentIdentityKeyPair, signAgentAccessHeaders, verifyAgentAccessHeaders } from "../packages/identity/src/index.js";
+import { createAgentStopSignal, evaluateStopSignal, validateAgentStopSignal } from "../packages/incident/src/index.js";
 import { evaluateMandate, validateMandateDocument, type MandateDocument } from "../packages/mandates/src/index.js";
 import { createAgentAccessMcpToolGuard, McpToolAuthorizationError } from "../packages/mcp/src/index.js";
 import {
@@ -450,6 +451,24 @@ test("compliance mappings expose framework evidence guidance", () => {
   assert.ok(eu.disclaimer.includes("not legal advice"));
   assert.ok(eu.controls.some((control) => control.evidence.includes("trust-passport.json")));
   assert.equal(getAllComplianceMappings().length, 5);
+});
+
+test("incident stop signals match scoped agent access", () => {
+  const signal = validateAgentStopSignal(createAgentStopSignal({
+    reason: "publisher_incident",
+    retryAfter: 300,
+    scope: { paths: ["/premium/**"], purposes: ["research"] },
+    issuedAt: new Date("2026-06-12T00:00:00.000Z")
+  }));
+  const stopped = evaluateStopSignal(signal, {
+    path: "/premium/report",
+    purpose: "research",
+    now: new Date("2026-06-12T00:00:01.000Z")
+  });
+  assert.equal(stopped.stopped, true);
+  assert.equal(stopped.retryAfter, 300);
+  assert.equal(evaluateStopSignal(signal, { path: "/free", purpose: "research" }).stopped, false);
+  assert.equal(evaluateStopSignal({ ...signal, active: false }, { path: "/premium/report", purpose: "research" }).reason, "stop_inactive");
 });
 
 test("policy lint catches unsafe operational gaps", () => {
@@ -1009,6 +1028,40 @@ test("Hono middleware can require signed agent identity", async () => {
   const signed = await app.request("http://localhost/signed", { headers: signedHeaders });
   assert.equal(signed.status, 200);
   assert.equal(signed.headers.get("AA-Agent-Identity-Verified"), "true");
+});
+
+test("Hono middleware can enforce emergency stop signals", async () => {
+  const dir = await mkdtemp(join(tmpdir(), "oaa-hono-stop-"));
+  const policyPath = join(dir, "agent-access.json");
+  const stopPath = join(dir, "agent-stop.json");
+  await writeFile(policyPath, JSON.stringify({
+    version: "0.1",
+    protocol: "open-agent-access",
+    site: { name: "Stop", origin: "http://localhost" },
+    defaults: { decision: "deny", requireAgentIdentity: true, requirePurpose: true },
+    rules: [
+      { id: "premium", match: { methods: ["GET"], paths: ["/premium/**"] }, decision: "allow", purposes: ["research"], uses: ["read"] }
+    ]
+  }), "utf8");
+  await writeFile(stopPath, JSON.stringify(createAgentStopSignal({
+    reason: "incident_response",
+    retryAfter: 120,
+    scope: { paths: ["/premium/**"] }
+  })), "utf8");
+
+  const app = new Hono();
+  app.use("*", agentAccessMiddleware({ policyPath, emergencyStopPath: stopPath }));
+  app.get("/premium/report", (c) => c.json({ ok: true }));
+  const headers = buildAgentAccessHeaders({
+    agent: { id: "did:web:agent.example" },
+    purpose: "research",
+    use: "read",
+    traceId: "stop-trace"
+  });
+  const stopped = await app.request("http://localhost/premium/report", { headers });
+  assert.equal(stopped.status, 503);
+  assert.equal(stopped.headers.get("AA-Emergency-Stop"), "true");
+  assert.equal(stopped.headers.get("Retry-After"), "120");
 });
 
 let passed = 0;

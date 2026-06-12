@@ -153,6 +153,7 @@ Premium fetches show payment-required metadata and do not pay unless `--pay` or
 | Immutable evidence bundles | `@open-agent-access/evidence`, `oaa evidence bundle` | Supported |
 | Policy-as-code export | `@open-agent-access/policy-as-code`, `oaa policy export` | Supported |
 | Compliance mappings | `@open-agent-access/compliance`, `oaa compliance map` | Supported |
+| Incident stop signals | `@open-agent-access/incident`, `oaa incident stop` | Supported |
 | Redis replay store | `@open-agent-access/storage-redis` | Supported |
 | Postgres replay store | `@open-agent-access/storage-postgres` | Supported |
 | Algorand x402 TestNet | `@open-agent-access/payments-algorand-x402` | Adapter and fixtures supported |
@@ -185,6 +186,7 @@ pnpm oaa evidence bundle --policy agent-access.json --mandates agent-mandates.js
 pnpm oaa policy export agent-access.json --format opa --output /tmp/oaa-opa
 pnpm oaa x402 testnet-check --json
 pnpm oaa compliance map --framework all --json
+pnpm oaa incident stop --output agent-stop.json --reason incident_response --paths '/premium/**'
 pnpm oaa identity keygen
 ```
 
@@ -226,6 +228,7 @@ authors, and protocol reviewers are welcome. Good starting labels include
 - [Immutable Evidence Storage](docs/IMMUTABLE_EVIDENCE.md)
 - [Policy As Code Export](docs/POLICY_AS_CODE.md)
 - [Compliance Mappings](docs/COMPLIANCE_MAPPINGS.md)
+- [Incident And Revocation Workflows](docs/INCIDENT_RESPONSE.md)
 - [Architecture Decision Records](docs/ADRS.md)
 - [Production Deployment](docs/PRODUCTION_DEPLOYMENT.md)
 - [Confidence Checklist](docs/CONFIDENCE_CHECKLIST.md)

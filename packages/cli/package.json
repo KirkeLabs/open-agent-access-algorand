@@ -32,6 +32,7 @@
     "@open-agent-access/enterprise": "workspace:*",
     "@open-agent-access/evidence": "workspace:*",
     "@open-agent-access/identity": "workspace:*",
+    "@open-agent-access/incident": "workspace:*",
     "@open-agent-access/mandates": "workspace:*",
     "@open-agent-access/policy-as-code": "workspace:*",
     "@open-agent-access/payments-algorand-x402": "workspace:*"
