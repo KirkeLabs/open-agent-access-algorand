@@ -56,6 +56,12 @@ import {
   receiptToCefEvent,
   receiptToOpenTelemetrySpan
 } from "../packages/enterprise/src/index.js";
+import {
+  createEvidenceBundle,
+  createMemoryImmutableEvidenceStore,
+  putImmutableEvidenceBundle,
+  verifyEvidenceBundle
+} from "../packages/evidence/src/index.js";
 
 type Test = { name: string; fn: () => Promise<void> | void };
 const tests: Test[] = [];
@@ -376,6 +382,48 @@ test("enterprise controls score posture and export audit evidence", async () => 
   assert.equal(digest.receiptCount, 1);
   assert.equal(digest.eventCount, 1);
   assert.ok(digest.bundleHash);
+});
+
+test("immutable evidence bundles verify and write create-only objects", async () => {
+  const receipt: Awaited<ReturnType<typeof appendReceipt>> = {
+    receiptVersion: "0.1",
+    receiptType: "agent_access",
+    role: "agent",
+    traceId: "evidence-trace",
+    receiptId: "evidence-receipt",
+    timestamp: "2026-06-12T00:00:00.000Z",
+    method: "GET",
+    url: "https://example.com/docs/a",
+    origin: "https://example.com",
+    policy: { policyHash: "policy-hash", ruleId: "docs", decision: "allow" },
+    payment: { required: false },
+    receiptHash: "receipt-hash"
+  };
+  const bundle = createEvidenceBundle({
+    policy,
+    mandateDocument,
+    receipts: [receipt],
+    events: [
+      createAccessEvent({ traceId: "evidence-trace", type: "policy_decision", policy: { decision: "allow" } })
+    ],
+    createdAt: new Date("2026-06-12T00:00:00.000Z")
+  });
+  assert.equal(verifyEvidenceBundle(bundle).valid, true);
+  assert.equal(bundle.receiptCount, 1);
+  assert.equal(bundle.eventCount, 1);
+
+  const store = createMemoryImmutableEvidenceStore();
+  const stored = await putImmutableEvidenceBundle(store, bundle, {
+    prefix: "enterprise/oaa",
+    retentionMode: "compliance",
+    retainUntil: "2027-06-12T00:00:00.000Z",
+    legalHold: true
+  });
+  assert.ok(stored.key.startsWith("enterprise/oaa/"));
+  await assert.rejects(() => putImmutableEvidenceBundle(store, bundle, { prefix: "enterprise/oaa" }), /immutable_object_exists/);
+
+  const tampered = { ...bundle, receiptHashes: ["tampered"] };
+  assert.equal(verifyEvidenceBundle(tampered).valid, false);
 });
 
 test("policy lint catches unsafe operational gaps", () => {

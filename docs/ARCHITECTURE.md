@@ -8,7 +8,7 @@ Open Agent Access has seven layers:
 4. Agent preflight for identity, purpose, use, budget, mandate authority, and local receipts.
 5. Site middleware for policy enforcement, rate/load controls, 402 metadata, and site receipts.
 6. Tool-boundary guards for MCP-style tool execution.
-7. Enterprise posture, risk, audit export, and evidence digest tooling.
+7. Enterprise posture, risk, audit export, evidence digest, and immutable bundle tooling.
 8. Optional payment adapters, starting with Algorand x402 TestNet.
 
 The core package owns schema validation, matching, decisions, headers, budgets,
@@ -17,6 +17,8 @@ Mandate and MCP packages sit above core to enforce delegated authority before
 tools or fetches run. The enterprise package turns policy, mandate, receipt,
 and event evidence into control reports and SIEM/observability exports. Payment
 packages are optional and must never be required for tests or free access.
+The evidence package produces create-only manifests suitable for WORM storage or
+Object Lock workflows.
 
 Security-sensitive defaults:
 
@@ -26,6 +28,8 @@ Security-sensitive defaults:
 - mandate evaluation fails closed when authority is missing, expired, or out of scope
 - enterprise audit exports can redact sensitive identifiers while preserving
   stable correlation hashes
+- evidence bundle writes are designed for create-only storage; overwrites should
+  fail
 - Hono middleware can require signed agent identity before policy decisions run
 - middleware rate limits before route work
 - paid route fulfilment uses replay checks and in-memory idempotency locks

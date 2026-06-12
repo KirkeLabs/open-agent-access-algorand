@@ -18,7 +18,8 @@
       "@open-agent-access/mandates",
       "@open-agent-access/mcp",
       "@open-agent-access/enterprise",
-      "@open-agent-access/identity"
+      "@open-agent-access/identity",
+      "@open-agent-access/evidence"
     ]
   ],
   "access": "public",

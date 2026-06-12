@@ -150,6 +150,7 @@ Premium fetches show payment-required metadata and do not pay unless `--pay` or
 | Mandate graphs | `@open-agent-access/mandates` | Supported |
 | MCP tool guard | `@open-agent-access/mcp` | Supported |
 | Enterprise controls | `@open-agent-access/enterprise`, `oaa enterprise report` | Supported |
+| Immutable evidence bundles | `@open-agent-access/evidence`, `oaa evidence bundle` | Supported |
 | Redis replay store | `@open-agent-access/storage-redis` | Supported |
 | Postgres replay store | `@open-agent-access/storage-postgres` | Supported |
 | Algorand x402 TestNet | `@open-agent-access/payments-algorand-x402` | Adapter and fixtures supported |
@@ -178,6 +179,7 @@ pnpm oaa receipts reconcile .oaa/receipts.jsonl .oaa/site-receipts.jsonl
 pnpm oaa enterprise report --policy agent-access.json --mandates agent-mandates.json --ledger .oaa/receipts.jsonl
 pnpm oaa enterprise export-audit .oaa/receipts.jsonl --format otel --redact
 pnpm oaa enterprise export-audit .oaa/receipts.jsonl --format cef --redact --strict
+pnpm oaa evidence bundle --policy agent-access.json --mandates agent-mandates.json --ledger .oaa/receipts.jsonl --output oaa-evidence-bundle.json
 pnpm oaa identity keygen
 ```
 
@@ -216,6 +218,7 @@ authors, and protocol reviewers are welcome. Good starting labels include
 - [Mandates](docs/MANDATES.md)
 - [Trust Passports](docs/TRUST_PASSPORT.md)
 - [Enterprise Readiness](docs/ENTERPRISE_READINESS.md)
+- [Immutable Evidence Storage](docs/IMMUTABLE_EVIDENCE.md)
 - [Architecture Decision Records](docs/ADRS.md)
 - [Production Deployment](docs/PRODUCTION_DEPLOYMENT.md)
 - [Confidence Checklist](docs/CONFIDENCE_CHECKLIST.md)

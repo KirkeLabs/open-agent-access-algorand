@@ -8,6 +8,7 @@ The enterprise package and CLI cover five operational needs:
 - posture reporting for policy, mandates, and receipts
 - risk scoring for consequential access attempts
 - signed agent identity enforcement
+- immutable evidence bundle manifests
 - privacy-safe audit redaction
 - OpenTelemetry-style span export
 - CEF/SIEM export
@@ -22,6 +23,7 @@ pnpm oaa enterprise report \
 
 pnpm oaa enterprise export-audit .oaa/receipts.jsonl --format otel --redact
 pnpm oaa enterprise export-audit .oaa/receipts.jsonl --format cef --redact --strict
+pnpm oaa evidence bundle --policy agent-access.json --mandates agent-mandates.json --ledger .oaa/receipts.jsonl --output oaa-evidence-bundle.json
 pnpm oaa identity keygen
 ```
 

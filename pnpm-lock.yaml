@@ -90,6 +90,9 @@ importers:
       '@open-agent-access/enterprise':
         specifier: workspace:*
         version: link:../enterprise
+      '@open-agent-access/evidence':
+        specifier: workspace:*
+        version: link:../evidence
       '@open-agent-access/identity':
         specifier: workspace:*
         version: link:../identity
@@ -125,6 +128,15 @@ importers:
         version: 3.25.76
 
   packages/enterprise:
+    dependencies:
+      '@open-agent-access/core':
+        specifier: workspace:*
+        version: link:../core
+      '@open-agent-access/mandates':
+        specifier: workspace:*
+        version: link:../mandates
+
+  packages/evidence:
     dependencies:
       '@open-agent-access/core':
         specifier: workspace:*

@@ -3,6 +3,7 @@ import { checkCommand, fetchCommand } from "./commands/check.js";
 import { conformanceRunCommand } from "./commands/conformance.js";
 import { doctorCommand } from "./commands/doctor.js";
 import { enterpriseExportAuditCommand, enterpriseReportCommand } from "./commands/enterprise.js";
+import { evidenceBundleCommand, evidenceVerifyCommand } from "./commands/evidence.js";
 import { identityKeygenCommand, identitySignRequestCommand, identityVerifyRequestCommand } from "./commands/identity.js";
 import { initCommand } from "./commands/init.js";
 import { explainPolicyCommand, initPolicyCommand, lintPolicyCommand, printPolicyCommand, validatePolicyCommand } from "./commands/policy.js";
@@ -54,6 +55,8 @@ async function main() {
   if (command === "doctor") return doctorCommand(options);
   if (command === "enterprise" && subcommand === "report") return enterpriseReportCommand(options);
   if (command === "enterprise" && subcommand === "export-audit" && target) return enterpriseExportAuditCommand(target, options);
+  if (command === "evidence" && subcommand === "bundle") return evidenceBundleCommand(options);
+  if (command === "evidence" && subcommand === "verify" && target) return evidenceVerifyCommand(target, options);
   if (command === "identity" && subcommand === "keygen") return identityKeygenCommand(options);
   if (command === "identity" && subcommand === "sign-request") return identitySignRequestCommand(options);
   if (command === "identity" && subcommand === "verify-request") return identityVerifyRequestCommand(options);
@@ -117,6 +120,8 @@ Commands:
   oaa doctor [--payments] [--policy agent-access.json] [--ledger .oaa/receipts.jsonl] [--json]
   oaa enterprise report [--policy agent-access.json] [--mandates agent-mandates.json] [--ledger .oaa/receipts.jsonl] [--json]
   oaa enterprise export-audit .oaa/receipts.jsonl [--format otel|cef] [--redact] [--strict]
+  oaa evidence bundle [--policy agent-access.json] [--mandates agent-mandates.json] [--ledger .oaa/receipts.jsonl] [--output oaa-evidence-bundle.json]
+  oaa evidence verify oaa-evidence-bundle.json [--json]
   oaa identity keygen [--public-key .oaa/agent-public.pem] [--private-key .oaa/agent-private.pem]
   oaa identity sign-request --private-key .oaa/agent-private.pem --key-id did:web:agent.example#key-1 --agent-id did:web:agent.example --url URL --purpose research --use read
   oaa identity verify-request --trusted-keys trusted-agent-keys.json --key-id KEY --signature SIG --created ISO --agent-id AGENT --url URL --purpose research --use read --trace-id TRACE

@@ -62,6 +62,16 @@
 - `createEvidenceBundleDigest(input)`: creates a compact digest over policy,
   mandates, receipts, and events.
 
+## `@open-agent-access/evidence`
+
+- `createEvidenceBundle(input)`: creates an immutable evidence manifest over
+  policy, mandates, receipts, and events.
+- `verifyEvidenceBundle(bundle)`: verifies manifest counts, head hash, and bundle
+  hash.
+- `putImmutableEvidenceBundle(store, bundle, options)`: writes a create-only
+  manifest object to an immutable store abstraction.
+- `createMemoryImmutableEvidenceStore()`: test fixture for create-only behavior.
+
 ## `@open-agent-access/hono`
 
 - `agentAccessMiddleware(options)`: Hono middleware for policy enforcement,
@@ -85,6 +95,8 @@ oaa doctor
 oaa conformance run
 oaa enterprise report --policy agent-access.json --mandates agent-mandates.json --ledger .oaa/receipts.jsonl
 oaa enterprise export-audit .oaa/receipts.jsonl --format otel --redact
+oaa evidence bundle --policy agent-access.json --mandates agent-mandates.json --ledger .oaa/receipts.jsonl --output oaa-evidence-bundle.json
+oaa evidence verify oaa-evidence-bundle.json
 oaa identity keygen
 oaa identity sign-request --private-key .oaa/agent-private.pem --key-id did:web:agent.example#key-1 --agent-id did:web:agent.example --url URL --purpose research --use read
 oaa policy init --template publisher --origin https://example.com
