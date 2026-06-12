@@ -1,0 +1,57 @@
+{
+  "version": "0.1",
+  "protocol": "open-agent-access",
+  "kind": "agent-mandates",
+  "issuer": {
+    "name": "Trust Passport Publisher",
+    "origin": "http://localhost:4024",
+    "contact": "mailto:agents@example.publisher"
+  },
+  "mandates": [
+    {
+      "id": "research-agent-public-claims",
+      "subject": {
+        "agentId": "did:web:agent.example#research-agent",
+        "principal": "user:steve@example.com",
+        "operator": "Example Labs"
+      },
+      "delegator": {
+        "id": "user:steve@example.com",
+        "name": "Steve",
+        "contact": "mailto:steve@example.com"
+      },
+      "scope": {
+        "purposes": ["research", "indexing"],
+        "uses": ["read", "summarize", "quote", "ai-input"],
+        "methods": ["GET"],
+        "resources": ["http://localhost:4024/briefs/**", "http://localhost:4024/.well-known/trust-passport.json"],
+        "tools": ["fetch", "publisher.claims.read"],
+        "consequenceClasses": ["public-read", "claim-summary"],
+        "maxBudget": {
+          "amount": "0.05",
+          "currency": "USD"
+        }
+      },
+      "expiresAt": "2027-06-12T00:00:00.000Z",
+      "approval": {
+        "requiredForConsequences": ["publish", "private-data"],
+        "requiredAboveBudget": {
+          "amount": "0.05",
+          "currency": "USD"
+        },
+        "approver": "mailto:steve@example.com",
+        "escalationUrl": "http://localhost:4024/review"
+      },
+      "evidence": {
+        "events": ["policy_discovered", "mandate_evaluated", "policy_decision", "fetch_completed"],
+        "receiptRequired": true,
+        "policyHashRequired": true,
+        "paymentReceiptRequired": false
+      },
+      "revocation": {
+        "url": "http://localhost:4024/.well-known/agent-stop",
+        "contact": "mailto:agents@example.publisher"
+      }
+    }
+  ]
+}

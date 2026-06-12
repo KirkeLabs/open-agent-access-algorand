@@ -1,7 +1,7 @@
 {
-  "name": "@open-agent-access/conformance",
+  "name": "@open-agent-access/mandates",
   "version": "0.1.0",
-  "description": "Conformance fixtures and runner for Open Agent Access v0.1 implementations.",
+  "description": "Mandate graph primitives for delegated agent authority in Open Agent Access.",
   "type": "module",
   "license": "Apache-2.0",
   "publishConfig": {
@@ -21,7 +21,6 @@
   },
   "dependencies": {
     "@open-agent-access/core": "workspace:*",
-    "@open-agent-access/mandates": "workspace:*",
-    "@open-agent-access/payments-algorand-x402": "workspace:*"
+    "zod": "^3.24.1"
   }
 }

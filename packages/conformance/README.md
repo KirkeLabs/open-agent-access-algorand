@@ -9,4 +9,5 @@ const result = await runConformanceSuite();
 ```
 
 The suite checks policy validation, path matching, decisions, headers, receipt
-hash chaining, and the Algorand x402 profile fixtures.
+hash chaining, mandate fail-closed behavior, event trail hash chaining, and the
+Algorand x402 profile fixtures.

@@ -1,0 +1,49 @@
+{
+  "version": "0.1",
+  "protocol": "open-agent-access",
+  "kind": "trust-passport",
+  "canonicalUrl": "http://localhost:4024/briefs/ai-carry-papers",
+  "title": "AI Now Has To Carry Its Papers",
+  "publisher": {
+    "name": "Trust Passport Publisher",
+    "origin": "http://localhost:4024",
+    "contact": "mailto:agents@example.publisher"
+  },
+  "authorship": {
+    "author": "Kirke Labs",
+    "publishedAt": "2026-06-12T08:00:00.000Z",
+    "updatedAt": "2026-06-12T08:00:00.000Z"
+  },
+  "claims": [
+    {
+      "id": "delegated-authority",
+      "text": "Delegated authority is becoming the atomic unit of AI governance.",
+      "sources": [
+        "https://example.org/source/microsoft-agent-id",
+        "https://example.org/source/aws-agentcore-policy",
+        "https://example.org/source/nist-critical-infrastructure-ai"
+      ],
+      "confidence": "editorial-analysis"
+    },
+    {
+      "id": "discovery-action-layer",
+      "text": "The web discovery layer is becoming an action layer for claims, labels, snippets, transactions, and compliance objects.",
+      "sources": [
+        "https://example.org/source/search-generative-reporting",
+        "https://example.org/source/publisher-agent-access"
+      ],
+      "confidence": "editorial-analysis"
+    }
+  ],
+  "aiUse": {
+    "generated": false,
+    "assisted": true,
+    "disclosure": "AI systems may have been used for synthesis, formatting, or review; claims remain publisher-owned."
+  },
+  "agentAccess": {
+    "policyUrl": "http://localhost:4024/.well-known/agent-access.json",
+    "mandatesUrl": "http://localhost:4024/.well-known/agent-mandates.json",
+    "receiptRequired": true,
+    "attribution": "source-url"
+  }
+}

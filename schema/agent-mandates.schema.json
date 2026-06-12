@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-agent-access.org/schema/agent-mandates.schema.json",
+  "title": "Open Agent Access Mandate Document",
+  "type": "object",
+  "required": ["version", "protocol", "kind", "issuer", "mandates"],
+  "properties": {
+    "version": { "const": "0.1" },
+    "protocol": { "const": "open-agent-access" },
+    "kind": { "const": "agent-mandates" },
+    "issuer": {
+      "type": "object",
+      "required": ["name", "origin"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "origin": { "type": "string", "format": "uri" },
+        "contact": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "mandates": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/mandate" }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "budget": {
+      "type": "object",
+      "required": ["amount", "currency"],
+      "properties": {
+        "amount": { "type": "string", "minLength": 1 },
+        "currency": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "mandate": {
+      "type": "object",
+      "required": ["id", "subject", "delegator", "scope", "expiresAt"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "subject": {
+          "type": "object",
+          "required": ["agentId"],
+          "properties": {
+            "agentId": { "type": "string", "minLength": 1 },
+            "principal": { "type": "string" },
+            "operator": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "delegator": {
+          "type": "object",
+          "required": ["id"],
+          "properties": {
+            "id": { "type": "string", "minLength": 1 },
+            "name": { "type": "string" },
+            "contact": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "scope": {
+          "type": "object",
+          "required": ["purposes"],
+          "properties": {
+            "purposes": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+            "uses": { "type": "array", "items": { "type": "string" } },
+            "methods": { "type": "array", "items": { "type": "string" } },
+            "resources": { "type": "array", "items": { "type": "string" } },
+            "tools": { "type": "array", "items": { "type": "string" } },
+            "consequenceClasses": { "type": "array", "items": { "type": "string" } },
+            "maxBudget": { "$ref": "#/$defs/budget" }
+          },
+          "additionalProperties": false
+        },
+        "expiresAt": { "type": "string" },
+        "approval": {
+          "type": "object",
+          "properties": {
+            "requiredForConsequences": { "type": "array", "items": { "type": "string" } },
+            "requiredAboveBudget": { "$ref": "#/$defs/budget" },
+            "approver": { "type": "string" },
+            "escalationUrl": { "type": "string", "format": "uri" }
+          },
+          "additionalProperties": false
+        },
+        "evidence": {
+          "type": "object",
+          "properties": {
+            "events": { "type": "array", "items": { "type": "string" } },
+            "receiptRequired": { "type": "boolean" },
+            "policyHashRequired": { "type": "boolean" },
+            "paymentReceiptRequired": { "type": "boolean" }
+          },
+          "additionalProperties": false
+        },
+        "revocation": {
+          "type": "object",
+          "properties": {
+            "url": { "type": "string", "format": "uri" },
+            "contact": { "type": "string" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

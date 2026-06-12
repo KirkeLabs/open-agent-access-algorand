@@ -7,6 +7,9 @@
 - Hono middleware
 - JSONL receipts
 - Algorand x402 TestNet adapter
+- mandate graph package
+- MCP tool guard
+- trust-passport publisher example
 - examples
 - in-memory replay/idempotency guardrails for Hono paid routes
 - CI with build, tests, lint, and common secret-pattern scan
@@ -16,7 +19,7 @@
 - Express/Fastify/Next middleware
 - RSL import
 - robots.txt compatibility checks
-- MCP server/tool adapter
+- richer MCP server/tool adapters for common SDKs
 - signed receipts
 - shared datastore replay cache
 - x402 self-hosted facilitator docs

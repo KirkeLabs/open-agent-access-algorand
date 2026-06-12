@@ -5,9 +5,12 @@ import { join } from "node:path";
 import { Hono } from "hono";
 import {
   appendReceipt,
+  appendAccessEvent,
+  attachEventTrailToReceipt,
   budgetAllowsPrice,
   buildAgentAccessHeaders,
   buildSiteDecisionHeaders,
+  createAccessEvent,
   createReceiptSigningKeyPair,
   createPolicyTemplate,
   decideAccess,
@@ -22,6 +25,7 @@ import {
   reconcileReceiptLedgers,
   signReceipt,
   validateAgentAccessPolicy,
+  verifyAccessEventTrail,
   verifyReceiptChain,
   verifyReceiptSignature,
   type AgentAccessPolicy
@@ -42,6 +46,8 @@ import { agentAccessExpressMiddleware } from "../packages/express/src/index.js";
 import { createAgentAccessFastifyHook } from "../packages/fastify/src/index.js";
 import { withAgentAccessCloudflare } from "../packages/cloudflare/src/index.js";
 import { runConformanceSuite } from "../packages/conformance/src/index.js";
+import { evaluateMandate, validateMandateDocument, type MandateDocument } from "../packages/mandates/src/index.js";
+import { createAgentAccessMcpToolGuard, McpToolAuthorizationError } from "../packages/mcp/src/index.js";
 
 type Test = { name: string; fn: () => Promise<void> | void };
 const tests: Test[] = [];
@@ -76,6 +82,44 @@ const policy: AgentAccessPolicy = {
   ]
 };
 
+const mandateDocument: MandateDocument = {
+  version: "0.1",
+  protocol: "open-agent-access",
+  kind: "agent-mandates",
+  issuer: { name: "Example", origin: "https://example.com" },
+  mandates: [
+    {
+      id: "research-public",
+      subject: {
+        agentId: "did:web:agent.example",
+        principal: "user:steve@example.com",
+        operator: "Example Labs"
+      },
+      delegator: { id: "user:steve@example.com", name: "Steve" },
+      scope: {
+        purposes: ["research"],
+        uses: ["read", "ai-input"],
+        methods: ["GET", "POST"],
+        resources: ["https://example.com/docs/**", "https://example.com/mcp/tools/**"],
+        tools: ["fetch", "docs.search"],
+        consequenceClasses: ["public-read"],
+        maxBudget: { amount: "0.05", currency: "USD" }
+      },
+      expiresAt: "2099-01-01T00:00:00.000Z",
+      approval: {
+        requiredForConsequences: ["publish"],
+        requiredAboveBudget: { amount: "0.05", currency: "USD" },
+        escalationUrl: "https://example.com/review"
+      },
+      evidence: {
+        events: ["mandate_evaluated", "policy_decision"],
+        receiptRequired: true,
+        policyHashRequired: true
+      }
+    }
+  ]
+};
+
 test("policy schema validation", () => {
   assert.equal(validateAgentAccessPolicy(policy).rules.length, 2);
   for (const template of ["publisher", "paid-api", "mcp-tool", "docs-site", "research-friendly"] as const) {
@@ -88,6 +132,142 @@ test("conformance suite passes reference fixtures", async () => {
   const result = await runConformanceSuite();
   assert.equal(result.ok, true);
   assert.ok(result.checks.length >= 8);
+});
+
+test("mandate graph validation and fail-closed evaluation", () => {
+  const mandates = validateMandateDocument(mandateDocument);
+  const allowed = evaluateMandate(mandates, {
+    agentId: "did:web:agent.example",
+    principal: "user:steve@example.com",
+    operator: "Example Labs",
+    purpose: "research",
+    use: "read",
+    method: "GET",
+    url: "https://example.com/docs/page",
+    tool: "fetch",
+    consequence: "public-read",
+    budget: { amount: "0.01", currency: "USD" },
+    now: new Date("2026-06-12T00:00:00.000Z")
+  });
+  assert.equal(allowed.decision, "allow");
+  assert.ok(allowed.mandateHash);
+
+  const approval = evaluateMandate(mandates, {
+    agentId: "did:web:agent.example",
+    principal: "user:steve@example.com",
+    operator: "Example Labs",
+    purpose: "research",
+    method: "GET",
+    url: "https://example.com/docs/page",
+    tool: "fetch",
+    consequence: "publish",
+    now: new Date("2026-06-12T00:00:00.000Z")
+  });
+  assert.equal(approval.decision, "deny");
+  assert.equal(approval.reason, "consequence_out_of_scope");
+
+  const denied = evaluateMandate(mandates, {
+    agentId: "did:web:agent.example",
+    principal: "user:steve@example.com",
+    operator: "Example Labs",
+    purpose: "research",
+    method: "GET",
+    url: "https://evil.example/docs/page",
+    tool: "fetch",
+    now: new Date("2026-06-12T00:00:00.000Z")
+  });
+  assert.equal(denied.decision, "deny");
+  assert.equal(denied.reason, "resource_out_of_scope");
+});
+
+test("access event trails bind to receipts", async () => {
+  const events = appendAccessEvent([
+    createAccessEvent({
+      traceId: "trace-events",
+      type: "policy_discovered",
+      actor: { role: "agent", id: "did:web:agent.example" },
+      subject: { method: "GET", url: "https://example.com/docs/page" }
+    })
+  ], {
+    traceId: "trace-events",
+    type: "policy_decision",
+    actor: { role: "site", id: "https://example.com" },
+    policy: { ruleId: "docs", policyHash: "policy-hash", decision: "allow" }
+  });
+  assert.equal(verifyAccessEventTrail(events).valid, true);
+
+  const receipt = attachEventTrailToReceipt({
+    receiptVersion: "0.1",
+    receiptType: "agent_access",
+    role: "agent",
+    traceId: "trace-events",
+    receiptId: "receipt-events",
+    timestamp: "2026-06-12T00:00:00.000Z",
+    method: "GET",
+    url: "https://example.com/docs/page",
+    origin: "https://example.com",
+    payment: { required: false }
+  }, events);
+  assert.equal(receipt.events?.length, 2);
+  assert.ok(receipt.eventTrailHash);
+
+  const tampered = [{ ...events[0], type: "denied" as const }, events[1]];
+  assert.equal(verifyAccessEventTrail(tampered).valid, false);
+});
+
+test("MCP guard enforces policy and mandate before tool calls", async () => {
+  const mcpPolicy: AgentAccessPolicy = {
+    ...policy,
+    site: { name: "MCP", origin: "https://example.com" },
+    rules: [
+      {
+        id: "mcp-docs",
+        match: { methods: ["POST"], paths: ["/mcp/tools/docs.search"] },
+        decision: "allow",
+        purposes: ["research"],
+        uses: ["ai-input"]
+      }
+    ]
+  };
+  const guard = createAgentAccessMcpToolGuard({
+    policy: mcpPolicy,
+    mandateDocument,
+    serverName: "docs",
+    toolUrlBase: "https://example.com/mcp"
+  });
+
+  const authorization = guard.authorize({
+    toolName: "docs.search",
+    purpose: "research",
+    use: "ai-input",
+    agent: { id: "did:web:agent.example", principal: "user:steve@example.com", operator: "Example Labs" },
+    consequence: "public-read",
+    budget: { amount: "0.01", currency: "USD" },
+    now: new Date("2026-06-12T00:00:00.000Z")
+  });
+  assert.equal(authorization.allowed, true);
+  assert.equal(authorization.receiptContext.toolName, "docs.search");
+  assert.equal(authorization.receiptContext.mandate?.mandateId, "research-public");
+
+  const wrapped = guard.wrapTool<{ q: string }, { ok: boolean }>("docs.search", async () => ({ ok: true }));
+  assert.deepEqual(await wrapped({ q: "oaa" }, {
+    purpose: "research",
+    use: "ai-input",
+    agent: { id: "did:web:agent.example", principal: "user:steve@example.com", operator: "Example Labs" },
+    consequence: "public-read",
+    budget: { amount: "0.01", currency: "USD" },
+    now: new Date("2026-06-12T00:00:00.000Z")
+  }), { ok: true });
+
+  await assert.rejects(() => wrapped({ q: "oaa" }, {
+    purpose: "research",
+    use: "ai-input",
+    agent: { id: "did:web:agent.example", principal: "user:steve@example.com", operator: "Example Labs" },
+    consequence: "public-read",
+    budget: { amount: "0.01", currency: "USD" },
+    url: "https://evil.example/mcp/tools/docs.search",
+    now: new Date("2026-06-12T00:00:00.000Z")
+  }), McpToolAuthorizationError);
 });
 
 test("policy lint catches unsafe operational gaps", () => {

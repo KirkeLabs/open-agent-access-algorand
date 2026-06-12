@@ -1,14 +1,18 @@
 import {
   appendReceipt,
+  appendAccessEvent,
   buildAgentAccessHeaders,
   buildSiteDecisionHeaders,
+  createAccessEvent,
   decideAccess,
   pathMatches,
   readReceiptLedger,
   validateAgentAccessPolicy,
+  verifyAccessEventTrail,
   verifyReceiptChain,
   type AgentAccessPolicy
 } from "@open-agent-access/core";
+import { evaluateMandate, validateMandateDocument, type MandateDocument } from "@open-agent-access/mandates";
 import {
   createAlgorandX402PaymentRequiredFixture,
   parseAlgorandX402SettlementHeaders
@@ -72,6 +76,35 @@ const fixturePolicy: AgentAccessPolicy = {
   ]
 };
 
+const fixtureMandates: MandateDocument = {
+  version: "0.1",
+  protocol: "open-agent-access",
+  kind: "agent-mandates",
+  issuer: { name: "Conformance Fixture", origin: "https://conformance.example" },
+  mandates: [
+    {
+      id: "agent-docs-read",
+      subject: { agentId: "did:web:agent.example", principal: "user:conformance@example" },
+      delegator: { id: "user:conformance@example" },
+      scope: {
+        purposes: ["research"],
+        uses: ["read"],
+        methods: ["GET"],
+        resources: ["https://conformance.example/docs/**"],
+        tools: ["fetch"],
+        consequenceClasses: ["public-read"],
+        maxBudget: { amount: "0.05", currency: "USD" }
+      },
+      expiresAt: "2099-01-01T00:00:00.000Z",
+      evidence: {
+        events: ["mandate_evaluated", "policy_decision"],
+        receiptRequired: true,
+        policyHashRequired: true
+      }
+    }
+  ]
+};
+
 export async function runConformanceSuite(): Promise<ConformanceResult> {
   const checks: ConformanceCheck[] = [];
   await check("policy-v0.1.valid-policy", checks, () => validateAgentAccessPolicy(fixturePolicy).rules.length === 2);
@@ -99,6 +132,43 @@ export async function runConformanceSuite(): Promise<ConformanceResult> {
     });
     const site = buildSiteDecisionHeaders({ decision: "allow", traceId: "trace", receiptId: "receipt" });
     return agent.get("AA-Protocol-Version") === "0.1" && site.get("AA-Decision") === "allow";
+  });
+  await check("mandates-v0.1.fail-closed", checks, () => {
+    const mandates = validateMandateDocument(fixtureMandates);
+    const allowed = evaluateMandate(mandates, {
+      agentId: "did:web:agent.example",
+      principal: "user:conformance@example",
+      purpose: "research",
+      use: "read",
+      method: "GET",
+      url: "https://conformance.example/docs/page",
+      tool: "fetch",
+      consequence: "public-read",
+      now: new Date("2026-06-12T00:00:00.000Z")
+    });
+    const denied = evaluateMandate(mandates, {
+      agentId: "did:web:agent.example",
+      principal: "user:conformance@example",
+      purpose: "research",
+      use: "read",
+      method: "GET",
+      url: "https://evil.example/docs/page",
+      tool: "fetch",
+      consequence: "public-read",
+      now: new Date("2026-06-12T00:00:00.000Z")
+    });
+    return allowed.decision === "allow" && denied.decision === "deny";
+  });
+  await check("events-v0.1.hash-chain", checks, () => {
+    const events = appendAccessEvent([
+      createAccessEvent({ traceId: "trace", type: "mandate_evaluated", actor: { role: "agent", id: "did:web:agent.example" } })
+    ], {
+      traceId: "trace",
+      type: "policy_decision",
+      actor: { role: "site", id: "https://conformance.example" },
+      policy: { ruleId: "docs", decision: "allow" }
+    });
+    return verifyAccessEventTrail(events).valid;
   });
   await check("receipts-v0.1.hash-chain", checks, async () => {
     const dir = await mkdtemp(join(tmpdir(), "oaa-conformance-"));

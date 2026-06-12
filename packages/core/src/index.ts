@@ -11,5 +11,6 @@ export * from "./rate-limit.js";
 export * from "./budget.js";
 export * from "./enforcement.js";
 export * from "./receipts.js";
+export * from "./events.js";
 export * from "./hash.js";
 export * from "./client.js";

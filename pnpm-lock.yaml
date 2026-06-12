@@ -66,6 +66,19 @@ importers:
         specifier: ^4.19.2
         version: 4.22.4
 
+  examples/trust-passport-publisher:
+    dependencies:
+      '@open-agent-access/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@open-agent-access/mandates':
+        specifier: workspace:*
+        version: link:../../packages/mandates
+    devDependencies:
+      tsx:
+        specifier: ^4.19.2
+        version: 4.22.4
+
   packages/cli:
     dependencies:
       '@open-agent-access/conformance':
@@ -89,6 +102,9 @@ importers:
       '@open-agent-access/core':
         specifier: workspace:*
         version: link:../core
+      '@open-agent-access/mandates':
+        specifier: workspace:*
+        version: link:../mandates
       '@open-agent-access/payments-algorand-x402':
         specifier: workspace:*
         version: link:../payments-algorand-x402
@@ -122,6 +138,24 @@ importers:
       hono:
         specifier: ^4.6.14
         version: 4.12.25
+
+  packages/mandates:
+    dependencies:
+      '@open-agent-access/core':
+        specifier: workspace:*
+        version: link:../core
+      zod:
+        specifier: ^3.24.1
+        version: 3.25.76
+
+  packages/mcp:
+    dependencies:
+      '@open-agent-access/core':
+        specifier: workspace:*
+        version: link:../core
+      '@open-agent-access/mandates':
+        specifier: workspace:*
+        version: link:../mandates
 
   packages/payments-algorand-x402:
     dependencies:

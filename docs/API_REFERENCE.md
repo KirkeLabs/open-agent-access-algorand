@@ -14,6 +14,27 @@
   `readReceiptLedger(path)`, `exportDigest(path)`.
 - `createReceiptSigningKeyPair()`, `signReceipt()`, and
   `verifyReceiptSignature()` for optional Ed25519 receipt signatures.
+- `createAccessEvent()`, `appendAccessEvent()`, `verifyAccessEventTrail()`,
+  `hashAccessEvents()`, and `attachEventTrailToReceipt()` for reconstructable
+  event trails.
+
+## `@open-agent-access/mandates`
+
+- `validateMandateDocument(input)`: validates `/.well-known/agent-mandates.json`.
+- `evaluateMandate(document, input)`: fails closed unless delegated authority
+  matches agent identity, principal, purpose, use, method, resource, tool,
+  consequence class, budget, and expiry.
+- `mandateHash(mandate)`: stable hash for receipt and event binding.
+- `buildMandateReceiptContext(result)`: compact mandate evidence for receipts.
+
+## `@open-agent-access/mcp`
+
+- `createAgentAccessMcpToolGuard(options)`: creates structural guards for MCP
+  tool handlers.
+- `authorizeMcpToolInvocation(options, invocation)`: returns policy and mandate
+  authorization metadata without binding to a specific MCP SDK.
+- `McpToolAuthorizationError`: thrown by wrapped handlers when policy or mandate
+  checks fail.
 
 ## `@open-agent-access/hono`
 
@@ -78,4 +99,5 @@ oaa receipts verify-signatures .oaa/signed-receipts.jsonl --public-key .oaa/rece
 ## `@open-agent-access/conformance`
 
 - `runConformanceSuite()`: protocol conformance checks for policy validation,
-  path matching, decisions, headers, receipts, and Algorand x402 fixtures.
+  path matching, decisions, headers, receipts, mandates, event trails, and
+  Algorand x402 fixtures.

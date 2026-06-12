@@ -10,8 +10,9 @@ choose between blocking all agents or being abused. Open Agent Access gives both
 sides a handshake:
 
 ```text
-agent intent -> policy discovery -> permission decision -> rate/load/value terms
--> optional Algorand x402 payment -> bilateral access receipt -> provenance log
+agent intent -> mandate check -> policy discovery -> permission decision
+-> rate/load/value terms -> optional Algorand x402 payment
+-> bilateral access receipt -> provenance log
 ```
 
 Built for the Algorand community, but designed as open infrastructure for the
@@ -25,6 +26,7 @@ Open Agent Access is:
 - a handshake layer for the agent-readable web
 - a neutral access-control and receipt layer for agents, sites, APIs, MCP tools, and paid content
 - an open-source Algorand-first implementation of authorised agent access with x402 settlement
+- a mandate and event-trail layer for agents that need delegated authority across fetches, API calls, and tool use
 
 Open Agent Access is not a crawler, scraping tool, bypass tool, DRM system, pure
 audit logger, pure payment wrapper, or runtime-specific agent framework.
@@ -76,7 +78,9 @@ app.use("*", agentAccessMiddleware({
 }));
 ```
 
-Expose your policy at `/.well-known/agent-access.json`.
+Expose your policy at `/.well-known/agent-access.json`. For delegated
+authority, also expose a mandate document at
+`/.well-known/agent-mandates.json`.
 
 ## Agent Builder Quickstart
 
@@ -142,11 +146,20 @@ Premium fetches show payment-required metadata and do not pay unless `--pay` or
 | Express middleware | `@open-agent-access/express` | Supported |
 | Fastify hook | `@open-agent-access/fastify` | Supported |
 | Cloudflare Workers | `@open-agent-access/cloudflare` | Supported |
+| Mandate graphs | `@open-agent-access/mandates` | Supported |
+| MCP tool guard | `@open-agent-access/mcp` | Supported |
 | Redis replay store | `@open-agent-access/storage-redis` | Supported |
 | Postgres replay store | `@open-agent-access/storage-postgres` | Supported |
 | Algorand x402 TestNet | `@open-agent-access/payments-algorand-x402` | Adapter and fixtures supported |
 | MainNet settlement | payment adapter roadmap | Planned |
 | Conformance suite | `@open-agent-access/conformance`, `oaa conformance run` | Supported |
+
+The trust-passport example combines policy, mandate, claim provenance, and
+agent-readable publishing metadata:
+
+```sh
+pnpm --filter @open-agent-access/example-trust-passport-publisher dev
+```
 
 ## Verify Receipts
 
@@ -163,6 +176,8 @@ pnpm oaa receipts reconcile .oaa/receipts.jsonl .oaa/site-receipts.jsonl
 - rate limit before expensive work
 - never pay without explicit caller opt-in and budget allowance
 - bind receipts to method, URL, policy hash, and trace ID
+- bind event trails to receipts when source retrieval, mandate checks, tool
+  calls, settlement, publication, rollback, or correction need reconstruction
 - bind payment prompts to method, URL, policy hash, rule ID, and trace ID
 - reject repeated paid proof metadata with a replay cache
 - use idempotency keys and route locks for paid fulfilment paths
@@ -182,11 +197,14 @@ authors, and protocol reviewers are welcome. Good starting labels include
 - [Architecture](docs/ARCHITECTURE.md)
 - [API Reference](docs/API_REFERENCE.md)
 - [Header Registry](docs/HEADER_REGISTRY.md)
+- [Mandates](docs/MANDATES.md)
+- [Trust Passports](docs/TRUST_PASSPORT.md)
 - [Architecture Decision Records](docs/ADRS.md)
 - [Production Deployment](docs/PRODUCTION_DEPLOYMENT.md)
 - [Confidence Checklist](docs/CONFIDENCE_CHECKLIST.md)
 - [Machine-readable examples](examples/machine-readable/README.md)
 - [Algorand x402](docs/ALGORAND_X402.md)
 - [Algorand x402 Profile Spec](spec/algorand-x402-profile-v0.1.md)
+- [Agent Mandates Spec](spec/agent-mandates-v0.1.md)
 - [Threat Model](docs/THREAT_MODEL.md)
 - [Kirke Labs Stewardship](docs/KIRKE_LABS.md)

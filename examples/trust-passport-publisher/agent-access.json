@@ -1,0 +1,59 @@
+{
+  "version": "0.1",
+  "protocol": "open-agent-access",
+  "site": {
+    "name": "Trust Passport Publisher",
+    "origin": "http://localhost:4024",
+    "contact": "mailto:agents@example.publisher",
+    "securityContact": "mailto:security@example.publisher",
+    "terms": "http://localhost:4024/agent-terms"
+  },
+  "defaults": {
+    "decision": "review",
+    "respectRobotsTxt": true,
+    "requireAgentIdentity": true,
+    "requirePurpose": true,
+    "requireReceipt": true
+  },
+  "rules": [
+    {
+      "id": "public-claims",
+      "match": {
+        "methods": ["GET"],
+        "paths": ["/briefs/**", "/.well-known/trust-passport.json"]
+      },
+      "decision": "allow",
+      "purposes": ["research", "indexing", "accessibility"],
+      "uses": ["read", "summarize", "quote", "ai-input"],
+      "deniedUses": ["ai-train"],
+      "rateLimit": {
+        "requests": 60,
+        "window": "1m",
+        "burst": 10,
+        "respectRetryAfter": true
+      },
+      "attribution": {
+        "required": true,
+        "format": "source-url"
+      },
+      "retention": {
+        "maxAge": "30d",
+        "allowEmbedding": false
+      },
+      "quoteLimit": {
+        "maxWords": 120
+      }
+    },
+    {
+      "id": "private-source-room",
+      "match": {
+        "methods": ["GET", "POST"],
+        "paths": ["/sources/private/**"]
+      },
+      "decision": "human_only",
+      "purposes": ["due-diligence"],
+      "uses": ["read"],
+      "reviewUrl": "http://localhost:4024/review"
+    }
+  ]
+}

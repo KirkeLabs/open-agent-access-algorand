@@ -198,6 +198,8 @@ export interface ReceiptRecord {
     contentType?: string | null;
     contentHash?: string;
   };
+  events?: AccessEvent[];
+  eventTrailHash?: string;
   signature?: {
     type: "ed25519";
     publicKeyPem?: string;
@@ -210,4 +212,57 @@ export interface ReceiptRecord {
 export interface ReceiptLedgerOptions {
   type: "jsonl";
   path: string;
+}
+
+export type AccessEventType =
+  | "policy_discovered"
+  | "mandate_evaluated"
+  | "policy_decision"
+  | "payment_required"
+  | "payment_settled"
+  | "fetch_attempted"
+  | "fetch_completed"
+  | "denied"
+  | "throttled"
+  | "human_escalated"
+  | "rolled_back"
+  | "corrected";
+
+export interface AccessEvent {
+  eventVersion: "0.1";
+  eventId: string;
+  traceId: string;
+  type: AccessEventType;
+  timestamp: string;
+  actor?: {
+    role: "agent" | "site" | "facilitator" | "human" | "system";
+    id?: string;
+  };
+  subject?: {
+    method?: string;
+    url?: string;
+    tool?: string;
+  };
+  policy?: {
+    url?: string;
+    ruleId?: string;
+    policyHash?: string;
+    decision?: AgentAccessDecision;
+  };
+  mandate?: {
+    mandateId?: string;
+    mandateHash?: string;
+    decision?: string;
+    delegator?: string;
+  };
+  payment?: {
+    required?: boolean;
+    type?: string;
+    settlement?: string;
+    network?: string;
+    transactionId?: string;
+  };
+  evidence?: Record<string, unknown>;
+  previousEventHash?: string;
+  eventHash?: string;
 }

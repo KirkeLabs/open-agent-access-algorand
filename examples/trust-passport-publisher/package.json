@@ -1,0 +1,16 @@
+{
+  "name": "@open-agent-access/example-trust-passport-publisher",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "@open-agent-access/core": "workspace:*",
+    "@open-agent-access/mandates": "workspace:*"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2"
+  }
+}

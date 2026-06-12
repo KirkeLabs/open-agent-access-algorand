@@ -1,7 +1,7 @@
 {
-  "name": "@open-agent-access/conformance",
+  "name": "@open-agent-access/mcp",
   "version": "0.1.0",
-  "description": "Conformance fixtures and runner for Open Agent Access v0.1 implementations.",
+  "description": "MCP tool-boundary guard for Open Agent Access policy and mandate enforcement.",
   "type": "module",
   "license": "Apache-2.0",
   "publishConfig": {
@@ -21,7 +21,6 @@
   },
   "dependencies": {
     "@open-agent-access/core": "workspace:*",
-    "@open-agent-access/mandates": "workspace:*",
-    "@open-agent-access/payments-algorand-x402": "workspace:*"
+    "@open-agent-access/mandates": "workspace:*"
   }
 }

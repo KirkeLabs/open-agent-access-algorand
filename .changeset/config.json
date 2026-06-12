@@ -14,7 +14,9 @@
       "@open-agent-access/express",
       "@open-agent-access/fastify",
       "@open-agent-access/cloudflare",
-      "@open-agent-access/conformance"
+      "@open-agent-access/conformance",
+      "@open-agent-access/mandates",
+      "@open-agent-access/mcp"
     ]
   ],
   "access": "public",
