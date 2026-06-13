@@ -1,6 +1,5 @@
-import { readFile, stat } from "node:fs/promises";
+import { readdir, readFile, stat } from "node:fs/promises";
 import { join } from "node:path";
-import { spawnSync } from "node:child_process";
 
 interface PackageJson {
   name?: string;
@@ -15,14 +14,8 @@ interface PackageJson {
   bin?: Record<string, string>;
 }
 
-const listed = spawnSync("rg", ["--files", "packages", "-g", "package.json"], { encoding: "utf8" });
-if (listed.status !== 0) {
-  console.error(listed.stderr || "failed to list package manifests");
-  process.exit(1);
-}
-
 const failures: string[] = [];
-for (const manifestPath of listed.stdout.split("\n").filter(Boolean).sort()) {
+for (const manifestPath of await packageManifestPaths()) {
   const packageDir = manifestPath.slice(0, -"package.json".length).replace(/\/$/, "");
   const manifest = JSON.parse(await readFile(manifestPath, "utf8")) as PackageJson;
   check(Boolean(manifest.name?.startsWith("@kirkelabs/open-agent-access")), manifestPath, "package name must use the @kirkelabs/open-agent-access package family");
@@ -59,4 +52,15 @@ function check(condition: boolean, manifestPath: string, message: string) {
 
 async function exists(path: string) {
   return stat(path).then(() => true).catch(() => false);
+}
+
+async function packageManifestPaths() {
+  const entries = await readdir("packages", { withFileTypes: true });
+  const manifests: string[] = [];
+  for (const entry of entries) {
+    if (!entry.isDirectory()) continue;
+    const manifestPath = join("packages", entry.name, "package.json");
+    if (await exists(manifestPath)) manifests.push(manifestPath);
+  }
+  return manifests.sort();
 }

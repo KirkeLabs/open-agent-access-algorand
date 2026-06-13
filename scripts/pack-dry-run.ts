@@ -1,12 +1,8 @@
+import { readdir, stat } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
+import { join } from "node:path";
 
-const manifests = spawnSync("rg", ["--files", "packages", "-g", "package.json"], { encoding: "utf8" });
-if (manifests.status !== 0) {
-  console.error(manifests.stderr || "failed to list package manifests");
-  process.exit(1);
-}
-
-for (const manifest of manifests.stdout.split("\n").filter(Boolean).sort()) {
+for (const manifest of await packageManifestPaths()) {
   const dir = manifest.replace(/\/package\.json$/, "");
   const result = spawnSync("npm", ["pack", "--dry-run", "--json"], {
     cwd: dir,
@@ -19,4 +15,19 @@ for (const manifest of manifests.stdout.split("\n").filter(Boolean).sort()) {
     process.exit(1);
   }
   console.log(`pack dry-run passed: ${dir}`);
+}
+
+async function packageManifestPaths() {
+  const entries = await readdir("packages", { withFileTypes: true });
+  const manifests: string[] = [];
+  for (const entry of entries) {
+    if (!entry.isDirectory()) continue;
+    const manifestPath = join("packages", entry.name, "package.json");
+    if (await exists(manifestPath)) manifests.push(manifestPath);
+  }
+  return manifests.sort();
+}
+
+async function exists(path: string) {
+  return stat(path).then(() => true).catch(() => false);
 }
