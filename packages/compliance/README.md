@@ -1,4 +1,4 @@
-# @open-agent-access/compliance
+# @kirkelabs/open-agent-access-compliance
 
 Compliance control mappings for Open Agent Access.
 
@@ -7,7 +7,7 @@ technical controls to common enterprise evidence themes so security, legal,
 governance, and platform teams can review deployment posture.
 
 ```ts
-import { getComplianceMapping } from "@open-agent-access/compliance";
+import { getComplianceMapping } from "@kirkelabs/open-agent-access-compliance";
 
 const mapping = getComplianceMapping("nist-ai-rmf");
 ```

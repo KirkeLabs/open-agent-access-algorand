@@ -3,7 +3,7 @@
 Run:
 
 ```sh
-pnpm --filter @open-agent-access/example-hono-free-and-paid-site dev
+pnpm --filter @kirkelabs/open-agent-access-example-hono-free-and-paid-site dev
 ```
 
 The server listens on `http://localhost:4021`, exposes

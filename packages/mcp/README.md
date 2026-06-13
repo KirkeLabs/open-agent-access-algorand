@@ -1,4 +1,4 @@
-# @open-agent-access/mcp
+# @kirkelabs/open-agent-access-mcp
 
 MCP tool-boundary guard for Open Agent Access.
 
@@ -11,7 +11,7 @@ This package does not force a specific MCP SDK. It provides structural helpers t
 - deterministic denial metadata
 
 ```ts
-import { createAgentAccessMcpToolGuard } from "@open-agent-access/mcp";
+import { createAgentAccessMcpToolGuard } from "@kirkelabs/open-agent-access-mcp";
 
 const guard = createAgentAccessMcpToolGuard({ policy, mandateDocument });
 const wrapped = guard.wrapTool("premium.lookup", async (input) => lookup(input));

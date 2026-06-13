@@ -1,4 +1,4 @@
-# @open-agent-access/incident
+# @kirkelabs/open-agent-access-incident
 
 Incident stop-signal and revocation workflows for Open Agent Access.
 
@@ -6,7 +6,7 @@ This package turns emergency stop and revocation into a machine-readable control
 surface.
 
 ```ts
-import { createAgentStopSignal, evaluateStopSignal } from "@open-agent-access/incident";
+import { createAgentStopSignal, evaluateStopSignal } from "@kirkelabs/open-agent-access-incident";
 
 const signal = createAgentStopSignal({ reason: "incident_response" });
 const decision = evaluateStopSignal(signal, { path: "/premium/report" });

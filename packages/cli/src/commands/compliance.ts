@@ -1,4 +1,4 @@
-import { getAllComplianceMappings, getComplianceMapping, listComplianceFrameworks, type ComplianceFramework } from "@open-agent-access/compliance";
+import { getAllComplianceMappings, getComplianceMapping, listComplianceFrameworks, type ComplianceFramework } from "@kirkelabs/open-agent-access-compliance";
 
 export async function complianceMapCommand(options: Record<string, string | boolean | undefined>) {
   const framework = typeof options.framework === "string" ? options.framework : "all";

@@ -1,4 +1,4 @@
-# @open-agent-access/hono
+# @kirkelabs/open-agent-access-hono
 
 Hono middleware for Open Agent Access policy enforcement.
 
@@ -15,7 +15,7 @@ Includes:
 
 ```ts
 import { Hono } from "hono";
-import { agentAccessMiddleware } from "@open-agent-access/hono";
+import { agentAccessMiddleware } from "@kirkelabs/open-agent-access-hono";
 
 const app = new Hono();
 
@@ -25,5 +25,5 @@ app.use("*", agentAccessMiddleware({
 }));
 ```
 
-Use `@open-agent-access/storage-redis` or
-`@open-agent-access/storage-postgres` for production replay protection.
+Use `@kirkelabs/open-agent-access-storage-redis` or
+`@kirkelabs/open-agent-access-storage-postgres` for production replay protection.

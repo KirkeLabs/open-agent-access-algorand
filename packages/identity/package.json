@@ -1,5 +1,5 @@
 {
-  "name": "@open-agent-access/identity",
+  "name": "@kirkelabs/open-agent-access-identity",
   "version": "0.1.0",
   "description": "Verifiable agent identity helpers for Open Agent Access request signing.",
   "type": "module",
@@ -7,19 +7,24 @@
   "publishConfig": {
     "access": "public"
   },
-  "files": ["src", "dist", "README.md", "package.json"],
-  "main": "src/index.ts",
-  "types": "src/index.ts",
+  "files": [
+    "src",
+    "dist",
+    "README.md",
+    "package.json"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./src/index.ts",
-      "import": "./src/index.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     }
   },
   "scripts": {
     "build": "tsc -p ../../tsconfig.base.json"
   },
   "dependencies": {
-    "@open-agent-access/core": "workspace:*"
+    "@kirkelabs/open-agent-access-core": "workspace:*"
   }
 }

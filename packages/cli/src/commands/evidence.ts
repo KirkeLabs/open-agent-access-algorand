@@ -1,7 +1,7 @@
 import { readFile, writeFile } from "node:fs/promises";
-import { createEvidenceBundle, verifyEvidenceBundle, type EvidenceBundle } from "@open-agent-access/evidence";
-import { readPolicyFile, readReceiptLedger } from "@open-agent-access/core";
-import { validateMandateDocument } from "@open-agent-access/mandates";
+import { createEvidenceBundle, verifyEvidenceBundle, type EvidenceBundle } from "@kirkelabs/open-agent-access-evidence";
+import { readPolicyFile, readReceiptLedger } from "@kirkelabs/open-agent-access-core";
+import { validateMandateDocument } from "@kirkelabs/open-agent-access-mandates";
 
 export async function evidenceBundleCommand(options: Record<string, string | boolean | undefined>) {
   const policyPath = stringOption(options, "policy");

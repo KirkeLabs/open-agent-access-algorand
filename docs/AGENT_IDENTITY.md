@@ -4,7 +4,7 @@ Declared agent headers are useful, but enterprise deployments need proof that an
 agent identity was asserted by a trusted key.
 
 Open Agent Access supports optional Ed25519 request signing through
-`@open-agent-access/identity`.
+`@kirkelabs/open-agent-access-identity`.
 
 ## Signed Fields
 

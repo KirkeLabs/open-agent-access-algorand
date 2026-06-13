@@ -1,4 +1,4 @@
-# @open-agent-access/identity
+# @kirkelabs/open-agent-access-identity
 
 Verifiable agent identity helpers for Open Agent Access.
 
@@ -12,7 +12,7 @@ import {
   createAgentIdentityKeyPair,
   signAgentAccessHeaders,
   verifyAgentAccessHeaders
-} from "@open-agent-access/identity";
+} from "@kirkelabs/open-agent-access-identity";
 
 const keys = createAgentIdentityKeyPair();
 signAgentAccessHeaders(headers, {

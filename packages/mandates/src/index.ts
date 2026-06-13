@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { hashCanonicalJson, pathMatches, type AgentIdentity, type Budget } from "@open-agent-access/core";
+import { hashCanonicalJson, pathMatches, type AgentIdentity, type Budget } from "@kirkelabs/open-agent-access-core";
 
 export type MandateDecision = "allow" | "deny" | "needs_approval" | "expired";
 

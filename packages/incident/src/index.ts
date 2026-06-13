@@ -1,4 +1,4 @@
-import { pathMatches } from "@open-agent-access/core";
+import { pathMatches } from "@kirkelabs/open-agent-access-core";
 import { z } from "zod";
 
 export interface AgentStopSignal {

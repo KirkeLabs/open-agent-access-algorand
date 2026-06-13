@@ -1,7 +1,7 @@
 import { access } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
-import { readPolicyFile, verifyReceiptChain } from "@open-agent-access/core";
-import { checkAlgorandX402Runtime, validateAlgorandX402Config } from "@open-agent-access/payments-algorand-x402";
+import { readPolicyFile, verifyReceiptChain } from "@kirkelabs/open-agent-access-core";
+import { checkAlgorandX402Runtime, validateAlgorandX402Config } from "@kirkelabs/open-agent-access-payments-algorand-x402";
 
 interface Check {
   name: string;

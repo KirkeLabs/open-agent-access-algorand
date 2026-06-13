@@ -1,8 +1,8 @@
 import { readFile } from "node:fs/promises";
 import { createServer } from "node:http";
 import { join } from "node:path";
-import { hashCanonicalJson, validateAgentAccessPolicy } from "@open-agent-access/core";
-import { evaluateMandate, validateMandateDocument } from "@open-agent-access/mandates";
+import { hashCanonicalJson, validateAgentAccessPolicy } from "@kirkelabs/open-agent-access-core";
+import { evaluateMandate, validateMandateDocument } from "@kirkelabs/open-agent-access-mandates";
 
 const root = new URL("..", import.meta.url);
 const port = Number(process.env.PORT ?? 4024);

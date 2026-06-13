@@ -1,6 +1,6 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
-import { agentAccessMiddleware } from "@open-agent-access/hono";
+import { agentAccessMiddleware } from "@kirkelabs/open-agent-access-hono";
 
 const app = new Hono();
 

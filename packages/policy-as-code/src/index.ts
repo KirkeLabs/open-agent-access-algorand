@@ -1,4 +1,4 @@
-import { hashPolicy, type AgentAccessPolicy, type AgentAccessRule } from "@open-agent-access/core";
+import { hashPolicy, type AgentAccessPolicy, type AgentAccessRule } from "@kirkelabs/open-agent-access-core";
 
 export interface OpaPolicyBundle {
   format: "opa";

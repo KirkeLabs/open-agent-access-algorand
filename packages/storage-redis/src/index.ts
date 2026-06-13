@@ -1,4 +1,4 @@
-import type { ReplayStore } from "@open-agent-access/hono";
+import type { ReplayStore } from "@kirkelabs/open-agent-access-hono";
 
 export interface RedisReplayClient {
   get(key: string): Promise<string | null> | string | null;

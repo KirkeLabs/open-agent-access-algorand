@@ -1,9 +1,9 @@
-# @open-agent-access/conformance
+# @kirkelabs/open-agent-access-conformance
 
 Conformance fixtures and runner for Open Agent Access v0.1.
 
 ```ts
-import { runConformanceSuite } from "@open-agent-access/conformance";
+import { runConformanceSuite } from "@kirkelabs/open-agent-access-conformance";
 
 const result = await runConformanceSuite();
 ```

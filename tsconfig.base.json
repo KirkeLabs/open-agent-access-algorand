@@ -16,17 +16,24 @@
     "rootDir": ".",
     "types": ["node", "vitest/globals"],
     "paths": {
-      "@open-agent-access/core": ["./packages/core/src/index.ts"],
-      "@open-agent-access/hono": ["./packages/hono/src/index.ts"],
-      "@open-agent-access/payments-algorand-x402": ["./packages/payments-algorand-x402/src/index.ts"],
-      "@open-agent-access/mandates": ["./packages/mandates/src/index.ts"],
-      "@open-agent-access/mcp": ["./packages/mcp/src/index.ts"],
-      "@open-agent-access/enterprise": ["./packages/enterprise/src/index.ts"],
-      "@open-agent-access/identity": ["./packages/identity/src/index.ts"],
-      "@open-agent-access/evidence": ["./packages/evidence/src/index.ts"],
-      "@open-agent-access/policy-as-code": ["./packages/policy-as-code/src/index.ts"],
-      "@open-agent-access/compliance": ["./packages/compliance/src/index.ts"],
-      "@open-agent-access/incident": ["./packages/incident/src/index.ts"]
+      "@kirkelabs/open-agent-access-core": ["./packages/core/src/index.ts"],
+      "@kirkelabs/open-agent-access-hono": ["./packages/hono/src/index.ts"],
+      "@kirkelabs/open-agent-access-payments-algorand-x402": ["./packages/payments-algorand-x402/src/index.ts"],
+      "@kirkelabs/open-agent-access-mandates": ["./packages/mandates/src/index.ts"],
+      "@kirkelabs/open-agent-access-mcp": ["./packages/mcp/src/index.ts"],
+      "@kirkelabs/open-agent-access-enterprise": ["./packages/enterprise/src/index.ts"],
+      "@kirkelabs/open-agent-access-identity": ["./packages/identity/src/index.ts"],
+      "@kirkelabs/open-agent-access-evidence": ["./packages/evidence/src/index.ts"],
+      "@kirkelabs/open-agent-access-policy-as-code": ["./packages/policy-as-code/src/index.ts"],
+      "@kirkelabs/open-agent-access-compliance": ["./packages/compliance/src/index.ts"],
+      "@kirkelabs/open-agent-access-incident": ["./packages/incident/src/index.ts"],
+      "@kirkelabs/open-agent-access-cli": ["./packages/cli/src/index.ts"],
+      "@kirkelabs/open-agent-access-conformance": ["./packages/conformance/src/index.ts"],
+      "@kirkelabs/open-agent-access-express": ["./packages/express/src/index.ts"],
+      "@kirkelabs/open-agent-access-fastify": ["./packages/fastify/src/index.ts"],
+      "@kirkelabs/open-agent-access-cloudflare": ["./packages/cloudflare/src/index.ts"],
+      "@kirkelabs/open-agent-access-storage-redis": ["./packages/storage-redis/src/index.ts"],
+      "@kirkelabs/open-agent-access-storage-postgres": ["./packages/storage-postgres/src/index.ts"]
     }
   },
   "include": [
@@ -34,5 +41,10 @@
     "examples/**/*.ts",
     "scripts/**/*.ts",
     "vitest.config.ts"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "packages/*/dist"
   ]
 }

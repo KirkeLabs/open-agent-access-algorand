@@ -3,7 +3,7 @@
 Start the Hono example site first, then run:
 
 ```sh
-pnpm --filter @open-agent-access/example-agent-client dev
+pnpm --filter @kirkelabs/open-agent-access-example-agent-client dev
 ```
 
 Payment is disabled unless `OAA_PAYMENTS_ENABLED=true` and `AVM_MNEMONIC` are

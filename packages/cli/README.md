@@ -1,4 +1,4 @@
-# @open-agent-access/cli
+# @kirkelabs/open-agent-access-cli
 
 Command-line tools for Open Agent Access.
 

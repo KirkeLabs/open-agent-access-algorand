@@ -1,10 +1,10 @@
-# @open-agent-access/express
+# @kirkelabs/open-agent-access-express
 
 Express-compatible middleware for Open Agent Access.
 
 ```ts
 import express from "express";
-import { agentAccessExpressMiddleware } from "@open-agent-access/express";
+import { agentAccessExpressMiddleware } from "@kirkelabs/open-agent-access-express";
 
 const app = express();
 

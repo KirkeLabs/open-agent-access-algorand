@@ -1,4 +1,4 @@
-import { runConformanceSuite } from "@open-agent-access/conformance";
+import { runConformanceSuite } from "@kirkelabs/open-agent-access-conformance";
 
 export async function conformanceRunCommand(json = false) {
   const result = await runConformanceSuite();

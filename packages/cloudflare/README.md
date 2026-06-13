@@ -1,4 +1,4 @@
-# @open-agent-access/cloudflare
+# @kirkelabs/open-agent-access-cloudflare
 
 Cloudflare Worker adapter for Open Agent Access.
 
@@ -7,7 +7,7 @@ storage is injected through `receiptSink`, so deployments can use Durable
 Objects, Queues, R2, D1, or external APIs.
 
 ```ts
-import { withAgentAccessCloudflare } from "@open-agent-access/cloudflare";
+import { withAgentAccessCloudflare } from "@kirkelabs/open-agent-access-cloudflare";
 import policy from "./agent-access.json";
 
 export default {

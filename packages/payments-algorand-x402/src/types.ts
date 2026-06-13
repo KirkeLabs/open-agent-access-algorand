@@ -1,4 +1,4 @@
-import type { Budget, PricePolicy } from "@open-agent-access/core";
+import type { Budget, PricePolicy } from "@kirkelabs/open-agent-access-core";
 
 export const ALGORAND_TESTNET_CAIP2 = "algorand:testnet";
 export const ExactAvmScheme = "exact";

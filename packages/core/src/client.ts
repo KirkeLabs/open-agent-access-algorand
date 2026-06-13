@@ -118,7 +118,7 @@ export function createAgentAccessClient(options: AgentAccessClientOptions) {
           traceId
         }).forEach((value, key) => headers.set(key, value));
         if (options.identity?.signer) {
-          const { signAgentAccessHeaders } = await import("@open-agent-access/identity");
+          const { signAgentAccessHeaders } = await import("@kirkelabs/open-agent-access-identity");
           signAgentAccessHeaders(headers, {
             method,
             url,
@@ -128,7 +128,7 @@ export function createAgentAccessClient(options: AgentAccessClientOptions) {
         }
 
         if (paymentRequired && options.payments?.algorandX402?.enabled) {
-          const { wrapFetchWithAlgorandX402Payment } = await import("@open-agent-access/payments-algorand-x402");
+          const { wrapFetchWithAlgorandX402Payment } = await import("@kirkelabs/open-agent-access-payments-algorand-x402");
           const paidFetch = await wrapFetchWithAlgorandX402Payment(fetchImpl, {
             enabled: true,
             network: payment?.network ?? options.payments.algorandX402.network ?? "testnet",

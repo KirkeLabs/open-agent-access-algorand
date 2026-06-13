@@ -1,4 +1,4 @@
-import { runAlgorandX402TestnetCheck } from "@open-agent-access/payments-algorand-x402";
+import { runAlgorandX402TestnetCheck } from "@kirkelabs/open-agent-access-payments-algorand-x402";
 
 export async function x402TestnetCheckCommand(options: Record<string, string | boolean | undefined>) {
   const result = await runAlgorandX402TestnetCheck({ live: Boolean(options.live) });

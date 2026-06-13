@@ -18,6 +18,6 @@ The recommended discovery path is:
 /.well-known/agent-mandates.json
 ```
 
-The TypeScript package is `@open-agent-access/mandates`. It validates mandate documents, hashes individual mandates, evaluates an invocation, and produces receipt context.
+The TypeScript package is `@kirkelabs/open-agent-access-mandates`. It validates mandate documents, hashes individual mandates, evaluates an invocation, and produces receipt context.
 
 Mandates are intentionally stricter than ordinary request metadata. If a mandate cannot be matched, the evaluator denies the action. If a consequence or budget requires approval, it returns `needs_approval` instead of allowing the tool or fetch.

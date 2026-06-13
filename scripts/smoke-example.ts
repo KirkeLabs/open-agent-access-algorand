@@ -1,6 +1,6 @@
 import { spawn, spawnSync } from "node:child_process";
 
-const server = spawn("corepack", ["pnpm", "--filter", "@open-agent-access/example-hono-free-and-paid-site", "dev"], {
+const server = spawn("corepack", ["pnpm", "--filter", "@kirkelabs/open-agent-access-example-hono-free-and-paid-site", "dev"], {
   stdio: ["ignore", "pipe", "pipe"]
 });
 

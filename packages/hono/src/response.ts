@@ -1,4 +1,4 @@
-import { buildSiteDecisionHeaders, type AgentAccessDecision, type AgentAccessRule } from "@open-agent-access/core";
+import { buildSiteDecisionHeaders, type AgentAccessDecision, type AgentAccessRule } from "@kirkelabs/open-agent-access-core";
 
 export function decisionStatus(decision: AgentAccessDecision): number {
   switch (decision) {

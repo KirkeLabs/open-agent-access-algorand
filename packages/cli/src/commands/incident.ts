@@ -1,5 +1,5 @@
 import { readFile, writeFile } from "node:fs/promises";
-import { createAgentStopSignal, evaluateStopSignal, validateAgentStopSignal } from "@open-agent-access/incident";
+import { createAgentStopSignal, evaluateStopSignal, validateAgentStopSignal } from "@kirkelabs/open-agent-access-incident";
 
 export async function incidentStopCommand(options: Record<string, string | boolean | undefined>) {
   const output = typeof options.output === "string" ? options.output : "agent-stop.json";

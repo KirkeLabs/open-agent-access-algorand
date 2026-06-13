@@ -30,16 +30,16 @@ development only.
 
 Official adapters:
 
-- `@open-agent-access/storage-redis`
-- `@open-agent-access/storage-postgres`
-- `@open-agent-access/express`
-- `@open-agent-access/fastify`
-- `@open-agent-access/cloudflare`
+- `@kirkelabs/open-agent-access-storage-redis`
+- `@kirkelabs/open-agent-access-storage-postgres`
+- `@kirkelabs/open-agent-access-express`
+- `@kirkelabs/open-agent-access-fastify`
+- `@kirkelabs/open-agent-access-cloudflare`
 
 Redis:
 
 ```ts
-import { createRedisReplayStore } from "@open-agent-access/storage-redis";
+import { createRedisReplayStore } from "@kirkelabs/open-agent-access-storage-redis";
 
 agentAccessMiddleware({
   policyPath: "./agent-access.json",
@@ -53,7 +53,7 @@ Postgres:
 import {
   createPostgresReplayStore,
   createPostgresReplayTableSql
-} from "@open-agent-access/storage-postgres";
+} from "@kirkelabs/open-agent-access-storage-postgres";
 
 await pg.query(createPostgresReplayTableSql());
 

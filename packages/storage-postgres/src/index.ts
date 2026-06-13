@@ -1,4 +1,4 @@
-import type { ReplayStore } from "@open-agent-access/hono";
+import type { ReplayStore } from "@kirkelabs/open-agent-access-hono";
 
 export interface PostgresReplayClient {
   query(sql: string, params?: unknown[]): Promise<{ rowCount?: number; rows?: unknown[] }>;

@@ -53,7 +53,7 @@ async function main() {
     return;
   }
 
-  if (command === "init") return initCommand();
+  if (command === "init") return initCommand(options);
   if (command === "conformance" && subcommand === "run") return conformanceRunCommand(Boolean(options.json));
   if (command === "compliance" && subcommand === "map") return complianceMapCommand(options);
   if (command === "doctor") return doctorCommand(options);
@@ -98,11 +98,11 @@ async function main() {
     Boolean(options.json)
   );
   if (command === "example" && subcommand === "site") {
-    console.log("Run: pnpm --filter @open-agent-access/example-hono-free-and-paid-site dev");
+    console.log("Run: pnpm --filter @kirkelabs/open-agent-access-example-hono-free-and-paid-site dev");
     return;
   }
   if (command === "example" && subcommand === "client") {
-    console.log("Run: pnpm --filter @open-agent-access/example-agent-client dev");
+    console.log("Run: pnpm --filter @kirkelabs/open-agent-access-example-agent-client dev");
     return;
   }
 
@@ -123,7 +123,7 @@ function printHelp() {
   console.log(`Open Agent Access CLI
 
 Commands:
-  oaa init
+  oaa init [--template static-site|hono|express|fastify|cloudflare|agent-client|algorand-x402] [--origin https://example.com] [--protected /essays] [--force]
   oaa conformance run [--json]
   oaa compliance map [--framework nist-ai-rmf|eu-ai-act|soc2|iso27001|nis2|all] [--json]
   oaa doctor [--payments] [--policy agent-access.json] [--ledger .oaa/receipts.jsonl] [--json]

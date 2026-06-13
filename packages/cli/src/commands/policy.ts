@@ -1,5 +1,5 @@
-import { createPolicyTemplate, discoverPolicy, explainPolicyDecision, lintAgentAccessPolicy, policyTemplateNames, readPolicyFile, validateAgentAccessPolicy, type PolicyTemplateName } from "@open-agent-access/core";
-import { exportCedarBundle, exportOpaBundle } from "@open-agent-access/policy-as-code";
+import { createPolicyTemplate, discoverPolicy, explainPolicyDecision, lintAgentAccessPolicy, policyTemplateNames, readPolicyFile, validateAgentAccessPolicy, type PolicyTemplateName } from "@kirkelabs/open-agent-access-core";
+import { exportCedarBundle, exportOpaBundle } from "@kirkelabs/open-agent-access-policy-as-code";
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 

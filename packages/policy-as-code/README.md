@@ -1,4 +1,4 @@
-# @open-agent-access/policy-as-code
+# @kirkelabs/open-agent-access-policy-as-code
 
 OPA/Rego and Cedar-style exports for Open Agent Access policies.
 
@@ -7,7 +7,7 @@ Policy-as-code exports help enterprise teams review, mirror, and test OAA policy
 posture in existing authorization systems.
 
 ```ts
-import { exportOpaBundle, exportCedarBundle } from "@open-agent-access/policy-as-code";
+import { exportOpaBundle, exportCedarBundle } from "@kirkelabs/open-agent-access-policy-as-code";
 
 const opa = exportOpaBundle(policy);
 const cedar = exportCedarBundle(policy);

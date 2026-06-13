@@ -1,10 +1,10 @@
-# @open-agent-access/storage-redis
+# @kirkelabs/open-agent-access-storage-redis
 
 Redis replay-store adapter for paid-route replay protection.
 
 ```ts
-import { agentAccessMiddleware } from "@open-agent-access/hono";
-import { createRedisReplayStore } from "@open-agent-access/storage-redis";
+import { agentAccessMiddleware } from "@kirkelabs/open-agent-access-hono";
+import { createRedisReplayStore } from "@kirkelabs/open-agent-access-storage-redis";
 
 app.use("*", agentAccessMiddleware({
   policyPath: "./agent-access.json",

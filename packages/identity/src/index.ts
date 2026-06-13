@@ -1,5 +1,5 @@
 import { generateKeyPairSync, sign as nodeSign, verify as nodeVerify } from "node:crypto";
-import { canonicalizeJson, hashCanonicalJson } from "@open-agent-access/core";
+import { canonicalizeJson, hashCanonicalJson } from "@kirkelabs/open-agent-access-core";
 
 export interface AgentIdentityKeyPair {
   publicKeyPem: string;

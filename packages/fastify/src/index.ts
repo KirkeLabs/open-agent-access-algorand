@@ -5,7 +5,7 @@ import {
   readPolicyFile,
   type AgentAccessPolicy,
   type ReceiptLedgerOptions
-} from "@open-agent-access/core";
+} from "@kirkelabs/open-agent-access-core";
 
 export interface FastifyLikeRequest {
   method: string;

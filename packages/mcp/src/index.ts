@@ -5,13 +5,13 @@ import {
   type AgentAccessRequest,
   type AgentAccessDecision,
   type DecisionResult
-} from "@open-agent-access/core";
+} from "@kirkelabs/open-agent-access-core";
 import {
   buildMandateReceiptContext,
   evaluateMandate,
   type MandateDocument,
   type MandateEvaluationResult
-} from "@open-agent-access/mandates";
+} from "@kirkelabs/open-agent-access-mandates";
 
 export interface McpToolInvocation {
   toolName: string;

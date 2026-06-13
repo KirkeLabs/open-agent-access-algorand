@@ -1,4 +1,4 @@
-# @open-agent-access/enterprise
+# @kirkelabs/open-agent-access-enterprise
 
 Enterprise readiness helpers for Open Agent Access.
 
@@ -13,7 +13,7 @@ control output:
 - evidence bundle digests
 
 ```ts
-import { createEnterpriseControlReport } from "@open-agent-access/enterprise";
+import { createEnterpriseControlReport } from "@kirkelabs/open-agent-access-enterprise";
 
 const report = createEnterpriseControlReport({ policy, mandateDocument, receipts });
 ```

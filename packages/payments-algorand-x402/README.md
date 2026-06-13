@@ -1,4 +1,4 @@
-# @open-agent-access/payments-algorand-x402
+# @kirkelabs/open-agent-access-payments-algorand-x402
 
 Algorand x402 payment adapter boundary for Open Agent Access.
 

@@ -6,8 +6,8 @@ import {
   type AgentAccessRule,
   type Budget,
   type ReceiptRecord
-} from "@open-agent-access/core";
-import type { MandateDocument } from "@open-agent-access/mandates";
+} from "@kirkelabs/open-agent-access-core";
+import type { MandateDocument } from "@kirkelabs/open-agent-access-mandates";
 
 export type EnterpriseRiskLevel = "low" | "medium" | "high" | "critical";
 export type ControlSeverity = "info" | "warning" | "error";

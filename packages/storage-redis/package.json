@@ -1,5 +1,5 @@
 {
-  "name": "@open-agent-access/storage-redis",
+  "name": "@kirkelabs/open-agent-access-storage-redis",
   "version": "0.1.0",
   "description": "Redis replay-store adapter for Open Agent Access paid-route protection.",
   "type": "module",
@@ -13,18 +13,18 @@
     "README.md",
     "package.json"
   ],
-  "main": "src/index.ts",
-  "types": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./src/index.ts",
-      "import": "./src/index.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     }
   },
   "scripts": {
     "build": "tsc -p ../../tsconfig.base.json"
   },
   "peerDependencies": {
-    "@open-agent-access/hono": "workspace:*"
+    "@kirkelabs/open-agent-access-hono": "workspace:*"
   }
 }

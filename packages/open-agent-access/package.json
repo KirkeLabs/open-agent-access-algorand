@@ -1,7 +1,7 @@
 {
-  "name": "@kirkelabs/open-agent-access-mcp",
+  "name": "@kirkelabs/open-agent-access",
   "version": "0.1.0",
-  "description": "MCP tool-boundary guard for Open Agent Access policy and mandate enforcement.",
+  "description": "One-command installer and CLI front door for Open Agent Access.",
   "type": "module",
   "license": "Apache-2.0",
   "publishConfig": {
@@ -13,8 +13,11 @@
     "README.md",
     "package.json"
   ],
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "bin": {
+    "open-agent-access": "dist/index.js",
+    "agent-passport": "dist/index.js",
+    "oaa": "dist/index.js"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -25,7 +28,8 @@
     "build": "tsc -p ../../tsconfig.base.json"
   },
   "dependencies": {
-    "@kirkelabs/open-agent-access-core": "workspace:*",
-    "@kirkelabs/open-agent-access-mandates": "workspace:*"
-  }
+    "@kirkelabs/open-agent-access-cli": "workspace:*"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts"
 }

@@ -1,11 +1,11 @@
-# @open-agent-access/mandates
+# @kirkelabs/open-agent-access-mandates
 
 Mandate graph primitives for delegated agent authority.
 
 Mandates answer the question policy alone cannot answer: who delegated this agent action, what tools and resources were in scope, when does the authority expire, what evidence must be produced, and when is human approval required?
 
 ```ts
-import { evaluateMandate, validateMandateDocument } from "@open-agent-access/mandates";
+import { evaluateMandate, validateMandateDocument } from "@kirkelabs/open-agent-access-mandates";
 
 const mandate = validateMandateDocument(document);
 const result = evaluateMandate(mandate, {

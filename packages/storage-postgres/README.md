@@ -1,13 +1,13 @@
-# @open-agent-access/storage-postgres
+# @kirkelabs/open-agent-access-storage-postgres
 
 Postgres replay-store adapter for paid-route replay protection.
 
 ```ts
-import { agentAccessMiddleware } from "@open-agent-access/hono";
+import { agentAccessMiddleware } from "@kirkelabs/open-agent-access-hono";
 import {
   createPostgresReplayStore,
   createPostgresReplayTableSql
-} from "@open-agent-access/storage-postgres";
+} from "@kirkelabs/open-agent-access-storage-postgres";
 
 await pg.query(createPostgresReplayTableSql());
 

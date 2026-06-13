@@ -1,4 +1,4 @@
-import { createAgentAccessClient, verifyReceiptChain } from "@open-agent-access/core";
+import { createAgentAccessClient, verifyReceiptChain } from "@kirkelabs/open-agent-access-core";
 
 const client = createAgentAccessClient({
   agent: {

@@ -1,4 +1,4 @@
-import { budgetAllowsPrice } from "@open-agent-access/core";
+import { budgetAllowsPrice } from "@kirkelabs/open-agent-access-core";
 import type { AlgorandX402ClientConfig, AlgorandX402ServerConfig } from "./types.js";
 
 export function validateAlgorandX402Config(config: AlgorandX402ClientConfig | AlgorandX402ServerConfig) {

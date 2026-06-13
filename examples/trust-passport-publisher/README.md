@@ -9,7 +9,7 @@ This example shows a publisher exposing three machine-readable layers:
 Run:
 
 ```bash
-pnpm --filter @open-agent-access/example-trust-passport-publisher dev
+pnpm --filter @kirkelabs/open-agent-access-example-trust-passport-publisher dev
 ```
 
 Then inspect:

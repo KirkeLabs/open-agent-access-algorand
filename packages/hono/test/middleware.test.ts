@@ -2,7 +2,7 @@ import { mkdtemp, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { Hono } from "hono";
-import { buildAgentAccessHeaders, readReceiptLedger } from "@open-agent-access/core";
+import { buildAgentAccessHeaders, readReceiptLedger } from "@kirkelabs/open-agent-access-core";
 import { agentAccessMiddleware } from "../src/index.js";
 
 async function makeApp() {

@@ -4,7 +4,7 @@ import {
   validateAgentAccessPolicy,
   type AgentAccessPolicy,
   type ReceiptRecord
-} from "@open-agent-access/core";
+} from "@kirkelabs/open-agent-access-core";
 
 export interface CloudflareAgentAccessOptions<Env = unknown, Ctx = unknown> {
   policy: AgentAccessPolicy | unknown;

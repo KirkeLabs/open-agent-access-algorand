@@ -6,8 +6,8 @@ import {
   parseTrustedAgentKeys,
   signAgentAccessHeaders,
   verifyAgentAccessHeaders
-} from "@open-agent-access/identity";
-import { buildAgentAccessHeaders } from "@open-agent-access/core";
+} from "@kirkelabs/open-agent-access-identity";
+import { buildAgentAccessHeaders } from "@kirkelabs/open-agent-access-core";
 
 export async function identityKeygenCommand(options: Record<string, string | boolean | undefined>) {
   const publicKeyPath = stringOption(options, "public-key") ?? ".oaa/agent-public.pem";

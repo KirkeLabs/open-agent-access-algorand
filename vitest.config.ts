@@ -11,9 +11,9 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@open-agent-access/core": new URL("./packages/core/src/index.ts", import.meta.url).pathname,
-      "@open-agent-access/hono": new URL("./packages/hono/src/index.ts", import.meta.url).pathname,
-      "@open-agent-access/payments-algorand-x402": new URL("./packages/payments-algorand-x402/src/index.ts", import.meta.url).pathname
+      "@kirkelabs/open-agent-access-core": new URL("./packages/core/src/index.ts", import.meta.url).pathname,
+      "@kirkelabs/open-agent-access-hono": new URL("./packages/hono/src/index.ts", import.meta.url).pathname,
+      "@kirkelabs/open-agent-access-payments-algorand-x402": new URL("./packages/payments-algorand-x402/src/index.ts", import.meta.url).pathname
     }
   }
 });

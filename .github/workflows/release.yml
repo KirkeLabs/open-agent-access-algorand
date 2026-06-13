@@ -14,7 +14,7 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
-    if: github.repository == 'kirke-labs/open-agent-access-algorand'
+    if: github.repository == 'Jayke-dev/open-agent-access-algorand'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

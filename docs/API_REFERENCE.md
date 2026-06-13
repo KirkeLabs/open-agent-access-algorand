@@ -1,6 +1,19 @@
 # API Reference
 
-## `@open-agent-access/core`
+## `open-agent-access`
+
+One-command CLI front door for external repos.
+
+```sh
+npx @kirkelabs/open-agent-access init
+npx @kirkelabs/open-agent-access init --template hono --protected /premium/report
+npx --package @kirkelabs/open-agent-access agent-passport init --template static-site --protected /essays
+```
+
+This package delegates to `@kirkelabs/open-agent-access-cli`. Use it for onboarding and
+human-friendly commands. Use scoped packages for runtime imports.
+
+## `@kirkelabs/open-agent-access-core`
 
 - `createAgentAccessClient(options)`: discovers policy, decides access, attaches
   agent headers, optionally pays, and writes receipts.
@@ -18,7 +31,7 @@
   `hashAccessEvents()`, and `attachEventTrailToReceipt()` for reconstructable
   event trails.
 
-## `@open-agent-access/mandates`
+## `@kirkelabs/open-agent-access-mandates`
 
 - `validateMandateDocument(input)`: validates `/.well-known/agent-mandates.json`.
 - `evaluateMandate(document, input)`: fails closed unless delegated authority
@@ -27,7 +40,7 @@
 - `mandateHash(mandate)`: stable hash for receipt and event binding.
 - `buildMandateReceiptContext(result)`: compact mandate evidence for receipts.
 
-## `@open-agent-access/identity`
+## `@kirkelabs/open-agent-access-identity`
 
 - `createAgentIdentityKeyPair()`: creates local Ed25519 signing keys.
 - `signAgentAccessHeaders(headers, options)`: signs agent access headers against
@@ -38,7 +51,7 @@
   payload.
 - `parseTrustedAgentKeys(input)`: validates trusted-key lists.
 
-## `@open-agent-access/mcp`
+## `@kirkelabs/open-agent-access-mcp`
 
 - `createAgentAccessMcpToolGuard(options)`: creates structural guards for MCP
   tool handlers.
@@ -47,7 +60,7 @@
 - `McpToolAuthorizationError`: thrown by wrapped handlers when policy or mandate
   checks fail.
 
-## `@open-agent-access/enterprise`
+## `@kirkelabs/open-agent-access-enterprise`
 
 - `createEnterpriseControlReport(input)`: scores policy, mandate, and receipt
   posture against enterprise controls.
@@ -62,7 +75,7 @@
 - `createEvidenceBundleDigest(input)`: creates a compact digest over policy,
   mandates, receipts, and events.
 
-## `@open-agent-access/evidence`
+## `@kirkelabs/open-agent-access-evidence`
 
 - `createEvidenceBundle(input)`: creates an immutable evidence manifest over
   policy, mandates, receipts, and events.
@@ -72,20 +85,20 @@
   manifest object to an immutable store abstraction.
 - `createMemoryImmutableEvidenceStore()`: test fixture for create-only behavior.
 
-## `@open-agent-access/policy-as-code`
+## `@kirkelabs/open-agent-access-policy-as-code`
 
 - `exportOpaBundle(policy)`: exports OAA policy as OPA data, Rego, and an input
   example.
 - `exportCedarBundle(policy)`: exports OAA policy as a Cedar-style schema and
   policy statements.
 
-## `@open-agent-access/compliance`
+## `@kirkelabs/open-agent-access-compliance`
 
 - `listComplianceFrameworks()`: supported compliance mapping keys.
 - `getComplianceMapping(framework)`: evidence mapping for one framework.
 - `getAllComplianceMappings()`: evidence mappings for every supported framework.
 
-## `@open-agent-access/incident`
+## `@kirkelabs/open-agent-access-incident`
 
 - `createAgentStopSignal(input)`: creates a machine-readable emergency stop
   signal.
@@ -93,14 +106,14 @@
 - `evaluateStopSignal(signal, input)`: checks whether a request is stopped by
   signal scope, expiry, and active state.
 
-## `@open-agent-access/hono`
+## `@kirkelabs/open-agent-access-hono`
 
 - `agentAccessMiddleware(options)`: Hono middleware for policy enforcement,
   deterministic headers, local receipts, replay checks, and paid-route locks.
 - `createMemoryReplayStore(options)`: default replay store for local or single
   process deployments. Production deployments should inject a shared store.
 
-## `@open-agent-access/payments-algorand-x402`
+## `@kirkelabs/open-agent-access-payments-algorand-x402`
 
 - `createAlgorandX402ClientPaymentAdapter(config)`.
 - `createAlgorandX402ServerPaymentAdapter(config)`.
@@ -109,7 +122,7 @@
 - `parseAlgorandX402SettlementHeaders(headers)`.
 - `validateAlgorandX402Config(config)`.
 
-## `@open-agent-access/cli`
+## `@kirkelabs/open-agent-access-cli`
 
 ```sh
 oaa doctor
@@ -139,32 +152,32 @@ oaa receipts sign .oaa/receipts.jsonl .oaa/signed-receipts.jsonl --private-key .
 oaa receipts verify-signatures .oaa/signed-receipts.jsonl --public-key .oaa/receipt-public.pem
 ```
 
-## `@open-agent-access/storage-redis`
+## `@kirkelabs/open-agent-access-storage-redis`
 
 - `createRedisReplayStore(client, options)`: replay-store adapter for Redis-like
   clients.
 
-## `@open-agent-access/storage-postgres`
+## `@kirkelabs/open-agent-access-storage-postgres`
 
 - `createPostgresReplayStore(client, options)`: replay-store adapter for
   Postgres clients with a `query(sql, params)` method.
 - `createPostgresReplayTableSql(tableName?)`: migration SQL for the replay table.
 
-## `@open-agent-access/express`
+## `@kirkelabs/open-agent-access-express`
 
 - `agentAccessExpressMiddleware(options)`: Express-compatible middleware using
   structural request/response types.
 
-## `@open-agent-access/fastify`
+## `@kirkelabs/open-agent-access-fastify`
 
 - `createAgentAccessFastifyHook(options)`: Fastify-compatible pre-handler hook.
 
-## `@open-agent-access/cloudflare`
+## `@kirkelabs/open-agent-access-cloudflare`
 
 - `withAgentAccessCloudflare(options, handler)`: Worker fetch wrapper for inline
   policy enforcement and injected receipt sinks.
 
-## `@open-agent-access/conformance`
+## `@kirkelabs/open-agent-access-conformance`
 
 - `runConformanceSuite()`: protocol conformance checks for policy validation,
   path matching, decisions, headers, receipts, mandates, event trails, and

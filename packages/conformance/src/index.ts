@@ -11,12 +11,12 @@ import {
   verifyAccessEventTrail,
   verifyReceiptChain,
   type AgentAccessPolicy
-} from "@open-agent-access/core";
-import { evaluateMandate, validateMandateDocument, type MandateDocument } from "@open-agent-access/mandates";
+} from "@kirkelabs/open-agent-access-core";
+import { evaluateMandate, validateMandateDocument, type MandateDocument } from "@kirkelabs/open-agent-access-mandates";
 import {
   createAlgorandX402PaymentRequiredFixture,
   parseAlgorandX402SettlementHeaders
-} from "@open-agent-access/payments-algorand-x402";
+} from "@kirkelabs/open-agent-access-payments-algorand-x402";
 import { mkdtemp } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";

@@ -1,10 +1,10 @@
-# @open-agent-access/fastify
+# @kirkelabs/open-agent-access-fastify
 
 Fastify-compatible pre-handler hook for Open Agent Access.
 
 ```ts
 import Fastify from "fastify";
-import { createAgentAccessFastifyHook } from "@open-agent-access/fastify";
+import { createAgentAccessFastifyHook } from "@kirkelabs/open-agent-access-fastify";
 
 const fastify = Fastify();
 

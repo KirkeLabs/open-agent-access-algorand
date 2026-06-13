@@ -1,4 +1,4 @@
-import type { PricePolicy } from "@open-agent-access/core";
+import type { PricePolicy } from "@kirkelabs/open-agent-access-core";
 
 export interface PaymentRequiredFixtureOptions {
   price?: PricePolicy;

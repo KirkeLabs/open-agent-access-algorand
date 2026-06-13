@@ -1,4 +1,4 @@
-import { createAgentAccessClient, parseBudget } from "@open-agent-access/core";
+import { createAgentAccessClient, parseBudget } from "@kirkelabs/open-agent-access-core";
 
 export async function checkCommand(url: string, options: Record<string, string | boolean | undefined>) {
   const client = createAgentAccessClient({

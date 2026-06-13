@@ -1,4 +1,4 @@
-# @open-agent-access/evidence
+# @kirkelabs/open-agent-access-evidence
 
 Immutable evidence bundle and append-only storage primitives.
 
@@ -8,7 +8,7 @@ retention policies, Azure immutable blobs, append-only Postgres tables, or a
 customer evidence vault.
 
 ```ts
-import { createEvidenceBundle, putImmutableEvidenceBundle } from "@open-agent-access/evidence";
+import { createEvidenceBundle, putImmutableEvidenceBundle } from "@kirkelabs/open-agent-access-evidence";
 
 const bundle = createEvidenceBundle({ policy, mandateDocument, receipts });
 await putImmutableEvidenceBundle(store, bundle);

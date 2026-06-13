@@ -9,7 +9,7 @@ import {
   signReceipt,
   verifyReceiptChain,
   verifyReceiptSignature
-} from "@open-agent-access/core";
+} from "@kirkelabs/open-agent-access-core";
 
 export async function verifyReceiptsCommand(path: string, json = false) {
   const result = await verifyReceiptChain(path);

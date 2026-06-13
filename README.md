@@ -40,6 +40,26 @@ be added later.
 
 ## Quickstart
 
+Add Open Agent Access to another repo:
+
+```sh
+npx @kirkelabs/open-agent-access init
+```
+
+Common variants:
+
+```sh
+npx @kirkelabs/open-agent-access init --template static-site --protected /essays
+npx @kirkelabs/open-agent-access init --template hono --protected /premium/report
+npx @kirkelabs/open-agent-access init --template algorand-x402 --protected /premium/report
+```
+
+The init command creates `.oaa/`, `agent-access.json`,
+`.well-known/agent-access.json`, and `docs/agent-access.md`. It prints the
+runtime packages to install for your framework.
+
+Develop this repo locally:
+
 ```sh
 corepack enable
 pnpm install
@@ -58,11 +78,15 @@ pnpm oaa policy explain examples/publisher-policy/agent-access.json https://publ
 pnpm oaa policy init --template publisher --origin https://publisher.example --output /tmp/agent-access.json --force
 ```
 
+See [Integration Guide](docs/INTEGRATION_GUIDE.md) for copy-paste setup paths
+for static sites, Hono, Express, Fastify, Cloudflare Workers, agent clients, and
+Algorand x402 paid routes.
+
 ## Site Owner Quickstart
 
 ```ts
 import { Hono } from "hono";
-import { agentAccessMiddleware } from "@open-agent-access/hono";
+import { agentAccessMiddleware } from "@kirkelabs/open-agent-access-hono";
 
 const app = new Hono();
 
@@ -85,7 +109,7 @@ authority, also expose a mandate document at
 ## Agent Builder Quickstart
 
 ```ts
-import { createAgentAccessClient } from "@open-agent-access/core";
+import { createAgentAccessClient } from "@kirkelabs/open-agent-access-core";
 
 const client = createAgentAccessClient({
   agent: {
@@ -126,7 +150,7 @@ flow. Mnemonic env loading is for local TestNet development only.
 ## Run Examples
 
 ```sh
-pnpm --filter @open-agent-access/example-hono-free-and-paid-site dev
+pnpm --filter @kirkelabs/open-agent-access-example-hono-free-and-paid-site dev
 pnpm oaa check http://localhost:4021/free --purpose research --use read
 pnpm oaa fetch http://localhost:4021/free --purpose research --use read
 pnpm oaa check http://localhost:4021/premium/report --purpose research --use ai-input --budget USD:0.05
@@ -140,31 +164,31 @@ Premium fetches show payment-required metadata and do not pay unless `--pay` or
 
 | Area | Package / Command | Status |
 | --- | --- | --- |
-| Core SDK | `@open-agent-access/core` | Supported |
-| CLI | `@open-agent-access/cli` / `pnpm oaa` | Supported |
-| Hono middleware | `@open-agent-access/hono` | Supported |
-| Express middleware | `@open-agent-access/express` | Supported |
-| Fastify hook | `@open-agent-access/fastify` | Supported |
-| Cloudflare Workers | `@open-agent-access/cloudflare` | Supported |
-| Verifiable agent identity | `@open-agent-access/identity`, `oaa identity keygen` | Supported |
-| Mandate graphs | `@open-agent-access/mandates` | Supported |
-| MCP tool guard | `@open-agent-access/mcp` | Supported |
-| Enterprise controls | `@open-agent-access/enterprise`, `oaa enterprise report` | Supported |
-| Immutable evidence bundles | `@open-agent-access/evidence`, `oaa evidence bundle` | Supported |
-| Policy-as-code export | `@open-agent-access/policy-as-code`, `oaa policy export` | Supported |
-| Compliance mappings | `@open-agent-access/compliance`, `oaa compliance map` | Supported |
-| Incident stop signals | `@open-agent-access/incident`, `oaa incident stop` | Supported |
-| Redis replay store | `@open-agent-access/storage-redis` | Supported |
-| Postgres replay store | `@open-agent-access/storage-postgres` | Supported |
-| Algorand x402 TestNet | `@open-agent-access/payments-algorand-x402` | Adapter and fixtures supported |
+| Core SDK | `@kirkelabs/open-agent-access-core` | Supported |
+| CLI | `@kirkelabs/open-agent-access-cli` / `pnpm oaa` | Supported |
+| Hono middleware | `@kirkelabs/open-agent-access-hono` | Supported |
+| Express middleware | `@kirkelabs/open-agent-access-express` | Supported |
+| Fastify hook | `@kirkelabs/open-agent-access-fastify` | Supported |
+| Cloudflare Workers | `@kirkelabs/open-agent-access-cloudflare` | Supported |
+| Verifiable agent identity | `@kirkelabs/open-agent-access-identity`, `oaa identity keygen` | Supported |
+| Mandate graphs | `@kirkelabs/open-agent-access-mandates` | Supported |
+| MCP tool guard | `@kirkelabs/open-agent-access-mcp` | Supported |
+| Enterprise controls | `@kirkelabs/open-agent-access-enterprise`, `oaa enterprise report` | Supported |
+| Immutable evidence bundles | `@kirkelabs/open-agent-access-evidence`, `oaa evidence bundle` | Supported |
+| Policy-as-code export | `@kirkelabs/open-agent-access-policy-as-code`, `oaa policy export` | Supported |
+| Compliance mappings | `@kirkelabs/open-agent-access-compliance`, `oaa compliance map` | Supported |
+| Incident stop signals | `@kirkelabs/open-agent-access-incident`, `oaa incident stop` | Supported |
+| Redis replay store | `@kirkelabs/open-agent-access-storage-redis` | Supported |
+| Postgres replay store | `@kirkelabs/open-agent-access-storage-postgres` | Supported |
+| Algorand x402 TestNet | `@kirkelabs/open-agent-access-payments-algorand-x402` | Adapter and fixtures supported |
 | MainNet settlement | payment adapter roadmap | Planned |
-| Conformance suite | `@open-agent-access/conformance`, `oaa conformance run` | Supported |
+| Conformance suite | `@kirkelabs/open-agent-access-conformance`, `oaa conformance run` | Supported |
 
 The trust-passport example combines policy, mandate, claim provenance, and
 agent-readable publishing metadata:
 
 ```sh
-pnpm --filter @open-agent-access/example-trust-passport-publisher dev
+pnpm --filter @kirkelabs/open-agent-access-example-trust-passport-publisher dev
 ```
 
 ## Verify Receipts

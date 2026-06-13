@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/Jayke-dev/open-agent-access-algorand#readme",
   "scripts": {
-    "build": "tsc -p tsconfig.base.json",
+    "build": "tsc -p tsconfig.base.json && node scripts/prepare-package-dist.mjs",
     "test": "tsx scripts/run-tests.ts",
     "test:vitest": "vitest run --run --reporter=verbose --no-file-parallelism --maxWorkers=1",
     "lint": "tsc -p tsconfig.base.json --noEmit",
@@ -34,10 +34,11 @@
     "oaa": "tsx packages/cli/src/index.ts"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.31.0",
     "@types/node": "^22.10.2",
     "hono": "^4.6.14",
-    "typescript": "^5.7.2",
     "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
     "vite": "^7.2.7",
     "vitest": "^4.1.8"
   }

@@ -4,7 +4,7 @@ Local JSONL ledgers are useful for development and bilateral receipts. Enterpris
 deployments need a second step: seal receipt and event evidence into create-only
 storage.
 
-`@open-agent-access/evidence` creates evidence bundle manifests that bind:
+`@kirkelabs/open-agent-access-evidence` creates evidence bundle manifests that bind:
 
 - policy hash
 - mandate document hash

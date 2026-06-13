@@ -1,4 +1,4 @@
-# @open-agent-access/core
+# @kirkelabs/open-agent-access-core
 
 Core TypeScript SDK for Open Agent Access.
 
@@ -15,7 +15,7 @@ Includes:
 - policy linting
 
 ```ts
-import { createAgentAccessClient } from "@open-agent-access/core";
+import { createAgentAccessClient } from "@kirkelabs/open-agent-access-core";
 
 const client = createAgentAccessClient({
   agent: {

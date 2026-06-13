@@ -13,10 +13,10 @@ import {
   type AgentAccessPolicy,
   type ReceiptLedgerOptions,
   type ReceiptRecord
-} from "@open-agent-access/core";
-import { verifyAgentAccessHeaders, type TrustedAgentKey } from "@open-agent-access/identity";
-import { evaluateStopSignal, validateAgentStopSignal } from "@open-agent-access/incident";
-import { parseAlgorandX402SettlementHeaders } from "@open-agent-access/payments-algorand-x402";
+} from "@kirkelabs/open-agent-access-core";
+import { verifyAgentAccessHeaders, type TrustedAgentKey } from "@kirkelabs/open-agent-access-identity";
+import { evaluateStopSignal, validateAgentStopSignal } from "@kirkelabs/open-agent-access-incident";
+import { parseAlgorandX402SettlementHeaders } from "@kirkelabs/open-agent-access-payments-algorand-x402";
 import { buildDecisionHeaders, decisionStatus } from "./response.js";
 import { createMemoryReplayStore, type ReplayStore } from "./replay.js";
 

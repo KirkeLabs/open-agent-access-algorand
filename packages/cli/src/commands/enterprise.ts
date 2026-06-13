@@ -4,9 +4,9 @@ import {
   createEvidenceBundleDigest,
   receiptToCefEvent,
   receiptToOpenTelemetrySpan
-} from "@open-agent-access/enterprise";
-import { readPolicyFile, readReceiptLedger } from "@open-agent-access/core";
-import { validateMandateDocument } from "@open-agent-access/mandates";
+} from "@kirkelabs/open-agent-access-enterprise";
+import { readPolicyFile, readReceiptLedger } from "@kirkelabs/open-agent-access-core";
+import { validateMandateDocument } from "@kirkelabs/open-agent-access-mandates";
 
 export async function enterpriseReportCommand(options: Record<string, string | boolean | undefined>) {
   const policyPath = stringOption(options, "policy") ?? "agent-access.json";

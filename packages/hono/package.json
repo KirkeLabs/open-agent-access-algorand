@@ -1,5 +1,5 @@
 {
-  "name": "@open-agent-access/hono",
+  "name": "@kirkelabs/open-agent-access-hono",
   "version": "0.1.0",
   "description": "Hono middleware for Open Agent Access policy enforcement and receipts.",
   "type": "module",
@@ -13,22 +13,22 @@
     "README.md",
     "package.json"
   ],
-  "main": "src/index.ts",
-  "types": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./src/index.ts",
-      "import": "./src/index.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     }
   },
   "scripts": {
     "build": "tsc -p ../../tsconfig.base.json"
   },
   "dependencies": {
-    "@open-agent-access/core": "workspace:*",
-    "@open-agent-access/identity": "workspace:*",
-    "@open-agent-access/incident": "workspace:*",
-    "@open-agent-access/payments-algorand-x402": "workspace:*",
+    "@kirkelabs/open-agent-access-core": "workspace:*",
+    "@kirkelabs/open-agent-access-identity": "workspace:*",
+    "@kirkelabs/open-agent-access-incident": "workspace:*",
+    "@kirkelabs/open-agent-access-payments-algorand-x402": "workspace:*",
     "hono": "^4.6.14"
   }
 }

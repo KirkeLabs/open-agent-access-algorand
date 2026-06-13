@@ -4,8 +4,8 @@ import {
   type AccessEvent,
   type AgentAccessPolicy,
   type ReceiptRecord
-} from "@open-agent-access/core";
-import type { MandateDocument } from "@open-agent-access/mandates";
+} from "@kirkelabs/open-agent-access-core";
+import type { MandateDocument } from "@kirkelabs/open-agent-access-mandates";
 
 export interface EvidenceBundle {
   manifestVersion: "0.1";

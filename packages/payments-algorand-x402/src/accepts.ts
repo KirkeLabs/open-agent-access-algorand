@@ -1,4 +1,4 @@
-import type { PricePolicy } from "@open-agent-access/core";
+import type { PricePolicy } from "@kirkelabs/open-agent-access-core";
 import { ALGORAND_TESTNET_CAIP2, ExactAvmScheme, type AlgorandX402Accept, type AlgorandX402ServerConfig } from "./types.js";
 
 export function priceToUsdString(price: PricePolicy | undefined): string {

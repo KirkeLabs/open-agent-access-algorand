@@ -4,7 +4,7 @@ Open Agent Access policy JSON is the authoritative protocol artifact. Enterprise
 teams often also need policy-as-code review surfaces for existing authorization
 programs.
 
-`@open-agent-access/policy-as-code` exports:
+`@kirkelabs/open-agent-access-policy-as-code` exports:
 
 - OPA/Rego bundle: `data.json`, `policy.rego`, and an input example.
 - Cedar-style bundle: schema JSON and generated policy statements.
