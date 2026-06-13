@@ -1082,6 +1082,8 @@ if (!process.exitCode) {
   console.log(`\n${passed}/${tests.length} tests passed`);
 }
 
+process.exit(process.exitCode ?? 0);
+
 function headersToObject(headers: Headers): Record<string, string> {
   const output: Record<string, string> = {};
   headers.forEach((value, key) => {
