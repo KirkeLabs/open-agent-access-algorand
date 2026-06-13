@@ -16,12 +16,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/kirkelabs/open-agent-access-algorand.git"
+    "url": "https://github.com/KirkeLabs/open-agent-access-algorand.git"
   },
   "bugs": {
-    "url": "https://github.com/kirkelabs/open-agent-access-algorand/issues"
+    "url": "https://github.com/KirkeLabs/open-agent-access-algorand/issues"
   },
-  "homepage": "https://github.com/kirkelabs/open-agent-access-algorand#readme",
+  "homepage": "https://github.com/KirkeLabs/open-agent-access-algorand#readme",
   "scripts": {
     "build": "tsc -p tsconfig.base.json && node scripts/prepare-package-dist.mjs",
     "test": "tsx scripts/run-tests.ts",

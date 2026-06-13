@@ -10,7 +10,7 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
-    if: github.repository == 'kirkelabs/open-agent-access-algorand'
+    if: github.repository == 'KirkeLabs/open-agent-access-algorand'
     steps:
       - uses: actions/checkout@v4
       - run: corepack enable
