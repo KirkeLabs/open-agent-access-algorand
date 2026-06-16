@@ -1,6 +1,6 @@
 {
   "name": "@kirkelabs/open-agent-access-identity",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Verifiable agent identity helpers for Open Agent Access request signing.",
   "type": "module",
   "license": "Apache-2.0",
