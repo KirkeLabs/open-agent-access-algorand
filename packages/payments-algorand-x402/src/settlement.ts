@@ -23,7 +23,7 @@ export function parseAlgorandX402SettlementHeaders(headers: Headers): Settlement
   } catch {
     return {
       transactionId: txn,
-      settlementSuccess: true,
+      settlementSuccess: Boolean(txn),
       raw: paymentResponse
     };
   }

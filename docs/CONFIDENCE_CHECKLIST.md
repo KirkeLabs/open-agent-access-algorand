@@ -2,9 +2,11 @@
 
 Use this to decide whether an integration is ready for real users.
 
-- `pnpm build`, `pnpm test`, `pnpm lint`, and `pnpm security:check` pass.
+- `pnpm build`, `pnpm test`, `pnpm test:vitest`, `pnpm lint`, `pnpm security:check`, and `pnpm audit:prod` pass.
 - `pnpm package:check` passes before release.
 - `pnpm pack:dry-run` passes before release.
+- CodeQL, Dependency Review, OSSF Scorecard, and CODEOWNERS review are enabled
+  for the public repository.
 - `oaa doctor` reports a valid policy, valid ledger, and expected payment state.
 - `oaa conformance run` passes.
 - `oaa policy explain` gives the expected matching rule for representative URLs.

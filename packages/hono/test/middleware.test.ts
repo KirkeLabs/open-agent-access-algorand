@@ -5,7 +5,7 @@ import { Hono } from "hono";
 import { buildAgentAccessHeaders, readReceiptLedger } from "@kirkelabs/open-agent-access-core";
 import { agentAccessMiddleware } from "../src/index.js";
 
-async function makeApp() {
+async function makeApp(options: { trustPaymentHeader?: boolean } = {}) {
   const dir = await mkdtemp(join(tmpdir(), "oaa-hono-"));
   const policyPath = join(dir, "agent-access.json");
   const ledgerPath = join(dir, "site-receipts.jsonl");
@@ -25,7 +25,13 @@ async function makeApp() {
   app.use("*", agentAccessMiddleware({
     policyPath,
     receipts: { type: "jsonl", path: ledgerPath },
-    algorandX402: { enabled: true, payTo: "TESTADDR", facilitatorUrl: "https://facilitator.goplausible.xyz", network: "testnet" }
+    algorandX402: {
+      enabled: true,
+      payTo: "TESTADDR",
+      facilitatorUrl: "https://facilitator.goplausible.xyz",
+      network: "testnet",
+      trustPaymentHeader: options.trustPaymentHeader
+    }
   }));
   app.get("/free", (c) => c.json({ ok: true }));
   app.get("/deny", (c) => c.json({ ok: true }));
@@ -72,8 +78,17 @@ describe("Hono middleware", () => {
     expect(res.headers.get("AA-Decision")).toBe("charge");
   });
 
-  it("delegates configured paid route when payment header is present", async () => {
+  it("does not trust raw payment headers by default", async () => {
     const { app, headers } = await makeApp();
+    headers.set("AA-Use", "ai-input");
+    headers.set("X-PAYMENT", "test-proof");
+    const res = await app.request("/paid", { headers });
+    expect(res.status).toBe(402);
+    expect((await res.json() as { error: string }).error).toBe("payment_verification_required");
+  });
+
+  it("delegates configured paid route when an upstream verifier is trusted", async () => {
+    const { app, headers } = await makeApp({ trustPaymentHeader: true });
     headers.set("AA-Use", "ai-input");
     headers.set("X-PAYMENT", "test-proof");
     const res = await app.request("/paid", { headers });

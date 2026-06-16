@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://open-agent-access.org/schema/creative-asset-passport-v0.1.json",
+  "title": "Open Agent Access Creative Asset Passport",
+  "type": "object",
+  "required": ["version", "protocol", "kind", "asset", "rights", "policy"],
+  "additionalProperties": true,
+  "properties": {
+    "version": { "const": "0.1" },
+    "protocol": { "const": "open-agent-access" },
+    "kind": { "const": "creative-asset-passport" },
+    "asset": {
+      "type": "object",
+      "required": ["id", "title", "type"],
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "type": {
+          "enum": ["track", "stem", "sample", "loop", "vocal", "remix", "dataset", "image", "text", "other"]
+        },
+        "hash": { "type": "string" },
+        "hashAlgorithm": { "type": "string" },
+        "uri": { "type": "string" },
+        "createdAt": { "type": "string" }
+      }
+    },
+    "rights": {
+      "type": "object",
+      "required": ["claimant", "claims", "authorshipBasis"],
+      "properties": {
+        "claimant": { "$ref": "#/$defs/party" },
+        "claims": {
+          "type": "array",
+          "items": {
+            "enum": ["composition", "lyrics", "sound-recording", "performance", "sample-pack", "dataset", "image", "text", "other"]
+          }
+        },
+        "authorshipBasis": {
+          "enum": ["original", "licensed-sample", "public-domain", "mixed", "unknown"]
+        },
+        "ownershipStatement": { "type": "string" },
+        "collaborators": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/party" }
+        },
+        "externalReferences": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["system"],
+            "properties": {
+              "system": { "type": "string" },
+              "id": { "type": "string" },
+              "url": { "type": "string" },
+              "note": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "required": ["licenseOptions"],
+      "properties": {
+        "defaultDecision": { "enum": ["review", "deny"] },
+        "allowedUses": { "type": "array", "items": { "type": "string" } },
+        "deniedUses": { "type": "array", "items": { "type": "string" } },
+        "aiTraining": {
+          "type": "object",
+          "required": ["allowed"],
+          "properties": {
+            "allowed": { "type": "boolean" },
+            "requiresReview": { "type": "boolean" },
+            "price": { "$ref": "#/$defs/price" }
+          }
+        },
+        "licenseOptions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/licenseOption" }
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "c2paManifestUrl": { "type": "string" },
+        "c2paManifestHash": { "type": "string" },
+        "sourceUrl": { "type": "string" },
+        "assetHash": { "type": "string" },
+        "assetHashAlgorithm": { "type": "string" }
+      }
+    },
+    "registry": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "contact": { "type": "string" },
+    "disputeUrl": { "type": "string" },
+    "reviewUrl": { "type": "string" },
+    "legalNotice": { "type": "string" }
+  },
+  "$defs": {
+    "party": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "role": { "type": "string" },
+        "contact": { "type": "string" },
+        "wallet": { "type": "string" },
+        "share": { "type": "number", "minimum": 0, "maximum": 100 }
+      }
+    },
+    "price": {
+      "type": "object",
+      "required": ["amount", "currency"],
+      "properties": {
+        "amount": { "type": "string" },
+        "currency": { "type": "string" },
+        "unit": { "type": "string" }
+      }
+    },
+    "licenseOption": {
+      "type": "object",
+      "required": ["id", "decision", "purposes", "uses"],
+      "properties": {
+        "id": { "type": "string" },
+        "label": { "type": "string" },
+        "decision": { "enum": ["allow", "charge", "review", "deny"] },
+        "purposes": { "type": "array", "items": { "type": "string" } },
+        "uses": { "type": "array", "items": { "type": "string" } },
+        "price": { "$ref": "#/$defs/price" },
+        "payment": { "type": "object", "additionalProperties": true },
+        "attributionRequired": { "type": "boolean" },
+        "retentionMaxAge": { "type": "string" },
+        "reviewUrl": { "type": "string" },
+        "termsUrl": { "type": "string" }
+      }
+    }
+  }
+}

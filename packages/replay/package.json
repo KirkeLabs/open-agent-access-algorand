@@ -1,0 +1,30 @@
+{
+  "name": "@kirkelabs/open-agent-access-replay",
+  "version": "0.1.0",
+  "description": "Shared replay, idempotency, and resource-binding helpers for Open Agent Access adapters.",
+  "type": "module",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "src",
+    "dist",
+    "README.md",
+    "package.json"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p ../../tsconfig.base.json"
+  },
+  "dependencies": {
+    "@kirkelabs/open-agent-access-core": "workspace:*"
+  }
+}

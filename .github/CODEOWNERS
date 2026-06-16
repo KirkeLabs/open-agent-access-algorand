@@ -1,0 +1,21 @@
+# Solo-maintainer posture: keep CODEOWNERS enforceable with the current
+# KirkeLabs repo admin. Replace with @KirkeLabs/open-agent-access-maintainers
+# once that team exists and has active maintainers.
+* @jayke-dev
+
+# Security-sensitive paths require explicit maintainer review.
+/.github/ @jayke-dev
+/scripts/ @jayke-dev
+/packages/core/ @jayke-dev
+/packages/hono/ @jayke-dev
+/packages/identity/ @jayke-dev
+/packages/payments-algorand-x402/ @jayke-dev
+/packages/policy-signing/ @jayke-dev
+/packages/replay/ @jayke-dev
+/packages/security-profiles/ @jayke-dev
+/packages/transparency/ @jayke-dev
+/schema/ @jayke-dev
+/SECURITY.md @jayke-dev
+/docs/THREAT_MODEL.md @jayke-dev
+/docs/PRODUCTION_DEPLOYMENT.md @jayke-dev
+/docs/MAINTAINER_SECURITY_CHECKLIST.md @jayke-dev

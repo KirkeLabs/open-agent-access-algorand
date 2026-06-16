@@ -10,7 +10,7 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
-    if: github.repository == 'KirkeLabs/open-agent-access-algorand'
+    if: github.repository == 'KirkeLabs/open-agent-access-algorand' && github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
       - run: corepack enable
@@ -25,6 +25,8 @@ jobs:
       - run: corepack pnpm lint
       - run: corepack pnpm package:check
       - run: corepack pnpm pack:dry-run
+      - run: corepack pnpm security:check
+      - run: corepack pnpm audit:prod
       - run: npm whoami --registry https://registry.npmjs.org
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

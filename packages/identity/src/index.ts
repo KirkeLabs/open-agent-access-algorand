@@ -47,7 +47,9 @@ const SIGNED_HEADERS = [
   "AA-Use",
   "AA-Budget",
   "AA-Trace-ID",
-  "AA-Protocol-Version"
+  "AA-Protocol-Version",
+  "AA-Agent-Key-ID",
+  "AA-Agent-Signature-Created"
 ];
 
 export function createAgentIdentityKeyPair(): AgentIdentityKeyPair {

@@ -1,0 +1,42 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Agent-paid research API",
+    "version": "0.1.0"
+  },
+  "servers": [
+    { "url": "https://api.example.com" }
+  ],
+  "paths": {
+    "/free": {
+      "get": {
+        "operationId": "getFree",
+        "x-open-agent-access": {
+          "decision": "allow",
+          "purposes": ["research"],
+          "uses": ["read"],
+          "receipt": { "required": true }
+        }
+      }
+    },
+    "/premium/report": {
+      "get": {
+        "operationId": "getPremiumReport",
+        "x-open-agent-access": {
+          "decision": "charge",
+          "purposes": ["research"],
+          "uses": ["ai-input"],
+          "price": { "amount": "0.005", "currency": "USD", "unit": "request" },
+          "payment": {
+            "type": "x402",
+            "settlement": "algorand",
+            "network": "testnet",
+            "scheme": "exact",
+            "asset": "USDC"
+          },
+          "receipt": { "required": true }
+        }
+      }
+    }
+  }
+}

@@ -106,6 +106,126 @@ human-friendly commands. Use scoped packages for runtime imports.
 - `evaluateStopSignal(signal, input)`: checks whether a request is stopped by
   signal scope, expiry, and active state.
 
+## `@kirkelabs/open-agent-access-creative-rights`
+
+- `validateCreativeAssetPassport(passport)`: validates a creative asset passport
+  and throws on hard errors.
+- `safeValidateCreativeAssetPassport(passport)`: returns validation errors and
+  warnings without throwing.
+- `hashCreativeAssetPassport(passport)`: stable hash for provenance and receipt
+  binding.
+- `createCreativeAssetAccessPolicy(passport, options)`: emits OAA policy rules
+  for license-specific asset paths.
+- `createCreativeReceiptEvidence(passport)`: creates receipt evidence for
+  rights claims, provenance references, registry references, and legal
+  boundaries.
+- `attachCreativeEvidenceToReceipt(receipt, passport)`: attaches creative
+  evidence to an OAA receipt event.
+
+## `@kirkelabs/open-agent-access-vc`
+
+- `createAgentPassportCredential(input)`: creates a W3C VC-shaped OAA agent
+  passport credential.
+- `safeValidateAgentPassportCredential(credential)`: validates credential shape,
+  validity window, and OAA subject binding.
+- `validateAgentPassportCredential(credential)`: throws on invalid, expired, or
+  not-yet-valid credentials.
+- `agentIdentityFromCredential(credential)`: extracts OAA agent identity.
+- `buildAgentAccessHeadersFromCredential(credential, input)`: builds AA headers
+  from a portable agent passport.
+- `hashAgentPassportCredential(credential)`: stable credential hash for receipt
+  binding.
+
+## `@kirkelabs/open-agent-access-odrl`
+
+- `exportAgentAccessPolicyToOdrl(policy)`: exports OAA policy rules as
+  ODRL-shaped permissions, prohibitions, and duties.
+- `importOdrlPolicyToAgentAccessPolicy(odrl, options)`: imports a small
+  ODRL-shaped policy into OAA rules.
+- `mapOaaUseToOdrlAction(use)` and `mapOdrlActionToOaaUse(action)`: action/use
+  mapping helpers.
+
+## `@kirkelabs/open-agent-access-openapi`
+
+- `createOpenApiAgentAccessExtension(input)`: creates an
+  `x-open-agent-access` operation extension.
+- `applyAgentAccessToOpenApiOperation(document, input)`: adds OAA metadata to an
+  OpenAPI operation.
+- `extractAgentAccessPolicyFromOpenApi(document, options)`: creates an OAA
+  policy from all `x-open-agent-access` extensions.
+- `openApiPathToAgentAccessPath(path)`: converts OpenAPI path templates to OAA
+  path patterns.
+- `addAgentAccessSecurityScheme(document)`: adds an AA header security scheme.
+
+## `@kirkelabs/open-agent-access-otel`
+
+- `receiptToOtelSpan(receipt, options)`: exports a receipt as an
+  OpenTelemetry-shaped span.
+- `accessEventToOtelLog(event)`: exports an access event as an
+  OpenTelemetry-shaped log record.
+- `decisionToOtelSpan(input)`: exports a policy decision as an internal span.
+- `OAA_OTEL_ATTRIBUTES`: stable semantic attribute names for OAA telemetry.
+
+## `@kirkelabs/open-agent-access-agent-card`
+
+- `createAgentAccessManifestBinding(input)`: creates an OAA manifest binding.
+- `attachAgentAccessToAgentCard(card, binding)`: adds OAA policy metadata to an
+  agent card-like object.
+- `extractAgentAccessFromAgentCard(card)`: reads OAA metadata from an agent card.
+- `attachAgentAccessToMcpTool(tool, binding)`: adds OAA rule binding metadata to
+  an MCP tool manifest-like object.
+- `createToolPolicyBindingsPolicy(input)`: creates an OAA policy from tool
+  bindings.
+
+## `@kirkelabs/open-agent-access-industry-profiles`
+
+- `createPublishingDataProfilePolicy(options)`
+- `createSaasApiProfilePolicy(options)`
+- `createSupplyChainProductProfilePolicy(options)`
+- `createHealthcareConsentProfilePolicy(options)`
+- `createEnergyInfrastructureProfilePolicy(options)`
+
+## `@kirkelabs/open-agent-access-policy-signing`
+
+- `createPolicySigningKeyPair()`: creates local Ed25519 policy signing keys.
+- `signAgentAccessPolicy(policy, input)`: signs an OAA policy hash.
+- `verifySignedAgentAccessPolicy(policy, trustedKeys, options)`: verifies a
+  policy signature against trusted keys and validity windows.
+- `createPolicyTrustRecord(input)`: creates a machine-readable trust record for
+  a policy signing key.
+
+## `@kirkelabs/open-agent-access-transparency`
+
+- `createTransparencyLog(entries)`: creates a Merkle transparency log.
+- `receiptToTransparencyEntry(receipt)`: converts an OAA receipt to a log entry.
+- `createInclusionProof(log, index)`: creates a Merkle inclusion proof.
+- `verifyInclusionProof(proof)`: verifies an inclusion proof.
+- `merkleRoot(hashes)`: computes a deterministic Merkle root.
+
+## `@kirkelabs/open-agent-access-replay`
+
+- `createMemoryReplayStore(options)`: local replay store for tests and demos.
+- `buildResourceBindingHash(input)`: binds method, URL, policy hash, rule ID,
+  trace ID, and idempotency key.
+- `buildReplayKey(input)`: binds resource and payment proof into a replay key.
+- `checkAndRememberReplay(store, key, ttlMs)`: atomic-ish local replay helper.
+- `requireIdempotencyKey(input)`: validates idempotency requirements for paid or
+  mutating actions.
+
+## `@kirkelabs/open-agent-access-security-profiles`
+
+- `evaluateSecurityProfile(policy, profile)`: checks `local-dev`,
+  `public-demo`, `production`, `enterprise`, or `regulated` hardening posture.
+
+## `@kirkelabs/open-agent-access-algorand-anchor`
+
+- `createPolicyAnchorPayload(policy, network, metadata)`.
+- `createReceiptAnchorPayload(receipt, network, metadata)`.
+- `createTransparencyRootAnchorPayload(log, network, metadata)`.
+- `createAlgorandAnchorRecord(payload, settlement)`.
+- `buildAlgorandAnchorNote(payload)`.
+- `verifyAlgorandAnchorRecord(record, expected)`.
+
 ## `@kirkelabs/open-agent-access-hono`
 
 - `agentAccessMiddleware(options)`: Hono middleware for policy enforcement,

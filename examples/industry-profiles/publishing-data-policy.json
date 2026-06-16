@@ -1,0 +1,39 @@
+{
+  "version": "0.1",
+  "protocol": "open-agent-access",
+  "site": {
+    "name": "Example Publisher",
+    "origin": "https://publisher.example",
+    "contact": "mailto:agents@publisher.example",
+    "terms": "https://publisher.example/agent-terms"
+  },
+  "defaults": {
+    "decision": "review",
+    "respectRobotsTxt": true,
+    "requireAgentIdentity": true,
+    "requirePurpose": true,
+    "requireReceipt": true
+  },
+  "rules": [
+    {
+      "id": "publishing-public-research",
+      "match": { "methods": ["GET"], "paths": ["/articles/**", "/docs/**"] },
+      "decision": "allow",
+      "purposes": ["research", "accessibility", "indexing"],
+      "uses": ["read", "summarize", "quote", "ai-input"],
+      "deniedUses": ["ai-training", "model-training"],
+      "attribution": { "required": true, "format": "source-url" },
+      "quoteLimit": { "maxWords": 100 },
+      "receipt": { "required": true }
+    },
+    {
+      "id": "publishing-ai-training-denied",
+      "match": { "methods": ["GET"], "paths": ["/**"] },
+      "decision": "deny",
+      "deniedPurposes": ["ai-training", "model-training"],
+      "deniedUses": ["ai-training", "model-training"],
+      "receipt": { "required": true }
+    }
+  ],
+  "receipt": { "required": true, "signing": "optional-v0" }
+}

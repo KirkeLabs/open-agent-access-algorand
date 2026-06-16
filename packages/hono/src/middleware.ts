@@ -42,6 +42,12 @@ export interface AgentAccessMiddlewareOptions {
     payTo?: string;
     facilitatorUrl?: string;
     network?: string;
+    /**
+     * Trust an upstream x402 verifier or test harness that has already
+     * validated X-PAYMENT before this middleware runs. Leave false for direct
+     * internet-facing deployments.
+     */
+    trustPaymentHeader?: boolean;
   };
 }
 
@@ -173,7 +179,17 @@ export function agentAccessMiddleware(options: AgentAccessMiddlewareOptions): Mi
         await writeSiteReceipt(options, loaded, c, parsed, "review", receiptId, rateResult, false, 428);
         return c.json({ error: "idempotency_key_required", decision: "review", ruleId: decision.rule?.id }, 428);
       }
-      if (options.algorandX402?.enabled && paymentHeader) {
+      if (options.algorandX402?.enabled && paymentHeader && !options.algorandX402.trustPaymentHeader) {
+        await writeSiteReceipt(options, loaded, c, parsed, "charge", receiptId, rateResult, false, 402);
+        return c.json({
+          error: "payment_verification_required",
+          decision: "charge",
+          ruleId: decision.rule?.id,
+          traceId,
+          message: "X-PAYMENT was supplied but this middleware is not configured to trust upstream payment verification"
+        }, 402);
+      }
+      if (options.algorandX402?.enabled && paymentHeader && options.algorandX402.trustPaymentHeader) {
         const replayKey = buildReplayKey(paymentHeader, c.req.method, c.req.url, loaded.policyHash, decision.rule?.id);
         if (await isReplay(replayStore, replayKey)) {
           await writeSiteReceipt(options, loaded, c, parsed, "deny", receiptId, rateResult, false, 409);

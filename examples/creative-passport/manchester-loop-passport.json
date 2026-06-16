@@ -1,0 +1,76 @@
+{
+  "version": "0.1",
+  "protocol": "open-agent-access",
+  "kind": "creative-asset-passport",
+  "asset": {
+    "id": "manchester-loop-001",
+    "title": "Manchester Perc Loop 001",
+    "type": "loop",
+    "hash": "sha256:example-placeholder",
+    "hashAlgorithm": "sha-256",
+    "createdAt": "2026-06-16T00:00:00.000Z"
+  },
+  "rights": {
+    "claimant": {
+      "name": "Example Manchester Producer",
+      "role": "producer",
+      "contact": "mailto:rights@example.com",
+      "wallet": "ALGORAND_ADDRESS_PLACEHOLDER"
+    },
+    "claims": ["sound-recording", "sample-pack"],
+    "authorshipBasis": "original",
+    "ownershipStatement": "Claimant declares they control the submitted loop and have authority to license it.",
+    "collaborators": [
+      { "name": "Example Manchester Producer", "role": "producer", "share": 100 }
+    ]
+  },
+  "policy": {
+    "defaultDecision": "review",
+    "deniedUses": ["ai-training", "model-training"],
+    "aiTraining": { "allowed": false },
+    "licenseOptions": [
+      {
+        "id": "community-demo",
+        "label": "Community demo use with attribution",
+        "decision": "allow",
+        "purposes": ["creative-licensing", "demo"],
+        "uses": ["demo", "non-commercial-sample"],
+        "attributionRequired": true
+      },
+      {
+        "id": "commercial-sample",
+        "label": "Commercial sample license",
+        "decision": "charge",
+        "purposes": ["creative-licensing"],
+        "uses": ["commercial-sample"],
+        "price": { "amount": "25", "currency": "GBP", "unit": "license" },
+        "attributionRequired": true
+      },
+      {
+        "id": "exclusive-sync",
+        "label": "Exclusive sync or buyout",
+        "decision": "review",
+        "purposes": ["sync", "commercial-release"],
+        "uses": ["exclusive-license", "sync"],
+        "attributionRequired": true,
+        "reviewUrl": "https://example.com/review"
+      }
+    ]
+  },
+  "provenance": {
+    "assetHash": "sha256:example-placeholder",
+    "assetHashAlgorithm": "sha-256"
+  },
+  "registry": {
+    "algorand": {
+      "network": "testnet"
+    },
+    "rsl": {
+      "licenseUrl": "https://example.com/licenses/manchester-loop-001"
+    }
+  },
+  "contact": "mailto:rights@example.com",
+  "disputeUrl": "https://example.com/disputes",
+  "reviewUrl": "https://example.com/review",
+  "legalNotice": "This passport records a rights claim, license terms, provenance references, and receipt evidence. It is not a copyright registration and does not prove final legal ownership."
+}

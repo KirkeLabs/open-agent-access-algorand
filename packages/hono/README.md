@@ -27,3 +27,13 @@ app.use("*", agentAccessMiddleware({
 
 Use `@kirkelabs/open-agent-access-storage-redis` or
 `@kirkelabs/open-agent-access-storage-postgres` for production replay protection.
+
+## Paid Routes
+
+The middleware fails closed for paid routes. A raw `X-PAYMENT` header does not
+unlock access unless `algorandX402.trustPaymentHeader` is explicitly set. Use
+that option only when an upstream x402 middleware, gateway, or test harness has
+already verified the payment proof before OAA runs.
+
+Direct internet-facing deployments should leave `trustPaymentHeader` unset or
+`false`.

@@ -65,8 +65,10 @@ corepack enable
 pnpm install
 pnpm build
 pnpm test
+pnpm test:vitest
 pnpm lint
 pnpm security:check
+pnpm audit:prod
 ```
 
 Validate a policy:
@@ -81,6 +83,10 @@ pnpm oaa policy init --template publisher --origin https://publisher.example --o
 See [Integration Guide](docs/INTEGRATION_GUIDE.md) for copy-paste setup paths
 for static sites, Vercel/Next.js, Hono, Express, Fastify, Cloudflare Workers,
 agent clients, and Algorand x402 paid routes.
+
+See [Supply Chain Security](docs/SUPPLY_CHAIN_SECURITY.md) for release gates,
+npm provenance, CodeQL, Dependency Review, OSSF Scorecard, Dependabot, and
+CODEOWNERS guidance.
 
 ## Site Owner Quickstart
 
@@ -105,6 +111,9 @@ app.use("*", agentAccessMiddleware({
 Expose your policy at `/.well-known/agent-access.json`. For delegated
 authority, also expose a mandate document at
 `/.well-known/agent-mandates.json`.
+
+Paid routes fail closed by default. Do not trust raw `X-PAYMENT` headers unless
+an upstream x402 verifier has already validated them.
 
 ## Agent Builder Quickstart
 
@@ -179,6 +188,18 @@ Premium fetches show payment-required metadata and do not pay unless `--pay` or
 | Policy-as-code export | `@kirkelabs/open-agent-access-policy-as-code`, `oaa policy export` | Supported |
 | Compliance mappings | `@kirkelabs/open-agent-access-compliance`, `oaa compliance map` | Supported |
 | Incident stop signals | `@kirkelabs/open-agent-access-incident`, `oaa incident stop` | Supported |
+| Creative rights passports | `@kirkelabs/open-agent-access-creative-rights` | Supported |
+| VC-shaped agent passports | `@kirkelabs/open-agent-access-vc` | Supported |
+| ODRL rights-policy mapping | `@kirkelabs/open-agent-access-odrl` | Supported |
+| OpenAPI extensions | `@kirkelabs/open-agent-access-openapi` | Supported |
+| OpenTelemetry export | `@kirkelabs/open-agent-access-otel` | Supported |
+| Agent Card / tool manifest bindings | `@kirkelabs/open-agent-access-agent-card` | Supported |
+| Industry profile templates | `@kirkelabs/open-agent-access-industry-profiles` | Supported |
+| Policy signing | `@kirkelabs/open-agent-access-policy-signing` | Supported |
+| Transparency logs | `@kirkelabs/open-agent-access-transparency` | Supported |
+| Shared replay/idempotency | `@kirkelabs/open-agent-access-replay` | Supported |
+| Security profiles | `@kirkelabs/open-agent-access-security-profiles` | Supported |
+| Algorand anchoring | `@kirkelabs/open-agent-access-algorand-anchor` | Supported |
 | Redis replay store | `@kirkelabs/open-agent-access-storage-redis` | Supported |
 | Postgres replay store | `@kirkelabs/open-agent-access-storage-postgres` | Supported |
 | Algorand x402 TestNet | `@kirkelabs/open-agent-access-payments-algorand-x402` | Adapter and fixtures supported |
@@ -218,6 +239,36 @@ pnpm oaa identity keygen
 The enterprise report scores fail-closed defaults, required identity/purpose,
 receipt posture, paid-access controls, rate/load controls, policy expiry,
 mandate revocation, and audit evidence.
+
+## Ecosystem Adapter Framing
+
+OAA is the policy, payment, and receipt rail. Adjacent standards and markets
+should plug into that rail rather than being absorbed into the core protocol:
+
+- RSL-style terms are external licensing signals.
+- C2PA/content credentials are external provenance signals.
+- Algorand provides settlement and optional receipt anchoring.
+- Creative passports model rights-aware use cases for samples, stems, datasets,
+  images, articles, and other assets.
+- Marketplaces, rights societies, and collectives remain distribution and
+  administration partners.
+
+The `@kirkelabs/open-agent-access-creative-rights` package implements the first
+slice of this adapter layer. It can validate a creative asset passport, convert
+license options into OAA policy rules, and bind creative/provenance/registry
+references into receipt evidence. It does not create copyright, prove final legal
+ownership, replace PRS/PPL, operate a marketplace, or act as DRM.
+
+See [Ecosystem Adapters](docs/ECOSYSTEM_ADAPTERS.md) and the
+[creative passport example](examples/creative-passport/README.md).
+
+OAA also ships interoperability adapters for VC-shaped agent passports,
+ODRL-shaped rights policy mapping, and OpenAPI `x-open-agent-access`
+extensions. See [Interoperability Profiles](docs/INTEROPERABILITY_PROFILES.md).
+
+Hardening packages add signed policies, Merkle transparency proofs, shared
+replay/idempotency helpers, named security profile checks, and Algorand anchor
+payloads for policy/receipt/log digests.
 
 ## Safety Principles
 

@@ -30,6 +30,7 @@
     "package:check": "tsx scripts/check-packages.ts",
     "pack:dry-run": "tsx scripts/pack-dry-run.ts",
     "publish:packages": "tsx scripts/publish-packages.ts",
+    "audit:prod": "corepack pnpm audit --prod",
     "security:check": "tsx scripts/check-secrets.ts",
     "smoke:example": "tsx scripts/smoke-example.ts",
     "oaa": "tsx packages/cli/src/index.ts"
@@ -42,5 +43,11 @@
     "typescript": "^5.7.2",
     "vite": "^7.2.7",
     "vitest": "^4.1.8"
+  },
+  "pnpm": {
+    "overrides": {
+      "esbuild": "0.28.1",
+      "ws": "8.21.0"
+    }
   }
 }

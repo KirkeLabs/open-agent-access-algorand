@@ -67,6 +67,79 @@ import {
   verifyEvidenceBundle
 } from "../packages/evidence/src/index.js";
 import { exportCedarBundle, exportOpaBundle } from "../packages/policy-as-code/src/index.js";
+import {
+  attachCreativeEvidenceToReceipt,
+  createCreativeAssetAccessPolicy,
+  createCreativeReceiptEvidence,
+  hashCreativeAssetPassport,
+  safeValidateCreativeAssetPassport,
+  type CreativeAssetPassport
+} from "../packages/creative-rights/src/index.js";
+import {
+  agentIdentityFromCredential,
+  buildAgentAccessHeadersFromCredential,
+  createAgentPassportCredential,
+  hashAgentPassportCredential,
+  safeValidateAgentPassportCredential
+} from "../packages/vc/src/index.js";
+import {
+  exportAgentAccessPolicyToOdrl,
+  importOdrlPolicyToAgentAccessPolicy
+} from "../packages/odrl/src/index.js";
+import {
+  addAgentAccessSecurityScheme,
+  applyAgentAccessToOpenApiOperation,
+  extractAgentAccessPolicyFromOpenApi,
+  openApiPathToAgentAccessPath,
+  type OpenApiDocument
+} from "../packages/openapi/src/index.js";
+import {
+  accessEventToOtelLog,
+  decisionToOtelSpan,
+  receiptToOtelSpan
+} from "../packages/otel/src/index.js";
+import {
+  attachAgentAccessToAgentCard,
+  attachAgentAccessToMcpTool,
+  createAgentAccessManifestBinding,
+  createToolPolicyBindingsPolicy,
+  extractAgentAccessFromAgentCard
+} from "../packages/agent-card/src/index.js";
+import {
+  createEnergyInfrastructureProfilePolicy,
+  createHealthcareConsentProfilePolicy,
+  createPublishingDataProfilePolicy,
+  createSaasApiProfilePolicy,
+  createSupplyChainProductProfilePolicy
+} from "../packages/industry-profiles/src/index.js";
+import {
+  createPolicySigningKeyPair,
+  createPolicyTrustRecord,
+  signAgentAccessPolicy,
+  verifySignedAgentAccessPolicy
+} from "../packages/policy-signing/src/index.js";
+import {
+  createInclusionProof,
+  createTransparencyLog,
+  receiptToTransparencyEntry,
+  verifyInclusionProof
+} from "../packages/transparency/src/index.js";
+import {
+  buildReplayKey,
+  buildResourceBindingHash,
+  checkAndRememberReplay,
+  createMemoryReplayStore as createSharedMemoryReplayStore,
+  requireIdempotencyKey
+} from "../packages/replay/src/index.js";
+import { evaluateSecurityProfile } from "../packages/security-profiles/src/index.js";
+import {
+  buildAlgorandAnchorNote,
+  createAlgorandAnchorRecord,
+  createPolicyAnchorPayload,
+  createReceiptAnchorPayload,
+  createTransparencyRootAnchorPayload,
+  verifyAlgorandAnchorRecord
+} from "../packages/algorand-anchor/src/index.js";
 
 type Test = { name: string; fn: () => Promise<void> | void };
 const tests: Test[] = [];
@@ -139,12 +212,449 @@ const mandateDocument: MandateDocument = {
   ]
 };
 
+const creativePassport: CreativeAssetPassport = {
+  version: "0.1",
+  protocol: "open-agent-access",
+  kind: "creative-asset-passport",
+  asset: {
+    id: "manchester-loop-001",
+    title: "Manchester Perc Loop 001",
+    type: "loop",
+    hash: "sha256:example-placeholder",
+    hashAlgorithm: "sha-256"
+  },
+  rights: {
+    claimant: { name: "Example Manchester Producer", wallet: "ALGORAND_ADDRESS_PLACEHOLDER" },
+    claims: ["sound-recording", "sample-pack"],
+    authorshipBasis: "original",
+    collaborators: [{ name: "Example Manchester Producer", role: "producer", share: 100 }]
+  },
+  policy: {
+    defaultDecision: "review",
+    deniedUses: ["ai-training"],
+    aiTraining: { allowed: false },
+    licenseOptions: [
+      {
+        id: "community-demo",
+        decision: "allow",
+        purposes: ["creative-licensing"],
+        uses: ["demo", "non-commercial-sample"],
+        attributionRequired: true
+      },
+      {
+        id: "commercial-sample",
+        decision: "charge",
+        purposes: ["creative-licensing"],
+        uses: ["commercial-sample"],
+        price: { amount: "25", currency: "GBP", unit: "license" },
+        attributionRequired: true
+      },
+      {
+        id: "exclusive-sync",
+        decision: "review",
+        purposes: ["sync"],
+        uses: ["exclusive-license"],
+        reviewUrl: "https://example.com/review"
+      }
+    ]
+  },
+  provenance: { assetHash: "sha256:example-placeholder", assetHashAlgorithm: "sha-256" },
+  registry: {
+    algorand: { network: "testnet" },
+    rsl: { licenseUrl: "https://example.com/licenses/manchester-loop-001" }
+  },
+  legalNotice: "This passport records a rights claim and license terms. It is not a copyright registration."
+};
+
 test("policy schema validation", () => {
   assert.equal(validateAgentAccessPolicy(policy).rules.length, 2);
   for (const template of ["publisher", "paid-api", "mcp-tool", "docs-site", "research-friendly"] as const) {
     const generated = validateAgentAccessPolicy(createPolicyTemplate(template, "https://template.example"));
     assert.ok(generated.rules.length >= 1);
   }
+});
+
+test("creative passport emits deterministic OAA policy and receipt evidence without copyright overclaims", () => {
+  const validation = safeValidateCreativeAssetPassport(creativePassport);
+  assert.equal(validation.valid, true);
+  assert.equal(validation.errors.length, 0);
+
+  const passportHash = hashCreativeAssetPassport(creativePassport);
+  assert.equal(passportHash.length, 64);
+
+  const creativePolicy = createCreativeAssetAccessPolicy(creativePassport, {
+    origin: "https://creative.example"
+  });
+  assert.equal(validateAgentAccessPolicy(creativePolicy).rules.length, 3);
+
+  const paid = decideAccess(creativePolicy, {
+    url: "https://creative.example/creative-assets/manchester-loop-001/licenses/commercial-sample",
+    method: "GET",
+    purpose: "creative-licensing",
+    use: "commercial-sample",
+    agent: { id: "did:web:buyer.example#agent" }
+  });
+  assert.equal(paid.decision, "charge");
+  assert.equal(paid.rule?.price?.amount, "25");
+
+  const aiTraining = decideAccess(creativePolicy, {
+    url: "https://creative.example/creative-assets/manchester-loop-001/licenses/commercial-sample",
+    method: "GET",
+    purpose: "ai-training",
+    use: "ai-training",
+    agent: { id: "did:web:buyer.example#agent" }
+  });
+  assert.equal(aiTraining.decision, "deny");
+
+  const evidence = createCreativeReceiptEvidence(creativePassport);
+  assert.equal(evidence.legalBoundary.createsCopyright, false);
+  assert.equal(evidence.legalBoundary.provesFinalOwnership, false);
+  assert.equal(evidence.registry?.algorand?.network, "testnet");
+
+  const receiptWithEvidence = attachCreativeEvidenceToReceipt({
+    receiptVersion: "0.1",
+    receiptType: "agent_access",
+    role: "site",
+    traceId: "trace-creative",
+    receiptId: "receipt-creative",
+    timestamp: "2026-06-16T00:00:00.000Z",
+    method: "GET",
+    url: "https://creative.example/creative-assets/manchester-loop-001/licenses/commercial-sample",
+    origin: "https://creative.example",
+    policy: {
+      ruleId: "manchester-loop-001-commercial-sample",
+      policyHash: hashCanonicalJson(creativePolicy),
+      decision: "charge"
+    },
+    payment: { required: true, price: { amount: "25", currency: "GBP", unit: "license" } }
+  }, creativePassport);
+  assert.equal(receiptWithEvidence.events?.length, 1);
+  const attachedEvidence = receiptWithEvidence.events?.[0]?.evidence as ReturnType<typeof createCreativeReceiptEvidence> | undefined;
+  assert.equal(attachedEvidence?.creativePassport.assetId, "manchester-loop-001");
+});
+
+test("interoperability adapters bridge VC, ODRL, and OpenAPI into OAA decisions", () => {
+  const credential = createAgentPassportCredential({
+    issuer: "did:web:kirkelabs.com",
+    agent: {
+      id: "did:web:agent.example#research-agent",
+      name: "Research Agent",
+      operator: "Example Labs",
+      contact: "mailto:agents@example.com"
+    },
+    purposes: ["research"],
+    uses: ["read", "ai-input"],
+    validUntil: "2099-01-01T00:00:00.000Z"
+  });
+  const credentialValidation = safeValidateAgentPassportCredential(credential, {
+    now: new Date("2026-06-16T00:00:00.000Z")
+  });
+  assert.equal(credentialValidation.valid, true);
+  assert.equal(agentIdentityFromCredential(credential).id, "did:web:agent.example#research-agent");
+  assert.equal(hashAgentPassportCredential(credential).length, 64);
+  const vcHeaders = buildAgentAccessHeadersFromCredential(credential, {
+    purpose: "research",
+    use: "read",
+    traceId: "trace-vc"
+  });
+  const parsedVcHeaders = parseAgentAccessHeaders(vcHeaders);
+  assert.ok(parsedVcHeaders);
+  assert.equal(parsedVcHeaders.agent.id, "did:web:agent.example#research-agent");
+
+  const odrl = exportAgentAccessPolicyToOdrl(policy);
+  assert.ok(odrl.permission?.some((entry) => entry.uid === "premium"));
+  assert.ok(odrl.prohibition?.some((entry) => entry.uid?.includes("denied")));
+  const imported = validateAgentAccessPolicy(importOdrlPolicyToAgentAccessPolicy(odrl, {
+    siteName: "Imported",
+    origin: "https://example.com"
+  }));
+  const importedDecision = decideAccess(imported, {
+    url: "https://example.com/premium/report",
+    method: "GET",
+    purpose: "research",
+    use: "ai-input",
+    agent: { id: "did:web:agent.example#research-agent" }
+  });
+  assert.equal(importedDecision.decision, "charge");
+
+  const openapi: OpenApiDocument = {
+    openapi: "3.1.0",
+    info: { title: "Agent API", version: "0.1.0" },
+    servers: [{ url: "https://api.example.com" }],
+    paths: {
+      "/premium/{reportId}": {
+        get: {
+          operationId: "getPremiumReport"
+        }
+      }
+    }
+  };
+  const documented = addAgentAccessSecurityScheme(applyAgentAccessToOpenApiOperation(openapi, {
+    path: "/premium/{reportId}",
+    method: "get",
+    extension: {
+      decision: "charge",
+      purposes: ["research"],
+      uses: ["ai-input"],
+      price: { amount: "0.005", currency: "USD", unit: "request" },
+      receipt: { required: true }
+    }
+  }));
+  assert.equal(openApiPathToAgentAccessPath("/premium/{reportId}"), "/premium/*");
+  assert.ok((documented.components?.securitySchemes as Record<string, unknown> | undefined)?.OpenAgentAccess);
+  const openApiPolicy = validateAgentAccessPolicy(extractAgentAccessPolicyFromOpenApi(documented));
+  const openApiDecision = decideAccess(openApiPolicy, {
+    url: "https://api.example.com/premium/weekly-report",
+    method: "GET",
+    purpose: "research",
+    use: "ai-input",
+    agent: { id: "did:web:agent.example#research-agent" }
+  });
+  assert.equal(openApiDecision.decision, "charge");
+  assert.equal(openApiDecision.rule?.id, "getPremiumReport");
+});
+
+test("observability, agent-card, and industry profile adapters produce enforceable outputs", () => {
+  const receipt = {
+    receiptVersion: "0.1",
+    receiptType: "agent_access",
+    role: "site",
+    traceId: "trace-observe",
+    receiptId: "receipt-observe",
+    timestamp: "2026-06-16T00:00:00.000Z",
+    method: "GET",
+    url: "https://example.com/premium/report?token=secret",
+    origin: "https://example.com",
+    agent: { id: "did:web:agent.example#research-agent" },
+    declared: { purpose: "research", use: "ai-input" },
+    policy: { ruleId: "premium", policyHash: "policy-hash", decision: "charge" },
+    payment: { required: true, settlement: "algorand", network: "testnet" },
+    receiptHash: "receipt-hash"
+  } as const;
+  const span = receiptToOtelSpan(receipt, { redactUrl: true });
+  assert.equal(span.name, "oaa.payment");
+  assert.equal(span.attributes["oaa.payment.settlement"], "algorand");
+  assert.equal(String(span.attributes["oaa.url"]).includes("token=secret"), false);
+
+  const event = createAccessEvent({
+    traceId: "trace-observe",
+    type: "policy_decision",
+    subject: { method: "GET", url: "https://example.com/premium/report" },
+    policy: { ruleId: "premium", policyHash: "policy-hash", decision: "charge" }
+  });
+  const log = accessEventToOtelLog(event);
+  assert.equal(log.body, "oaa.policy_decision");
+
+  const decisionSpan = decisionToOtelSpan({
+    traceId: "trace-observe",
+    decision: decideAccess(policy, {
+      url: "https://example.com/premium/report",
+      method: "GET",
+      purpose: "research",
+      use: "ai-input",
+      agent: { id: "did:web:agent.example#research-agent" }
+    }),
+    method: "GET",
+    url: "https://example.com/premium/report",
+    policyHash: hashCanonicalJson(policy),
+    timestamp: "2026-06-16T00:00:00.000Z"
+  });
+  assert.equal(decisionSpan.attributes["oaa.policy.decision"], "charge");
+
+  const binding = createAgentAccessManifestBinding({
+    policyUrl: "https://agent.example/.well-known/agent-access.json",
+    mandateUrl: "https://agent.example/.well-known/agent-mandates.json",
+    receiptRequired: true,
+    algorandX402Supported: true
+  });
+  const card = attachAgentAccessToAgentCard({ name: "Research Agent", url: "https://agent.example" }, binding);
+  assert.equal(extractAgentAccessFromAgentCard(card)?.policyUrl, binding.policyUrl);
+
+  const tool = attachAgentAccessToMcpTool({ name: "premium.search" }, {
+    toolName: "premium.search",
+    ruleId: "tool-premium-search",
+    path: "/mcp/tools/premium.search",
+    purposes: ["research"],
+    uses: ["tool-call"],
+    price: { amount: "0.01", currency: "USD", unit: "call" }
+  });
+  assert.equal(tool.annotations.openAgentAccess.ruleId, "tool-premium-search");
+  const toolPolicy = validateAgentAccessPolicy(createToolPolicyBindingsPolicy({
+    siteName: "MCP Server",
+    origin: "https://mcp.example",
+    bindings: [tool.annotations.openAgentAccess]
+  }));
+  const toolDecision = decideAccess(toolPolicy, {
+    url: "https://mcp.example/mcp/tools/premium.search",
+    method: "POST",
+    purpose: "research",
+    use: "tool-call",
+    agent: { id: "did:web:agent.example#research-agent" }
+  });
+  assert.equal(toolDecision.decision, "charge");
+
+  const publishing = createPublishingDataProfilePolicy({
+    siteName: "Publisher",
+    origin: "https://publisher.example",
+    paid: { price: { amount: "0.005", currency: "USD", unit: "request" } }
+  });
+  assert.equal(decideAccess(publishing.policy, {
+    url: "https://publisher.example/articles/story",
+    method: "GET",
+    purpose: "research",
+    use: "summarize",
+    agent: { id: "did:web:agent.example#research-agent" }
+  }).decision, "allow");
+
+  const saas = createSaasApiProfilePolicy({ siteName: "SaaS", origin: "https://api.example" });
+  assert.equal(decideAccess(saas.policy, {
+    url: "https://api.example/api/tasks",
+    method: "POST",
+    purpose: "workflow-automation",
+    use: "write",
+    agent: { id: "did:web:agent.example#research-agent" }
+  }).decision, "review");
+
+  const supplyChain = createSupplyChainProductProfilePolicy({ siteName: "Supply", origin: "https://supply.example" });
+  assert.equal(decideAccess(supplyChain.policy, {
+    url: "https://supply.example/products/123",
+    method: "GET",
+    purpose: "traceability",
+    use: "verify",
+    agent: { id: "did:web:agent.example#research-agent" }
+  }).decision, "allow");
+
+  const healthcare = createHealthcareConsentProfilePolicy({ siteName: "FHIR", origin: "https://health.example" });
+  assert.equal(decideAccess(healthcare.policy, {
+    url: "https://health.example/fhir/Patient/123",
+    method: "GET",
+    purpose: "care",
+    use: "read",
+    agent: { id: "did:web:agent.example#research-agent" }
+  }).decision, "review");
+  assert.ok(healthcare.cautions[0].includes("Not compliance-in-a-box"));
+
+  const energy = createEnergyInfrastructureProfilePolicy({
+    siteName: "Energy",
+    origin: "https://energy.example",
+    paid: { price: { amount: "0.002", currency: "USD", unit: "request" } }
+  });
+  assert.equal(decideAccess(energy.policy, {
+    url: "https://energy.example/market-data/tariffs",
+    method: "GET",
+    purpose: "monitoring",
+    use: "read",
+    agent: { id: "did:web:agent.example#research-agent" }
+  }).decision, "charge");
+});
+
+test("hardening packages sign policies, prove receipt inclusion, prevent replay, and anchor digests", async () => {
+  const keys = createPolicySigningKeyPair();
+  const signed = signAgentAccessPolicy(policy, {
+    keyId: "did:web:example.com#oaa-policy-key-1",
+    privateKeyPem: keys.privateKeyPem,
+    createdAt: new Date("2026-06-16T00:00:00.000Z")
+  });
+  const trust = createPolicyTrustRecord({
+    keyId: signed.policySignature.keyId,
+    publicKeyPem: keys.publicKeyPem,
+    controller: "https://example.com"
+  });
+  assert.equal(trust.kind, "policy-trust-record");
+  const verification = verifySignedAgentAccessPolicy(signed, [{
+    keyId: signed.policySignature.keyId,
+    publicKeyPem: keys.publicKeyPem
+  }], { now: new Date("2026-06-16T00:00:00.000Z") });
+  assert.equal(verification.ok, true);
+
+  const receiptA = await appendReceipt(join(await mkdtemp(join(tmpdir(), "oaa-hardening-")), "receipts.jsonl"), {
+    receiptVersion: "0.1",
+    receiptType: "agent_access",
+    role: "site",
+    traceId: "trace-hardening-a",
+    method: "GET",
+    url: "https://example.com/docs/a",
+    origin: "https://example.com",
+    policy: { ruleId: "docs", policyHash: hashCanonicalJson(policy), decision: "allow" },
+    payment: { required: false }
+  });
+  const receiptB = {
+    ...receiptA,
+    traceId: "trace-hardening-b",
+    receiptId: "receipt-b",
+    receiptHash: hashCanonicalJson({ receipt: "b" })
+  };
+  const log = createTransparencyLog([
+    receiptToTransparencyEntry(receiptA),
+    receiptToTransparencyEntry(receiptB)
+  ], new Date("2026-06-16T00:00:00.000Z"));
+  assert.equal(log.treeSize, 2);
+  const proof = createInclusionProof(log, 1);
+  assert.equal(verifyInclusionProof(proof), true);
+  const oddLog = createTransparencyLog([
+    receiptToTransparencyEntry(receiptA),
+    receiptToTransparencyEntry(receiptB),
+    { ...receiptToTransparencyEntry(receiptB), digest: hashCanonicalJson({ receipt: "c" }) }
+  ], new Date("2026-06-16T00:00:00.000Z"));
+  assert.equal(verifyInclusionProof(createInclusionProof(oddLog, 2)), true);
+
+  const resourceHash = buildResourceBindingHash({
+    method: "GET",
+    url: "https://example.com/premium/report",
+    policyHash: hashCanonicalJson(policy),
+    ruleId: "premium",
+    traceId: "trace-replay",
+    idempotencyKey: "idem-1"
+  });
+  assert.equal(resourceHash.length, 64);
+  assert.equal(requireIdempotencyKey({ method: "POST", decision: "charge" }).ok, false);
+  const sharedReplay = createSharedMemoryReplayStore();
+  const replayKey = buildReplayKey({
+    method: "GET",
+    url: "https://example.com/premium/report",
+    policyHash: hashCanonicalJson(policy),
+    ruleId: "premium",
+    traceId: "trace-replay",
+    idempotencyKey: "idem-1",
+    paymentProof: "payment-proof",
+    agentId: "did:web:agent.example"
+  });
+  assert.equal((await checkAndRememberReplay(sharedReplay, replayKey)).replay, false);
+  assert.equal((await checkAndRememberReplay(sharedReplay, replayKey)).replay, true);
+
+  const productionReport = evaluateSecurityProfile({
+    ...policy,
+    expiresAt: "2099-01-01T00:00:00.000Z",
+    defaults: {
+      ...policy.defaults,
+      decision: "review",
+      respectRobotsTxt: true,
+      requireAgentIdentity: true,
+      requirePurpose: true,
+      requireReceipt: true
+    },
+    receipt: { required: true, signing: "optional-v0" },
+    rules: policy.rules.map((rule) => ({
+      ...rule,
+      rateLimit: rule.rateLimit ?? { requests: 30, window: "1m" },
+      receipt: { required: true },
+      payment: rule.decision === "charge" ? { type: "x402", settlement: "algorand", network: "testnet" } : rule.payment
+    }))
+  }, "production");
+  assert.equal(productionReport.ok, true);
+
+  const policyAnchor = createPolicyAnchorPayload(policy, "testnet", { site: "example" });
+  const receiptAnchor = createReceiptAnchorPayload(receiptA, "testnet");
+  const rootAnchor = createTransparencyRootAnchorPayload(log, "testnet");
+  assert.ok(buildAlgorandAnchorNote(policyAnchor).startsWith("oaa-anchor-v0.1:"));
+  assert.equal(verifyAlgorandAnchorRecord(createAlgorandAnchorRecord(receiptAnchor, {
+    transactionId: "TX_PLACEHOLDER",
+    confirmedRound: 123
+  }), { digest: receiptAnchor.digest, network: "testnet", kind: "receipt" }).valid, true);
+  assert.equal(verifyAlgorandAnchorRecord(createAlgorandAnchorRecord(rootAnchor), {
+    digest: log.rootHash,
+    kind: "transparency-root"
+  }).valid, true);
 });
 
 test("conformance suite passes reference fixtures", async () => {
@@ -608,6 +1118,30 @@ test("signed agent identity verifies request headers", () => {
   });
   assert.equal(tampered.ok, false);
   assert.equal(tampered.reason, "invalid_signature");
+
+  const timestampTamperHeaders = buildAgentAccessHeaders({
+    agent: { id: "did:web:a", name: "A", operator: "Ops", principal: "user:1" },
+    purpose: "research",
+    use: "read",
+    budget: { currency: "USD", amount: "0.05" },
+    traceId: "trace"
+  });
+  signAgentAccessHeaders(timestampTamperHeaders, {
+    method: "GET",
+    url: "https://example.com/docs/a",
+    keyId: "did:web:a#key-1",
+    privateKeyPem: keys.privateKeyPem,
+    createdAt: new Date("2026-06-12T00:00:00.000Z")
+  });
+  timestampTamperHeaders.set("AA-Agent-Signature-Created", "2026-06-12T00:00:01.000Z");
+  const timestampTampered = verifyAgentAccessHeaders(timestampTamperHeaders, {
+    method: "GET",
+    url: "https://example.com/docs/a",
+    trustedKeys: [{ keyId: "did:web:a#key-1", agentId: "did:web:a", publicKeyPem: keys.publicKeyPem }],
+    now: new Date("2026-06-12T00:00:01.000Z")
+  });
+  assert.equal(timestampTampered.ok, false);
+  assert.equal(timestampTampered.reason, "invalid_signature");
 });
 
 test("receipt append, verify, digest, and tamper detection", async () => {
@@ -746,10 +1280,10 @@ test("Algorand x402 adapter guardrails and metadata", async () => {
     "X-PAYMENT-RESPONSE": JSON.stringify({ transactionId: "tx", payer: "payer", payTo: "payto" })
   }));
   assert.equal(settlement.transactionId, "tx");
-  assert.equal(parseAlgorandX402SettlementHeaders(new Headers({ "X-PAYMENT-RESPONSE": "not-json" })).settlementSuccess, true);
+  assert.equal(parseAlgorandX402SettlementHeaders(new Headers({ "X-PAYMENT-RESPONSE": "not-json" })).settlementSuccess, false);
   assert.equal(createAlgorandX402PaymentRequiredFixture().status, 402);
   assert.equal(parseAlgorandX402SettlementHeaders(createAlgorandX402SettlementFixture({ transactionId: "fixture-tx" })).transactionId, "fixture-tx");
-  assert.equal(parseAlgorandX402SettlementHeaders(createMalformedAlgorandX402SettlementFixture()).settlementSuccess, true);
+  assert.equal(parseAlgorandX402SettlementHeaders(createMalformedAlgorandX402SettlementFixture()).settlementSuccess, false);
 });
 
 test("Algorand x402 TestNet readiness is explicit and secret-safe", async () => {
@@ -1021,10 +1555,38 @@ test("Hono middleware decisions and receipts", async () => {
   assert.equal(unpaid.headers.get("AA-Decision"), "charge");
 
   paidHeaders.set("X-PAYMENT", "test-proof");
-  const paid = await app.request("/paid", { headers: paidHeaders });
+  const unverifiedPayment = await app.request("/paid", { headers: paidHeaders });
+  assert.equal(unverifiedPayment.status, 402);
+  assert.equal((await unverifiedPayment.json() as { error: string }).error, "payment_verification_required");
+
+  const trustedReplayKeys = new Set<string>();
+  const trustedReplayStore: ReplayStore = {
+    has(key) {
+      return trustedReplayKeys.has(key);
+    },
+    set(key) {
+      trustedReplayKeys.add(key);
+    }
+  };
+  const trustedApp = new Hono();
+  trustedApp.use("*", agentAccessMiddleware({
+    policyPath,
+    receipts: { type: "jsonl", path: join(dir, "trusted-receipts.jsonl") },
+    replayStore: trustedReplayStore,
+    algorandX402: {
+      enabled: true,
+      payTo: "TESTADDR",
+      facilitatorUrl: "https://facilitator.goplausible.xyz",
+      network: "testnet",
+      trustPaymentHeader: true
+    }
+  }));
+  trustedApp.get("/paid", (c) => c.json({ ok: true }));
+
+  const paid = await trustedApp.request("/paid", { headers: paidHeaders });
   assert.equal(paid.status, 200);
 
-  const replay = await app.request("/paid", { headers: paidHeaders });
+  const replay = await trustedApp.request("/paid", { headers: paidHeaders });
   assert.equal(replay.status, 409);
   assert.equal((await replay.json() as { error: string }).error, "payment_replay_detected");
 });

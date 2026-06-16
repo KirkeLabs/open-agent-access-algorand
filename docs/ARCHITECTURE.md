@@ -1,6 +1,6 @@
 # Architecture
 
-Open Agent Access has seven layers:
+Open Agent Access has nine layers:
 
 1. Policy discovery at `/.well-known/agent-access.json`.
 2. Optional verifiable agent identity using signed agent access headers.
@@ -10,6 +10,8 @@ Open Agent Access has seven layers:
 6. Tool-boundary guards for MCP-style tool execution.
 7. Enterprise posture, risk, audit export, evidence digest, immutable bundle, and policy-as-code tooling.
 8. Optional payment adapters, starting with Algorand x402 TestNet.
+9. Ecosystem adapters for adjacent licensing, provenance, and creative-rights
+   systems without absorbing those systems into OAA core.
 
 The core package owns schema validation, matching, decisions, headers, budgets,
 hashing, receipts, and event trails. Framework packages consume core decisions.
@@ -23,6 +25,23 @@ The evidence package produces create-only manifests suitable for WORM storage or
 Object Lock workflows.
 The policy-as-code package projects OAA policy into OPA/Rego and Cedar-style
 review artifacts for enterprise authorization programs.
+The ecosystem adapter packages keep OAA interoperable without bloating core:
+creative-rights turns asset passport metadata into OAA policy and receipt
+evidence; VC shapes agent passports for portable identity claims; ODRL maps
+rights-style permissions, prohibitions, and duties; OpenAPI lets API teams
+declare OAA policy on operations; OTel exports OAA receipts and decisions into
+enterprise observability; Agent Card bindings advertise OAA policy from
+agent/tool manifests; industry profiles provide conservative policy templates
+for common sectors. These adapters deliberately do not make OAA a marketplace,
+copyright registry, DRM system, legal ownership oracle, identity wallet, API
+gateway, healthcare compliance platform, supply-chain ERP, or grid-control
+system.
+
+The hardening packages add verification layers around that rail: policy signing
+protects policy authenticity; transparency logs make receipt and policy digests
+provable; shared replay/idempotency helpers bind paid fulfilment to a resource;
+security profiles turn deployment posture into named checks; Algorand anchoring
+publishes digest commitments without placing private data on-chain.
 
 Security-sensitive defaults:
 

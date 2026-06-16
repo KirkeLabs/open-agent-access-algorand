@@ -7,11 +7,12 @@ resources need shared infrastructure.
 
 - Run behind TLS.
 - Keep payment disabled unless budget and signer controls are explicit.
+- Do not trust raw `X-PAYMENT` headers on direct internet-facing routes.
 - Use a shared replay store for multi-process or multi-region deployments.
 - Require `AA-Idempotency-Key` or `Idempotency-Key` on paid high-cost routes.
 - Rate-limit before expensive work.
 - Keep receipt ledgers on durable storage.
-- Run `pnpm security:check` in CI.
+- Run `pnpm security:check` and `pnpm audit:prod` in CI.
 
 ## Recommended Replay Store Contract
 
@@ -68,3 +69,10 @@ agentAccessMiddleware({
 Mnemonic env loading is local TestNet-only. Production signers should use wallet
 integration, KMS, smart-wallet delegation, Liquid Auth, or another explicit
 authorization flow.
+
+## Payment Verification
+
+For Hono paid routes, `algorandX402.trustPaymentHeader` must remain `false`
+unless a verified upstream x402 middleware or gateway has already validated the
+payment proof. OAA will otherwise return `402 payment_verification_required`
+instead of fulfilling the route.
