@@ -362,6 +362,12 @@ importers:
         specifier: workspace:*
         version: link:../core
 
+  packages/x402-bazaar:
+    dependencies:
+      '@kirkelabs/open-agent-access-core':
+        specifier: workspace:*
+        version: link:../core
+
 packages:
 
   '@adraffy/ens-normalize@1.11.1':

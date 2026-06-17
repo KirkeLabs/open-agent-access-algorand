@@ -39,6 +39,7 @@
       "@kirkelabs/open-agent-access-replay": ["./packages/replay/src/index.ts"],
       "@kirkelabs/open-agent-access-security-profiles": ["./packages/security-profiles/src/index.ts"],
       "@kirkelabs/open-agent-access-algorand-anchor": ["./packages/algorand-anchor/src/index.ts"],
+      "@kirkelabs/open-agent-access-x402-bazaar": ["./packages/x402-bazaar/src/index.ts"],
       "@kirkelabs/open-agent-access-cli": ["./packages/cli/src/index.ts"],
       "@kirkelabs/open-agent-access-conformance": ["./packages/conformance/src/index.ts"],
       "@kirkelabs/open-agent-access-express": ["./packages/express/src/index.ts"],

@@ -233,6 +233,23 @@ human-friendly commands. Use scoped packages for runtime imports.
 - `createMemoryReplayStore(options)`: default replay store for local or single
   process deployments. Production deployments should inject a shared store.
 
+## `@kirkelabs/open-agent-access-x402-bazaar`
+
+- `createBazaarDiscoveryFromOaaRule(rule, options)`: converts an OAA policy rule
+  into Bazaar-style discovery metadata with an embedded `openAgentAccess`
+  policy reference.
+- `buildOaaX402BazaarMetadata(options)`: builds the policy reference containing
+  policy URL, policy hash, rule ID, decision, purposes, uses, receipt requirement,
+  payment requirement, and resource binding hash.
+- `attachOaaPolicyRefToBazaarExtension(discovery, policyRef)`: adds OAA policy
+  metadata to existing Bazaar discovery metadata.
+- `createBazaarResourceRoute(options)`: creates a route shape with `accepts` and
+  Bazaar/OAA extensions side by side.
+- `extractOaaPolicyRefFromBazaarExtension(input)`: extracts an OAA policy ref
+  from a Bazaar route/extension object.
+- `createOaaRuleFromBazaarDiscovery(options)`: reconstructs an OAA rule from
+  Bazaar discovery metadata when importing external catalogues.
+
 ## `@kirkelabs/open-agent-access-payments-algorand-x402`
 
 - `createAlgorandX402ClientPaymentAdapter(config)`.

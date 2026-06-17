@@ -140,6 +140,12 @@ import {
   createTransparencyRootAnchorPayload,
   verifyAlgorandAnchorRecord
 } from "../packages/algorand-anchor/src/index.js";
+import {
+  createBazaarDiscoveryFromOaaRule,
+  createBazaarResourceRoute,
+  createOaaRuleFromBazaarDiscovery,
+  extractOaaPolicyRefFromBazaarExtension
+} from "../packages/x402-bazaar/src/index.js";
 
 type Test = { name: string; fn: () => Promise<void> | void };
 const tests: Test[] = [];
@@ -546,6 +552,43 @@ test("observability, agent-card, and industry profile adapters produce enforceab
     use: "read",
     agent: { id: "did:web:agent.example#research-agent" }
   }).decision, "charge");
+});
+
+test("x402 Bazaar interop binds paid resource discovery to OAA policy references", () => {
+  const premiumRule = policy.rules.find((rule) => rule.id === "premium");
+  assert.ok(premiumRule);
+  const policyHash = hashCanonicalJson(policy);
+  const discovery = createBazaarDiscoveryFromOaaRule(premiumRule, {
+    origin: policy.site.origin,
+    path: "/premium/report",
+    method: "GET",
+    policyUrl: `${policy.site.origin}/.well-known/agent-access.json`,
+    policyHash,
+    output: { example: { ok: true, tier: "premium" } }
+  });
+  assert.equal(discovery.openAgentAccess.protocol, "open-agent-access");
+  assert.equal(discovery.openAgentAccess.policyHash, policyHash);
+  assert.equal(discovery.openAgentAccess.ruleId, "premium");
+  assert.equal(discovery.openAgentAccess.paymentRequired, true);
+  assert.equal(discovery.openAgentAccess.receiptRequired, true);
+  assert.equal(discovery.openAgentAccess.resourceBindingHash.length, 64);
+
+  const route = createBazaarResourceRoute({
+    accepts: { scheme: "exact", network: "algorand-testnet", price: "$0.005" },
+    discovery
+  });
+  assert.equal(extractOaaPolicyRefFromBazaarExtension(route.extensions)?.ruleId, "premium");
+
+  const importedRule = createOaaRuleFromBazaarDiscovery({
+    id: "premium-imported",
+    match: { methods: ["GET"], paths: ["/premium/report"] },
+    discovery,
+    price: premiumRule.price,
+    payment: { type: "x402", settlement: "algorand", network: "testnet", scheme: "exact" }
+  });
+  assert.equal(importedRule.decision, "charge");
+  assert.equal(importedRule.receipt?.required, true);
+  assert.equal(importedRule.payment?.settlement, "algorand");
 });
 
 test("hardening packages sign policies, prove receipt inclusion, prevent replay, and anchor digests", async () => {

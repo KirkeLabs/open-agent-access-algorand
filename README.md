@@ -200,6 +200,7 @@ Premium fetches show payment-required metadata and do not pay unless `--pay` or
 | Shared replay/idempotency | `@kirkelabs/open-agent-access-replay` | Supported |
 | Security profiles | `@kirkelabs/open-agent-access-security-profiles` | Supported |
 | Algorand anchoring | `@kirkelabs/open-agent-access-algorand-anchor` | Supported |
+| Bazaar discovery interop | `@kirkelabs/open-agent-access-x402-bazaar` | Supported |
 | Redis replay store | `@kirkelabs/open-agent-access-storage-redis` | Supported |
 | Postgres replay store | `@kirkelabs/open-agent-access-storage-postgres` | Supported |
 | Algorand x402 TestNet | `@kirkelabs/open-agent-access-payments-algorand-x402` | Adapter and fixtures supported |
@@ -269,6 +270,11 @@ extensions. See [Interoperability Profiles](docs/INTEROPERABILITY_PROFILES.md).
 Hardening packages add signed policies, Merkle transparency proofs, shared
 replay/idempotency helpers, named security profile checks, and Algorand anchor
 payloads for policy/receipt/log digests.
+
+For Algorand x402 resource discovery, Bazaar should be treated as a companion
+layer rather than a competitor: Bazaar helps agents discover paid x402
+resources; OAA binds those resources to policy, purpose, receipts, and audit
+evidence. See [Bazaar Interoperability](docs/BAZAAR_INTEROP.md).
 
 ## Safety Principles
 
