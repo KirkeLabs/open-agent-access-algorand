@@ -29,6 +29,6 @@
     "@kirkelabs/open-agent-access-identity": "workspace:*",
     "@kirkelabs/open-agent-access-incident": "workspace:*",
     "@kirkelabs/open-agent-access-payments-algorand-x402": "workspace:*",
-    "hono": "^4.6.14"
+    "hono": "^4.12.26"
   }
 }
