@@ -284,23 +284,23 @@ importers:
   packages/payments-algorand-x402:
     dependencies:
       '@algorandfoundation/algokit-utils':
-        specifier: ^8.1.0
-        version: 8.2.2(algosdk@3.6.0)
+        specifier: ^9.2.0
+        version: 9.2.0(algosdk@3.6.0)
       '@kirkelabs/open-agent-access-core':
         specifier: workspace:*
         version: link:../core
       '@x402/avm':
-        specifier: ^2.14.0
-        version: 2.14.0
+        specifier: ^2.16.0
+        version: 2.16.0
       '@x402/core':
-        specifier: ^2.14.0
-        version: 2.14.0
+        specifier: ^2.16.0
+        version: 2.16.0
       '@x402/fetch':
-        specifier: ^2.14.0
-        version: 2.14.0
+        specifier: ^2.16.0
+        version: 2.16.0
       '@x402/hono':
-        specifier: ^2.14.0
-        version: 2.14.0(hono@4.12.25)(typescript@5.9.3)
+        specifier: ^2.16.0
+        version: 2.16.0(hono@4.12.25)(typescript@5.9.3)
       dotenv:
         specifier: ^16.4.7
         version: 16.6.1
@@ -377,11 +377,11 @@ packages:
     resolution: {integrity: sha512-Lx56ET6RmrDCFGwx6qyIr7YRX3Q3MyKgqkNeumLkFHXVkqMnXnK1aLeEbV59EOK8UHQ5UPJofSj1zvRMm9Du7w==}
     engines: {node: '>=20.0'}
 
-  '@algorandfoundation/algokit-utils@8.2.2':
-    resolution: {integrity: sha512-cDlukxXRHEIWR9Iae/Jnxl0Z5JUuHTdVbGpGgFUBxaHCSVxb+VUE5b0fsuSOmUvAEyFiMLe7PLb9DCv0xjdE5Q==}
+  '@algorandfoundation/algokit-utils@9.2.0':
+    resolution: {integrity: sha512-jILpK3PlSJ55crS8+Dl7iIiADEj/VowokTGSVEEneDG41XM3jMmogGVpCNipBil/YAGC2eh2yc4l9iHnfQdT/g==}
     engines: {node: '>=20.0'}
     peerDependencies:
-      algosdk: ^3.0.0
+      algosdk: ^3.5.2
 
   '@algorandfoundation/xhd-wallet-api@2.0.0-canary.1':
     resolution: {integrity: sha512-U6rSWMO6FKDLvMxWtfKyW5ctqSy2NrONWTU/jOA+BX0SGru0GPXsxwzFdcPa5w+X055V/xVVsr8eA3xA+m/5jA==}
@@ -863,22 +863,22 @@ packages:
   '@vitest/utils@4.1.8':
     resolution: {integrity: sha512-uOJamYALNhfJ6iolExyQM40yIQwDqYnkKtQ5VCiSe17E33H0aQ/u+1GlRuz4LZBk6Mm3sg90G9hEbmEt37C1Zg==}
 
-  '@x402/avm@2.14.0':
-    resolution: {integrity: sha512-3s5G38aRR8hrxIK81ZvRIV/+b/zSYqB0+yBHXXm4Q3wg913wmFZ9NcI/q19ucgAbIq4v9R4Zbm7pp2r334xH5g==}
+  '@x402/avm@2.16.0':
+    resolution: {integrity: sha512-WWeojOlpejTgRjfFzjWbw0iRryd/fZAf/LBoRVBRT+RwgPzQMvXAigvlobpgSzqLxd2vsc2qggCedetiiP7tBA==}
 
-  '@x402/core@2.14.0':
-    resolution: {integrity: sha512-+xTM6hfGduYvFcQ7QwKvCwommL6+zqzqmr5IuPojbt+RZjo4QUjSkHW+arMtPoIKRLxWAI+e6P4UJMMblwG+Dw==}
+  '@x402/core@2.16.0':
+    resolution: {integrity: sha512-7MjwOEiE6ICAYtOsK9vQl66Ho4jERDuuoRg/No2Nc2GQ7y/M/yu4DJ65LzeBycQE+Qrg2RqQG7KR51tyT+hzjQ==}
 
-  '@x402/extensions@2.14.0':
-    resolution: {integrity: sha512-2zu8hxf0j4BRvSWNPRKziQLdubnQpzzmU9xopKK5ZyXa434hvmGEUPMBOA2NIYvaTkyZjQH3JZ3GPDyzjBvFqA==}
+  '@x402/extensions@2.16.0':
+    resolution: {integrity: sha512-LHh5QrvB1QwiPr2zFqzpJonmMGxqJq1nDHifihyqNx1lJvU3DQgYGxPuHXE2l6nxGG0chF0alA/BsidDHFie/A==}
 
-  '@x402/fetch@2.14.0':
-    resolution: {integrity: sha512-GSCnxdrbmtuKeki2MTy2vnJq4e6PrA7XfF1yX23VxKvASIYaXUioW1HtRzNYU7imeMe13YcwefRH1jO7Ei7Tyg==}
+  '@x402/fetch@2.16.0':
+    resolution: {integrity: sha512-skW0XsWzi4NIfqCrY6KxhO3UEJ8qh4nBIKIgwWFCXFHNqRKYWZ7qcCI/DHy7cy3jdYs1MV4PoXX24rP3Umca1Q==}
 
-  '@x402/hono@2.14.0':
-    resolution: {integrity: sha512-0R2gUah8euTR1OfgYwCf+ho3HSKe0Qijb2SBwyVXvO5bgDmy4ncdEv+lUcF+SvX+Fh2/NVAqQFL7JP7STGsPBA==}
+  '@x402/hono@2.16.0':
+    resolution: {integrity: sha512-CStjpNSifgKzrAYrJJSrxEe3z+/BXruONKxVbklYYEb+ehaaccLdHU4zc5szMH/dbypHcVzoL7YgV79y8WJTzA==}
     peerDependencies:
-      '@x402/paywall': ^2.14.0
+      '@x402/paywall': ^2.16.0
       hono: ^4.0.0
     peerDependenciesMeta:
       '@x402/paywall':
@@ -1372,8 +1372,8 @@ packages:
     resolution: {integrity: sha512-rBJeI5CXAlmy1pV+617WB9J63U6XcazHHF2f2dbJix4XzpUF0RS3Zbj0FGIOCAva5P/d/GBOYaACQ1w+0azUkg==}
     engines: {node: '>= 4.0.0'}
 
-  viem@2.52.2:
-    resolution: {integrity: sha512-HSU12p5aD/kAPZfrlbCUqdiP4P/c6hQ9AhfTS51VbLUQIjkWd1d5EjrCx/SCxZ0zhZVRn4Iv5X5WDqXPG8Ubew==}
+  viem@2.53.1:
+    resolution: {integrity: sha512-FhfJ/SW73CVosiyVLmIMVgKDRKYV1AGCLzZoHYvmNayyVff63Qi1ocPCk59LqC/cNw244RbBJjHnmxqXkE7NpA==}
     peerDependencies:
       typescript: '>=5.0.4'
     peerDependenciesMeta:
@@ -1507,7 +1507,7 @@ snapshots:
       tweetnacl: 1.0.3
       vlq: 2.0.4
 
-  '@algorandfoundation/algokit-utils@8.2.2(algosdk@3.6.0)':
+  '@algorandfoundation/algokit-utils@9.2.0(algosdk@3.6.0)':
     dependencies:
       algosdk: 3.6.0
       buffer: 6.0.3
@@ -1900,11 +1900,11 @@ snapshots:
       '@noble/hashes': 1.8.0
       apg-js: 4.4.0
 
-  '@signinwithethereum/siwe@4.2.0(viem@2.52.2(typescript@5.9.3)(zod@3.25.76))':
+  '@signinwithethereum/siwe@4.2.0(viem@2.53.1(typescript@5.9.3)(zod@3.25.76))':
     dependencies:
       '@signinwithethereum/siwe-parser': 4.2.0
     optionalDependencies:
-      viem: 2.52.2(typescript@5.9.3)(zod@3.25.76)
+      viem: 2.53.1(typescript@5.9.3)(zod@3.25.76)
 
   '@standard-schema/spec@1.1.0': {}
 
@@ -1964,25 +1964,25 @@ snapshots:
       convert-source-map: 2.0.0
       tinyrainbow: 3.1.0
 
-  '@x402/avm@2.14.0':
+  '@x402/avm@2.16.0':
     dependencies:
       '@algorandfoundation/algokit-utils': 10.0.0-alpha.46
-      '@x402/core': 2.14.0
+      '@x402/core': 2.16.0
 
-  '@x402/core@2.14.0':
+  '@x402/core@2.16.0':
     dependencies:
       zod: 3.25.76
 
-  '@x402/extensions@2.14.0(typescript@5.9.3)':
+  '@x402/extensions@2.16.0(typescript@5.9.3)':
     dependencies:
       '@noble/curves': 1.9.7
       '@scure/base': 1.2.6
-      '@signinwithethereum/siwe': 4.2.0(viem@2.52.2(typescript@5.9.3)(zod@3.25.76))
-      '@x402/core': 2.14.0
+      '@signinwithethereum/siwe': 4.2.0(viem@2.53.1(typescript@5.9.3)(zod@3.25.76))
+      '@x402/core': 2.16.0
       ajv: 8.20.0
       jose: 5.10.0
       tweetnacl: 1.0.3
-      viem: 2.52.2(typescript@5.9.3)(zod@3.25.76)
+      viem: 2.53.1(typescript@5.9.3)(zod@3.25.76)
       zod: 3.25.76
     transitivePeerDependencies:
       - bufferutil
@@ -1990,14 +1990,14 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@x402/fetch@2.14.0':
+  '@x402/fetch@2.16.0':
     dependencies:
-      '@x402/core': 2.14.0
+      '@x402/core': 2.16.0
 
-  '@x402/hono@2.14.0(hono@4.12.25)(typescript@5.9.3)':
+  '@x402/hono@2.16.0(hono@4.12.25)(typescript@5.9.3)':
     dependencies:
-      '@x402/core': 2.14.0
-      '@x402/extensions': 2.14.0(typescript@5.9.3)
+      '@x402/core': 2.16.0
+      '@x402/extensions': 2.16.0(typescript@5.9.3)
       hono: 4.12.25
     transitivePeerDependencies:
       - bufferutil
@@ -2457,7 +2457,7 @@ snapshots:
 
   universalify@0.1.2: {}
 
-  viem@2.52.2(typescript@5.9.3)(zod@3.25.76):
+  viem@2.53.1(typescript@5.9.3)(zod@3.25.76):
     dependencies:
       '@noble/curves': 1.9.1
       '@noble/hashes': 1.8.0
