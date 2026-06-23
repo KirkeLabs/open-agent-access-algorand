@@ -1,6 +1,6 @@
 {
   "name": "@kirkelabs/open-agent-access",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "One-command installer and CLI front door for Open Agent Access.",
   "type": "module",
   "license": "Apache-2.0",

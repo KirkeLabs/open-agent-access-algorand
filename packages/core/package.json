@@ -1,6 +1,6 @@
 {
   "name": "@kirkelabs/open-agent-access-core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Core policy, preflight, headers, receipts, and decision engine for Open Agent Access.",
   "type": "module",
   "license": "Apache-2.0",
@@ -25,7 +25,6 @@
     "build": "tsc -p ../../tsconfig.base.json"
   },
   "dependencies": {
-    "zod": "^3.24.1"
-  },
-  "devDependencies": {}
+    "zod": "^4.4.3"
+  }
 }
