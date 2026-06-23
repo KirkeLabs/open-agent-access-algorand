@@ -32,8 +32,11 @@ export interface McpToolManifestLike {
   description?: string;
   inputSchema?: unknown;
   annotations?: Record<string, unknown>;
+  permissions?: CodexToolPermission[];
   [key: string]: unknown;
 }
+
+export type CodexToolPermission = "Read" | "Write" | "Interactive";
 
 export interface ToolPolicyBinding {
   toolName: string;
@@ -43,6 +46,7 @@ export interface ToolPolicyBinding {
   uses: string[];
   decision?: AgentAccessRule["decision"];
   price?: PricePolicy;
+  permissions?: CodexToolPermission[];
 }
 
 export function createAgentAccessManifestBinding(input: Omit<AgentAccessManifestBinding, "protocol" | "version">): AgentAccessManifestBinding {
@@ -81,12 +85,20 @@ export function extractAgentAccessFromAgentCard(card: AgentCardLike): AgentAcces
 export function attachAgentAccessToMcpTool<T extends McpToolManifestLike>(
   tool: T,
   binding: ToolPolicyBinding
-): T & { annotations: Record<string, unknown> & { openAgentAccess: ToolPolicyBinding } } {
+): T & {
+  permissions: CodexToolPermission[];
+  annotations: Record<string, unknown> & { openAgentAccess: ToolPolicyBinding };
+} {
+  const permissions = binding.permissions ?? tool.permissions ?? inferCodexToolPermissions(binding);
   return {
     ...tool,
+    permissions,
     annotations: {
       ...(tool.annotations ?? {}),
-      openAgentAccess: binding
+      openAgentAccess: {
+        ...binding,
+        permissions
+      }
     }
   };
 }
@@ -128,6 +140,10 @@ export function createToolPolicyBindingsPolicy(input: {
     })),
     receipt: { required: true }
   };
+}
+
+function inferCodexToolPermissions(binding: ToolPolicyBinding): CodexToolPermission[] {
+  return binding.price || binding.decision === "charge" ? ["Read", "Write"] : ["Read"];
 }
 
 function isBinding(value: unknown): value is AgentAccessManifestBinding {

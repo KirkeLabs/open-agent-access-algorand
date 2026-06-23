@@ -494,9 +494,12 @@ test("observability, agent-card, and industry profile adapters produce enforceab
     path: "/mcp/tools/premium.search",
     purposes: ["research"],
     uses: ["tool-call"],
-    price: { amount: "0.01", currency: "USD", unit: "call" }
+    price: { amount: "0.01", currency: "USD", unit: "call" },
+    permissions: ["Read", "Write"]
   });
   assert.equal(tool.annotations.openAgentAccess.ruleId, "tool-premium-search");
+  assert.deepEqual(tool.permissions, ["Read", "Write"]);
+  assert.deepEqual(tool.annotations.openAgentAccess.permissions, ["Read", "Write"]);
   const toolPolicy = validateAgentAccessPolicy(createToolPolicyBindingsPolicy({
     siteName: "MCP Server",
     origin: "https://mcp.example",
@@ -510,6 +513,15 @@ test("observability, agent-card, and industry profile adapters produce enforceab
     agent: { id: "did:web:agent.example#research-agent" }
   });
   assert.equal(toolDecision.decision, "charge");
+
+  const readOnlyTool = attachAgentAccessToMcpTool({ name: "public.search" }, {
+    toolName: "public.search",
+    ruleId: "tool-public-search",
+    path: "/mcp/tools/public.search",
+    purposes: ["research"],
+    uses: ["tool-call"]
+  });
+  assert.deepEqual(readOnlyTool.permissions, ["Read"]);
 
   const publishing = createPublishingDataProfilePolicy({
     siteName: "Publisher",

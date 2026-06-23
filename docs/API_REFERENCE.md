@@ -212,7 +212,8 @@ oaa vercel reconcile --repo-path . --production-commit <sha> --json
   agent card-like object.
 - `extractAgentAccessFromAgentCard(card)`: reads OAA metadata from an agent card.
 - `attachAgentAccessToMcpTool(tool, binding)`: adds OAA rule binding metadata to
-  an MCP tool manifest-like object.
+  an MCP tool manifest-like object, including Codex-compatible `permissions`
+  hints (`Read`, `Write`, `Interactive`).
 - `createToolPolicyBindingsPolicy(input)`: creates an OAA policy from tool
   bindings.
 
