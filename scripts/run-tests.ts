@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -146,6 +147,17 @@ import {
   createOaaRuleFromBazaarDiscovery,
   extractOaaPolicyRefFromBazaarExtension
 } from "../packages/x402-bazaar/src/index.js";
+import {
+  createApprovalToken,
+  createGitHubRulesetTemplate,
+  generateDiffPacket,
+  getGuardStatus,
+  guardAction,
+  installGitPrePushHook,
+  reconcileVercelDeploymentApproval,
+  setFreezeState,
+  verifyApprovalLedger
+} from "../packages/guard/src/index.js";
 
 type Test = { name: string; fn: () => Promise<void> | void };
 const tests: Test[] = [];
@@ -1687,6 +1699,176 @@ test("Hono middleware can require signed agent identity", async () => {
   assert.equal(signed.headers.get("AA-Agent-Identity-Verified"), "true");
 });
 
+test("agent action guard enforces one-time human approval for production-facing mutations", async () => {
+  const repo = await createGuardFixture("approval");
+  await writeFile(join(repo, "src.ts"), "export const value = 1;\n", "utf8");
+
+  const packet = await generateDiffPacket({ repoPath: repo, action: "git.push" });
+  assert.equal(packet.actionClass, "push");
+  assert.equal(packet.riskLevel, "high");
+  assert.deepEqual(packet.changedFiles, ["src.ts"]);
+  assert.equal(packet.diffHash.length, 64);
+
+  const readDecision = await guardAction({ repoPath: repo, action: "repo.read" });
+  assert.equal(readDecision.ok, true);
+  assert.equal(readDecision.reason, "low_risk_action_allowed_without_approval");
+
+  const blocked = await guardAction({ repoPath: repo, action: "git.push" });
+  assert.equal(blocked.ok, false);
+  assert.equal(blocked.reason, "approval_token_required");
+
+  const malformed = await guardAction({
+    repoPath: repo,
+    action: "git.push",
+    approvalToken: "../../outside.not-a-token"
+  });
+  assert.equal(malformed.ok, false);
+  assert.equal(malformed.reason, "malformed_approval_token");
+
+  const approval = await createApprovalToken({
+    repoPath: repo,
+    action: "git.push",
+    note: "Human reviewed the bounded diff packet.",
+    ttlMinutes: 30,
+    actor: "test-human"
+  });
+  assert.match(approval.token, /^[^.]+\./);
+
+  const allowed = await guardAction({
+    repoPath: repo,
+    action: "git.push",
+    approvalToken: approval.token,
+    actor: "test-agent"
+  });
+  assert.equal(allowed.ok, true);
+  assert.equal(allowed.reason, "approval_token_accepted");
+  assert.equal(allowed.approval?.consumed, true);
+  const usedMarker = JSON.parse(await readFile(join(repo, ".oaa", "used-tokens", `${approval.tokenId}.json`), "utf8")) as { tokenId: string };
+  assert.equal(usedMarker.tokenId, approval.tokenId);
+
+  const reused = await guardAction({
+    repoPath: repo,
+    action: "git.push",
+    approvalToken: approval.token,
+    actor: "test-agent"
+  });
+  assert.equal(reused.ok, false);
+  assert.equal(reused.reason, "approval_token_already_used");
+
+  const verification = await verifyApprovalLedger(join(repo, ".oaa", "approval-ledger.jsonl"));
+  assert.equal(verification.valid, true);
+  assert.equal(verification.records.some((record) => record.recordType === "approval_used"), true);
+});
+
+test("agent action guard rejects expired and stale approval tokens", async () => {
+  const repo = await createGuardFixture("stale");
+  await writeFile(join(repo, "README.md"), "# changed after approval\n", "utf8");
+  const expired = await createApprovalToken({
+    repoPath: repo,
+    action: "git.push",
+    note: "Human approved this deliberately expired token.",
+    ttlMinutes: 0.000001
+  });
+  await sleep(20);
+  const expiredDecision = await guardAction({ repoPath: repo, action: "git.push", approvalToken: expired.token });
+  assert.equal(expiredDecision.ok, false);
+  assert.equal(expiredDecision.reason, "approval_token_expired");
+
+  const fresh = await createApprovalToken({
+    repoPath: repo,
+    action: "git.push",
+    note: "Human reviewed the first diff packet.",
+    ttlMinutes: 30
+  });
+  await writeFile(join(repo, "README.md"), "# changed again after approval\n", "utf8");
+  const stale = await guardAction({ repoPath: repo, action: "git.push", approvalToken: fresh.token });
+  assert.equal(stale.ok, false);
+  assert.equal(stale.reason, "approval_diff_hash_mismatch");
+
+  const untrackedRepo = await createGuardFixture("untracked-stale");
+  await writeFile(join(untrackedRepo, "draft.txt"), "approved content\n", "utf8");
+  const untracked = await createApprovalToken({
+    repoPath: untrackedRepo,
+    action: "git.push",
+    note: "Human reviewed the untracked file content.",
+    ttlMinutes: 30
+  });
+  await writeFile(join(untrackedRepo, "draft.txt"), "changed after approval\n", "utf8");
+  const untrackedStale = await guardAction({ repoPath: untrackedRepo, action: "git.push", approvalToken: untracked.token });
+  assert.equal(untrackedStale.ok, false);
+  assert.equal(untrackedStale.reason, "approval_diff_hash_mismatch");
+});
+
+test("freeze mode blocks approved production-facing actions and reports status", async () => {
+  const repo = await createGuardFixture("freeze");
+  await writeFile(join(repo, "vercel.json"), "{\"version\":2}\n", "utf8");
+  const approval = await createApprovalToken({
+    repoPath: repo,
+    action: "vercel.deploy",
+    note: "Human reviewed the deployment packet.",
+    ttlMinutes: 30
+  });
+  const freeze = await setFreezeState({
+    repoPath: repo,
+    active: true,
+    reason: "Incident review",
+    actor: "test-human"
+  });
+  assert.equal(freeze.active, true);
+
+  const blocked = await guardAction({
+    repoPath: repo,
+    action: "vercel.deploy",
+    approvalToken: approval.token
+  });
+  assert.equal(blocked.ok, false);
+  assert.equal(blocked.reason, "freeze_active");
+
+  const status = await getGuardStatus({ repoPath: repo });
+  assert.equal(status.freeze.active, true);
+  assert.equal(status.ledger.valid, true);
+});
+
+test("guard helpers generate enforcement artifacts for hooks, GitHub rulesets, and Vercel reconciliation", async () => {
+  const repo = await createGuardFixture("artifacts");
+  await writeFile(join(repo, "deploy.yml"), "target: production\n", "utf8");
+  const packet = await generateDiffPacket({ repoPath: repo, action: "vercel.deploy" });
+  assert.equal(packet.highRiskFiles.some((file) => file.path === "deploy.yml"), true);
+
+  const approval = await createApprovalToken({
+    repoPath: repo,
+    action: "vercel.deploy",
+    note: "Human reviewed the deployment diff packet.",
+    ttlMinutes: 30
+  });
+  const deployed = await guardAction({ repoPath: repo, action: "vercel.deploy", approvalToken: approval.token });
+  assert.equal(deployed.ok, true);
+
+  const reconciliation = await reconcileVercelDeploymentApproval({
+    repoPath: repo,
+    productionCommit: packet.repo.head,
+    deploymentUrl: "https://example.vercel.app"
+  });
+  assert.equal(reconciliation.ok, true);
+
+  const hook = await installGitPrePushHook({ repoPath: repo });
+  assert.equal(hook.path.endsWith("pre-push"), true);
+  const hookScript = await readFile(hook.path, "utf8");
+  assert.equal(hookScript.includes("mktemp"), true);
+  assert.equal(hookScript.includes("/tmp/oaa-guard-pre-push.json"), false);
+  await assert.rejects(
+    () => installGitPrePushHook({ repoPath: repo, tokenEnvVar: "BAD;echo injected" }),
+    /valid shell environment variable/
+  );
+
+  const ruleset = createGitHubRulesetTemplate({ branch: "main", requiredChecks: ["CI", "CodeQL"], requireSignedCommits: true });
+  assert.equal(ruleset.enforcement, "active");
+  assert.equal(ruleset.rules.some((rule) => rule.type === "non_fast_forward"), true);
+  assert.equal(ruleset.rules.some((rule) => rule.type === "required_signatures"), true);
+  const pullRequestRule = ruleset.rules.find((rule) => rule.type === "pull_request");
+  assert.equal(pullRequestRule?.parameters?.required_approving_review_count, 1);
+});
+
 test("Hono middleware can enforce emergency stop signals", async () => {
   const dir = await mkdtemp(join(tmpdir(), "oaa-hono-stop-"));
   const policyPath = join(dir, "agent-access.json");
@@ -1740,6 +1922,21 @@ if (!process.exitCode) {
 }
 
 process.exit(process.exitCode ?? 0);
+
+async function createGuardFixture(name: string): Promise<string> {
+  const repo = await mkdtemp(join(tmpdir(), `oaa-guard-${name}-`));
+  execFileSync("git", ["init", "-b", "main"], { cwd: repo, stdio: "ignore" });
+  execFileSync("git", ["config", "user.email", "tests@example.com"], { cwd: repo, stdio: "ignore" });
+  execFileSync("git", ["config", "user.name", "OAA Tests"], { cwd: repo, stdio: "ignore" });
+  await writeFile(join(repo, "README.md"), "# OAA guard fixture\n", "utf8");
+  execFileSync("git", ["add", "README.md"], { cwd: repo, stdio: "ignore" });
+  execFileSync("git", ["commit", "-m", "initial"], { cwd: repo, stdio: "ignore" });
+  return repo;
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 function headersToObject(headers: Headers): Record<string, string> {
   const output: Record<string, string> = {};

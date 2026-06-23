@@ -5,6 +5,17 @@ import { conformanceRunCommand } from "./commands/conformance.js";
 import { doctorCommand } from "./commands/doctor.js";
 import { enterpriseExportAuditCommand, enterpriseReportCommand } from "./commands/enterprise.js";
 import { evidenceBundleCommand, evidenceVerifyCommand } from "./commands/evidence.js";
+import {
+  approvalLedgerVerifyCommand,
+  approveCommand,
+  diffPacketCommand,
+  freezeCommand,
+  githubRulesetCommand,
+  guardCommand,
+  guardStatusCommand,
+  installHooksCommand,
+  vercelReconcileCommand
+} from "./commands/guard.js";
 import { identityKeygenCommand, identitySignRequestCommand, identityVerifyRequestCommand } from "./commands/identity.js";
 import { incidentCheckCommand, incidentStopCommand } from "./commands/incident.js";
 import { initCommand } from "./commands/init.js";
@@ -61,6 +72,15 @@ async function main() {
   if (command === "enterprise" && subcommand === "export-audit" && target) return enterpriseExportAuditCommand(target, options);
   if (command === "evidence" && subcommand === "bundle") return evidenceBundleCommand(options);
   if (command === "evidence" && subcommand === "verify" && target) return evidenceVerifyCommand(target, options);
+  if (command === "guard" && subcommand) return guardCommand(subcommand, options);
+  if (command === "approve" && subcommand) return approveCommand(subcommand, options);
+  if (command === "diff-packet") return diffPacketCommand(options);
+  if (command === "freeze" && subcommand) return freezeCommand(subcommand, options);
+  if (command === "status") return guardStatusCommand(options);
+  if (command === "install-hooks") return installHooksCommand(options);
+  if (command === "github" && subcommand === "ruleset-template") return githubRulesetCommand(options);
+  if (command === "vercel" && subcommand === "reconcile") return vercelReconcileCommand(options);
+  if (command === "approvals" && subcommand === "verify") return approvalLedgerVerifyCommand(options);
   if (command === "x402" && subcommand === "testnet-check") return x402TestnetCheckCommand(options);
   if (command === "identity" && subcommand === "keygen") return identityKeygenCommand(options);
   if (command === "identity" && subcommand === "sign-request") return identitySignRequestCommand(options);
@@ -131,6 +151,15 @@ Commands:
   oaa enterprise export-audit .oaa/receipts.jsonl [--format otel|cef] [--redact] [--strict]
   oaa evidence bundle [--policy agent-access.json] [--mandates agent-mandates.json] [--ledger .oaa/receipts.jsonl] [--output oaa-evidence-bundle.json]
   oaa evidence verify oaa-evidence-bundle.json [--json]
+  oaa diff-packet --repo-path . --action git.push [--json] [--output packet.md]
+  oaa approve git.push --repo-path . --note "Human reviewed diff packet" [--ttl-minutes 30] [--token-file .oaa/approval-token] [--json]
+  oaa guard git.push --repo-path . --approval-token TOKEN [--json]
+  oaa freeze on|off --repo-path . --reason "Incident review" [--json]
+  oaa status --repo-path . [--json]
+  oaa install-hooks --repo-path .
+  oaa github ruleset-template [--branch main] [--checks CI,CodeQL] [--signed-commits]
+  oaa vercel reconcile --repo-path . --production-commit SHA [--deployment-url URL] [--json]
+  oaa approvals verify [--ledger .oaa/approval-ledger.jsonl] [--json]
   oaa x402 testnet-check [--live] [--json]
   oaa identity keygen [--public-key .oaa/agent-public.pem] [--private-key .oaa/agent-private.pem]
   oaa identity sign-request --private-key .oaa/agent-private.pem --key-id did:web:agent.example#key-1 --agent-id did:web:agent.example --url URL --purpose research --use read

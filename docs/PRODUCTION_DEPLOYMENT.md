@@ -12,6 +12,11 @@ resources need shared infrastructure.
 - Require `AA-Idempotency-Key` or `Idempotency-Key` on paid high-cost routes.
 - Rate-limit before expensive work.
 - Keep receipt ledgers on durable storage.
+- Require OAA approval guard checks before agent-driven pushes, package
+  publishes, production deploys, env writes, domain changes, payment config
+  changes, and contract deployments.
+- Pair local OAA hooks with remote branch protection, required status checks,
+  protected deployment environments, and least-privilege deploy tokens.
 - Run `pnpm security:check` and `pnpm audit:prod` in CI.
 
 ## Recommended Replay Store Contract
@@ -76,3 +81,32 @@ For Hono paid routes, `algorandX402.trustPaymentHeader` must remain `false`
 unless a verified upstream x402 middleware or gateway has already validated the
 payment proof. OAA will otherwise return `402 payment_verification_required`
 instead of fulfilling the route.
+
+## Agent-Controlled Repo And Deployment Guardrails
+
+For repositories operated by agents, install the local guard and configure
+remote enforcement:
+
+```sh
+oaa install-hooks --repo-path .
+oaa github ruleset-template --branch main --checks CI,CodeQL --signed-commits
+```
+
+Suggested operating flow:
+
+```sh
+oaa diff-packet --repo-path . --action git.push --output oaa-review.md
+oaa approve git.push --repo-path . --note "Human reviewed the bounded diff packet" --ttl-minutes 30 --token-file .oaa/approval-token
+git push
+```
+
+For deployments, reconcile production commit metadata against the approval
+ledger:
+
+```sh
+oaa vercel reconcile --repo-path . --production-commit <sha> --deployment-url <url> --json
+```
+
+Local hooks can be bypassed by humans or by pushing from another clone. Treat
+them as guardrails. Enterprise enforcement requires protected branches,
+required checks, protected environments, and deployment-provider controls.

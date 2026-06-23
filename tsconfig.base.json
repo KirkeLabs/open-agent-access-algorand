@@ -22,6 +22,7 @@
       "@kirkelabs/open-agent-access-mandates": ["./packages/mandates/src/index.ts"],
       "@kirkelabs/open-agent-access-mcp": ["./packages/mcp/src/index.ts"],
       "@kirkelabs/open-agent-access-enterprise": ["./packages/enterprise/src/index.ts"],
+      "@kirkelabs/open-agent-access-guard": ["./packages/guard/src/index.ts"],
       "@kirkelabs/open-agent-access-identity": ["./packages/identity/src/index.ts"],
       "@kirkelabs/open-agent-access-evidence": ["./packages/evidence/src/index.ts"],
       "@kirkelabs/open-agent-access-policy-as-code": ["./packages/policy-as-code/src/index.ts"],

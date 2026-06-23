@@ -184,6 +184,7 @@ Premium fetches show payment-required metadata and do not pay unless `--pay` or
 | Mandate graphs | `@kirkelabs/open-agent-access-mandates` | Supported |
 | MCP tool guard | `@kirkelabs/open-agent-access-mcp` | Supported |
 | Enterprise controls | `@kirkelabs/open-agent-access-enterprise`, `oaa enterprise report` | Supported |
+| Agent action approvals | `@kirkelabs/open-agent-access-guard`, `oaa guard`, `oaa approve` | Supported |
 | Immutable evidence bundles | `@kirkelabs/open-agent-access-evidence`, `oaa evidence bundle` | Supported |
 | Policy-as-code export | `@kirkelabs/open-agent-access-policy-as-code`, `oaa policy export` | Supported |
 | Compliance mappings | `@kirkelabs/open-agent-access-compliance`, `oaa compliance map` | Supported |
@@ -235,11 +236,21 @@ pnpm oaa x402 testnet-check --json
 pnpm oaa compliance map --framework all --json
 pnpm oaa incident stop --output agent-stop.json --reason incident_response --paths '/premium/**'
 pnpm oaa identity keygen
+pnpm oaa diff-packet --repo-path . --action git.push --output oaa-review.md
+pnpm oaa approve git.push --repo-path . --note "Human reviewed the bounded diff packet" --ttl-minutes 30 --token-file .oaa/approval-token
+pnpm oaa guard git.push --repo-path . --approval-token "$OAA_APPROVAL_TOKEN" --json
+pnpm oaa freeze on --repo-path . --reason "Incident review"
 ```
 
 The enterprise report scores fail-closed defaults, required identity/purpose,
 receipt posture, paid-access controls, rate/load controls, policy expiry,
 mandate revocation, and audit evidence.
+
+The agent action guard adds human-in-the-loop controls for consequential agent
+actions. Agents can inspect, summarize, report, and pull without approval, but
+push, deploy, publish, env writes, domain writes, payment config changes, and
+contract deployment require a bounded one-time approval token and append-only
+approval record. See [Agent Action Guard](docs/AGENT_ACTION_GUARD.md).
 
 ## Ecosystem Adapter Framing
 
@@ -302,6 +313,7 @@ authors, and protocol reviewers are welcome. Good starting labels include
 
 - [Architecture](docs/ARCHITECTURE.md)
 - [API Reference](docs/API_REFERENCE.md)
+- [Agent Action Guard](docs/AGENT_ACTION_GUARD.md)
 - [Header Registry](docs/HEADER_REGISTRY.md)
 - [Verifiable Agent Identity](docs/AGENT_IDENTITY.md)
 - [Mandates](docs/MANDATES.md)

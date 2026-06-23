@@ -118,6 +118,9 @@ importers:
       '@kirkelabs/open-agent-access-evidence':
         specifier: workspace:*
         version: link:../evidence
+      '@kirkelabs/open-agent-access-guard':
+        specifier: workspace:*
+        version: link:../guard
       '@kirkelabs/open-agent-access-identity':
         specifier: workspace:*
         version: link:../identity
@@ -199,6 +202,8 @@ importers:
       '@kirkelabs/open-agent-access-core':
         specifier: workspace:*
         version: link:../core
+
+  packages/guard: {}
 
   packages/hono:
     dependencies:

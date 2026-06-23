@@ -75,6 +75,45 @@ human-friendly commands. Use scoped packages for runtime imports.
 - `createEvidenceBundleDigest(input)`: creates a compact digest over policy,
   mandates, receipts, and events.
 
+## `@kirkelabs/open-agent-access-guard`
+
+Human approval guardrails for agent-controlled repositories, deployments, and
+production-facing actions.
+
+- `classifyGuardAction(action)`: maps an action string to `read`, `summarize`,
+  `pull`, `write`, `push`, `deploy`, `publish`, `env_write`, `domain_write`,
+  `payment_config_write`, `smart_contract_deploy`, or `emergency_override`.
+- `actionRequiresApproval(action)`: returns whether the action is mutating or
+  production-facing.
+- `getRepoSnapshot(repoPath)`: captures repo root, repo identity, branch, HEAD,
+  remote, and dirty state.
+- `generateDiffPacket({ repoPath, action })`: creates a review packet with
+  changed files, diff hash, high-risk indicators, risk level, and recommended
+  checks.
+- `renderDiffPacketMarkdown(packet)`: renders a human-reviewable packet.
+- `createApprovalToken({ repoPath, action, note, ttlMinutes, actor })`: creates
+  a one-time token bound to action, repo, branch, HEAD, and diff hash.
+- `guardAction({ repoPath, action, approvalToken, actor })`: returns a stable
+  JSON decision for automation and consumes valid tokens once.
+- `verifyApprovalLedger(path)`: verifies the append-only approval hash chain.
+- `setFreezeState()` and `getGuardStatus()`: control and inspect freeze mode.
+- `installGitPrePushHook({ repoPath })`: installs a local pre-push guard.
+- `createGitHubRulesetTemplate(options)`: emits a GitHub ruleset JSON template.
+- `reconcileVercelDeploymentApproval(options)`: reports whether a production
+  deployment commit has a matching OAA deploy approval.
+
+CLI:
+
+```sh
+oaa diff-packet --repo-path . --action git.push --output oaa-review.md
+oaa approve git.push --repo-path . --note "Human reviewed the bounded diff packet" --token-file .oaa/approval-token
+oaa guard git.push --repo-path . --approval-token "$OAA_APPROVAL_TOKEN" --json
+oaa freeze on --repo-path . --reason "Incident review"
+oaa approvals verify --ledger .oaa/approval-ledger.jsonl --json
+oaa github ruleset-template --branch main --checks CI,CodeQL --signed-commits
+oaa vercel reconcile --repo-path . --production-commit <sha> --json
+```
+
 ## `@kirkelabs/open-agent-access-evidence`
 
 - `createEvidenceBundle(input)`: creates an immutable evidence manifest over

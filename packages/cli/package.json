@@ -1,6 +1,6 @@
 {
   "name": "@kirkelabs/open-agent-access-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "CLI for Open Agent Access for Algorand.",
   "type": "module",
   "license": "Apache-2.0",
@@ -31,6 +31,7 @@
     "@kirkelabs/open-agent-access-core": "workspace:*",
     "@kirkelabs/open-agent-access-enterprise": "workspace:*",
     "@kirkelabs/open-agent-access-evidence": "workspace:*",
+    "@kirkelabs/open-agent-access-guard": "workspace:*",
     "@kirkelabs/open-agent-access-identity": "workspace:*",
     "@kirkelabs/open-agent-access-incident": "workspace:*",
     "@kirkelabs/open-agent-access-mandates": "workspace:*",

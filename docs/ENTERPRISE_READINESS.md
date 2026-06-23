@@ -15,6 +15,7 @@ The enterprise package and CLI cover five operational needs:
 - privacy-safe audit redaction
 - OpenTelemetry-style span export
 - CEF/SIEM export
+- human approval guardrails for agent-driven repository and deployment actions
 
 ## CLI
 
@@ -32,6 +33,10 @@ pnpm oaa x402 testnet-check --json
 pnpm oaa compliance map --framework all --json
 pnpm oaa incident stop --output agent-stop.json --reason incident_response --paths '/premium/**'
 pnpm oaa identity keygen
+pnpm oaa diff-packet --repo-path . --action git.push --output oaa-review.md
+pnpm oaa approve git.push --repo-path . --note "Human reviewed the bounded diff packet" --ttl-minutes 30 --token-file .oaa/approval-token
+pnpm oaa guard git.push --repo-path . --approval-token "$OAA_APPROVAL_TOKEN" --json
+pnpm oaa github ruleset-template --branch main --checks CI,CodeQL --signed-commits
 ```
 
 `report` returns a score, policy hash, optional mandate-document hash, evidence
@@ -50,6 +55,9 @@ be treated as enterprise-ready until corrected.
 - explicit AI-training posture
 - mandate expiry, revocation, and evidence requirements
 - payment settlement evidence in receipts
+- one-time human approval tokens for production-facing agent actions
+- freeze mode for incident response
+- hash-chained approval ledgers for repo/deployment mutations
 
 ## Audit Exports
 
@@ -73,3 +81,25 @@ Evidence bundle digests bind together:
 
 This gives review teams a compact artifact for change records, customer
 assurance, incident response, and later anchoring.
+
+## Agent Action Approval
+
+`@kirkelabs/open-agent-access-guard` adds a separate approval ledger for
+agent-controlled repo and deployment actions. It is designed for cases where an
+agent can inspect, summarize, and prepare changes, but must not silently push,
+deploy, publish packages, mutate production env vars, change domains, alter
+payment config, or deploy contracts.
+
+The guard binds approval tokens to:
+
+- action
+- repo identity
+- branch
+- HEAD
+- diff hash
+- expiry
+- one-time redemption
+
+Use it with local hooks for developer ergonomics and with GitHub branch rulesets
+or deployment protection for actual enforcement. See
+[Agent Action Guard](AGENT_ACTION_GUARD.md).
