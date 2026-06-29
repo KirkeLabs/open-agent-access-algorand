@@ -295,17 +295,17 @@ importers:
         specifier: workspace:*
         version: link:../core
       '@x402/avm':
-        specifier: ^2.16.0
-        version: 2.16.0
+        specifier: ^2.17.0
+        version: 2.17.0
       '@x402/core':
-        specifier: ^2.16.0
-        version: 2.16.0
+        specifier: ^2.17.0
+        version: 2.17.0
       '@x402/fetch':
-        specifier: ^2.16.0
-        version: 2.16.0
+        specifier: ^2.17.0
+        version: 2.17.0
       '@x402/hono':
-        specifier: ^2.16.0
-        version: 2.16.0(hono@4.12.27)(typescript@6.0.3)
+        specifier: ^2.17.0
+        version: 2.17.0(hono@4.12.27)(typescript@6.0.3)
       dotenv:
         specifier: ^17.4.2
         version: 17.4.2
@@ -856,22 +856,22 @@ packages:
   '@vitest/utils@4.1.9':
     resolution: {integrity: sha512-A51o8ymO5PpqlWNnBP9ZHPXDIpuMtTLlGSjN7la4US+LJzoUMyhwjA5QXlm39JexgwHKW4Xjs8Z2d3dLCXOeuA==}
 
-  '@x402/avm@2.16.0':
-    resolution: {integrity: sha512-WWeojOlpejTgRjfFzjWbw0iRryd/fZAf/LBoRVBRT+RwgPzQMvXAigvlobpgSzqLxd2vsc2qggCedetiiP7tBA==}
+  '@x402/avm@2.17.0':
+    resolution: {integrity: sha512-NSsnVOVGT89ufsqllEJX5fLosW5nVUec+Y4VA4H5qtwjdxAHVdEE/xS5Vmg7FzKBsIwUB9pLLqncewXTX5rkPg==}
 
-  '@x402/core@2.16.0':
-    resolution: {integrity: sha512-7MjwOEiE6ICAYtOsK9vQl66Ho4jERDuuoRg/No2Nc2GQ7y/M/yu4DJ65LzeBycQE+Qrg2RqQG7KR51tyT+hzjQ==}
+  '@x402/core@2.17.0':
+    resolution: {integrity: sha512-BBooe9Kewl5KLaKadElFwhZzZ+n/X/m2djzGtc7OY51D8fk2vHTVvDZtBFEJYdJxtQoUZMKX73hew0ss81FENQ==}
 
-  '@x402/extensions@2.16.0':
-    resolution: {integrity: sha512-LHh5QrvB1QwiPr2zFqzpJonmMGxqJq1nDHifihyqNx1lJvU3DQgYGxPuHXE2l6nxGG0chF0alA/BsidDHFie/A==}
+  '@x402/extensions@2.17.0':
+    resolution: {integrity: sha512-oYQPLJkRWiSutEVAsyNxwKh4EyviG//s8Ms7Jwkx4J8csm1gd7TfCQTsLwDmieYA5B2Qp8ajebdTkL+bT9/sQA==}
 
-  '@x402/fetch@2.16.0':
-    resolution: {integrity: sha512-skW0XsWzi4NIfqCrY6KxhO3UEJ8qh4nBIKIgwWFCXFHNqRKYWZ7qcCI/DHy7cy3jdYs1MV4PoXX24rP3Umca1Q==}
+  '@x402/fetch@2.17.0':
+    resolution: {integrity: sha512-iy6ar1JTgs4gzdlc2q2Z7nuL5keBkQhoD4v5niVlTwLoivVvHnAA0p/wK5WTWRrJ1b+el8pthkjFS0Jc3nMIIg==}
 
-  '@x402/hono@2.16.0':
-    resolution: {integrity: sha512-CStjpNSifgKzrAYrJJSrxEe3z+/BXruONKxVbklYYEb+ehaaccLdHU4zc5szMH/dbypHcVzoL7YgV79y8WJTzA==}
+  '@x402/hono@2.17.0':
+    resolution: {integrity: sha512-xWh7eTGTDRAX1DX4e/BaaCKErveFnx7HOE2GA3RQu5AQFgTuO+bQr9TRG9zyjqmt32ICrMKbkQ69YC5puw8djg==}
     peerDependencies:
-      '@x402/paywall': ^2.16.0
+      '@x402/paywall': ^2.17.0
       hono: ^4.0.0
     peerDependenciesMeta:
       '@x402/paywall':
@@ -938,8 +938,8 @@ packages:
   bignumber.js@9.3.1:
     resolution: {integrity: sha512-Ko0uX15oIUS7wJ3Rb30Fs6SkVbLmPBAKdlm7q9+ak9bbIeFf0MwuBsQV6z7+X768/cHsfg+WlysDWJcmthjsjQ==}
 
-  bn.js@5.2.3:
-    resolution: {integrity: sha512-EAcmnPkxpntVL+DS7bO1zhcZNvCkxqtkd0ZY53h06GNQ3DEkkGZ/gKgmDv6DdZQGj9BgfSPKtJJ7Dp1GPP8f7w==}
+  bn.js@5.2.4:
+    resolution: {integrity: sha512-QL7sb18rJ1PbdsKsqPA0guxL563vIMwRHgzNrW/uzQuRGN1Cjqd/wonUBAVqHox9KwzHA6vCbM0lXx3k4iQMow==}
 
   braces@3.0.3:
     resolution: {integrity: sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==}
@@ -1599,7 +1599,7 @@ snapshots:
       '@noble/hashes': 2.2.0
       ajv: 8.20.0
       algo-msgpack-with-bigint: 2.1.1
-      bn.js: 5.2.3
+      bn.js: 5.2.4
 
   '@babel/runtime@7.29.7': {}
 
@@ -2050,21 +2050,21 @@ snapshots:
       convert-source-map: 2.0.0
       tinyrainbow: 3.1.0
 
-  '@x402/avm@2.16.0':
+  '@x402/avm@2.17.0':
     dependencies:
       '@algorandfoundation/algokit-utils': 10.0.0-alpha.46
-      '@x402/core': 2.16.0
+      '@x402/core': 2.17.0
 
-  '@x402/core@2.16.0':
+  '@x402/core@2.17.0':
     dependencies:
       zod: 3.25.76
 
-  '@x402/extensions@2.16.0(typescript@6.0.3)':
+  '@x402/extensions@2.17.0(typescript@6.0.3)':
     dependencies:
       '@noble/curves': 1.9.7
       '@scure/base': 1.2.6
       '@signinwithethereum/siwe': 4.2.0(viem@2.53.1(typescript@6.0.3)(zod@3.25.76))
-      '@x402/core': 2.16.0
+      '@x402/core': 2.17.0
       ajv: 8.20.0
       jose: 5.10.0
       tweetnacl: 1.0.3
@@ -2076,14 +2076,14 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@x402/fetch@2.16.0':
+  '@x402/fetch@2.17.0':
     dependencies:
-      '@x402/core': 2.16.0
+      '@x402/core': 2.17.0
 
-  '@x402/hono@2.16.0(hono@4.12.27)(typescript@6.0.3)':
+  '@x402/hono@2.17.0(hono@4.12.27)(typescript@6.0.3)':
     dependencies:
-      '@x402/core': 2.16.0
-      '@x402/extensions': 2.16.0(typescript@6.0.3)
+      '@x402/core': 2.17.0
+      '@x402/extensions': 2.17.0(typescript@6.0.3)
       hono: 4.12.27
     transitivePeerDependencies:
       - bufferutil
@@ -2142,7 +2142,7 @@ snapshots:
 
   bignumber.js@9.3.1: {}
 
-  bn.js@5.2.3: {}
+  bn.js@5.2.4: {}
 
   braces@3.0.3:
     dependencies:
