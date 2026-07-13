@@ -19,8 +19,8 @@ importers:
         specifier: ^26.0.0
         version: 26.0.0
       hono:
-        specifier: ^4.12.27
-        version: 4.12.27
+        specifier: ^4.12.30
+        version: 4.12.30
       tsx:
         specifier: ^4.19.2
         version: 4.22.4
@@ -46,14 +46,14 @@ importers:
   examples/api-metering:
     dependencies:
       '@hono/node-server':
-        specifier: ^2.0.6
-        version: 2.0.6(hono@4.12.27)
+        specifier: ^2.0.8
+        version: 2.0.8(hono@4.12.30)
       '@kirkelabs/open-agent-access-hono':
         specifier: workspace:*
         version: link:../../packages/hono
       hono:
-        specifier: ^4.12.27
-        version: 4.12.27
+        specifier: ^4.12.30
+        version: 4.12.30
       tsx:
         specifier: ^4.19.2
         version: 4.22.4
@@ -61,14 +61,14 @@ importers:
   examples/hono-free-and-paid-site:
     dependencies:
       '@hono/node-server':
-        specifier: ^2.0.6
-        version: 2.0.6(hono@4.12.27)
+        specifier: ^2.0.8
+        version: 2.0.8(hono@4.12.30)
       '@kirkelabs/open-agent-access-hono':
         specifier: workspace:*
         version: link:../../packages/hono
       hono:
-        specifier: ^4.12.27
-        version: 4.12.27
+        specifier: ^4.12.30
+        version: 4.12.30
       tsx:
         specifier: ^4.19.2
         version: 4.22.4
@@ -220,8 +220,8 @@ importers:
         specifier: workspace:*
         version: link:../payments-algorand-x402
       hono:
-        specifier: ^4.12.27
-        version: 4.12.27
+        specifier: ^4.12.30
+        version: 4.12.30
 
   packages/identity:
     dependencies:
@@ -305,13 +305,13 @@ importers:
         version: 2.16.0
       '@x402/hono':
         specifier: ^2.16.0
-        version: 2.16.0(hono@4.12.27)(typescript@6.0.3)
+        version: 2.16.0(hono@4.12.30)(typescript@6.0.3)
       dotenv:
         specifier: ^17.4.2
         version: 17.4.2
       hono:
-        specifier: ^4.12.27
-        version: 4.12.27
+        specifier: ^4.12.30
+        version: 4.12.30
 
   packages/policy-as-code:
     dependencies:
@@ -615,8 +615,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@hono/node-server@2.0.6':
-    resolution: {integrity: sha512-7DeRlKG57JDBNZ5Qj2jwVdgwQy4b0tLubRLl3zCf91/rCf9i7p1V5FtW/yWibm1uUHE493ts9ZXH/7g/LQWl+g==}
+  '@hono/node-server@2.0.8':
+    resolution: {integrity: sha512-GuCWzLxwg218fy1JaHculFsdcuY12hxit83V+algozTPnwhNjLrRL/Alg9OYjLZLoUZ1rw/S4CdTMsnkSKCmFA==}
     engines: {node: '>=20'}
     peerDependencies:
       hono: ^4
@@ -1069,8 +1069,8 @@ packages:
   hi-base32@0.5.1:
     resolution: {integrity: sha512-EmBBpvdYh/4XxsnUybsPag6VikPYnN30td+vQk+GI3qpahVEG9+gTkG0aXVxTjBqQ5T6ijbWIu77O+C5WFWsnA==}
 
-  hono@4.12.27:
-    resolution: {integrity: sha512-1yrb/+w6HWQJrUCLkJ2IF5jNIPvvFkblV5RNOYl6bV+OA6p9GLcMpHFFGTosSvHvcAUibuUukRqhlYI4z32C7Q==}
+  hono@4.12.30:
+    resolution: {integrity: sha512-emn+JoJjrN9YTpRDS5it/UI2SO9BAE37T6I3d963RxcZ81G9A4pr2SZTEiiaiKbzx+NKRg5BZ89fCL7gCJCUog==}
     engines: {node: '>=16.9.0'}
 
   human-id@4.2.0:
@@ -1840,9 +1840,9 @@ snapshots:
   '@esbuild/win32-x64@0.28.1':
     optional: true
 
-  '@hono/node-server@2.0.6(hono@4.12.27)':
+  '@hono/node-server@2.0.8(hono@4.12.30)':
     dependencies:
-      hono: 4.12.27
+      hono: 4.12.30
 
   '@inquirer/external-editor@1.0.3(@types/node@26.0.0)':
     dependencies:
@@ -2080,11 +2080,11 @@ snapshots:
     dependencies:
       '@x402/core': 2.16.0
 
-  '@x402/hono@2.16.0(hono@4.12.27)(typescript@6.0.3)':
+  '@x402/hono@2.16.0(hono@4.12.30)(typescript@6.0.3)':
     dependencies:
       '@x402/core': 2.16.0
       '@x402/extensions': 2.16.0(typescript@6.0.3)
-      hono: 4.12.27
+      hono: 4.12.30
     transitivePeerDependencies:
       - bufferutil
       - ethers
@@ -2286,7 +2286,7 @@ snapshots:
 
   hi-base32@0.5.1: {}
 
-  hono@4.12.27: {}
+  hono@4.12.30: {}
 
   human-id@4.2.0: {}
 
