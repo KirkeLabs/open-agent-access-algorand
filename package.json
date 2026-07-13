@@ -38,7 +38,7 @@
   "devDependencies": {
     "@changesets/cli": "^2.31.0",
     "@types/node": "^26.0.0",
-    "hono": "^4.12.27",
+    "hono": "^4.12.30",
     "tsx": "^4.19.2",
     "typescript": "^6.0.3",
     "vite": "^8.1.0",
