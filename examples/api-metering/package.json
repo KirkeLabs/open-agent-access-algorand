@@ -11,6 +11,6 @@
     "@hono/node-server": "^2.0.6",
     "@kirkelabs/open-agent-access-hono": "workspace:*",
     "hono": "^4.12.27",
-    "tsx": "^4.19.2"
+    "tsx": "^4.23.1"
   }
 }
